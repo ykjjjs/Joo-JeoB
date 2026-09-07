@@ -405,9 +405,14 @@ body.hasnav{padding-bottom:104px}
       <label class="drop" for="fileInput">
         <div class="big">🎵</div>
         <div class="t">음악 파일 선택</div>
-        <div class="s">MP3 · M4A · WAV · AAC · 영상(MP4/MOV)의 소리만 추출도 가능 — 기기에서만 처리됩니다</div>
+        <div class="s">MP3 · M4A · WAV · AAC · 영상(MP4/MOV)의 소리만 추출도 가능<br>
+          <b style="color:var(--cy)">가요는 여기로</b> — 갖고 계신 음원 파일을 그대로 올리면 됩니다. 기기에서만 처리됩니다</div>
       </label>
       <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
+      <div class="note" style="margin-top:10px"><b style="color:var(--cy)">가요를 쓰시려면</b> —
+        멜론·지니·벅스의 <b>다운로드(소장) 상품</b>으로 산 MP3를 올리세요. 원본 음질 그대로 들어갑니다.<br>
+        <b>스트리밍 이용권으로 저장한 곡은 안 됩니다</b> — DRM이 걸려 있어 다른 앱이 열 수 없습니다.
+        구매가 번거로우면 <b>🔴 탭 소리</b>의 화면 녹화 방법을 쓰세요.</div>
       <div id="uploadDetail" hidden></div>
     </div>
 
@@ -415,7 +420,11 @@ body.hasnav{padding-bottom:104px}
       <div class="detail">
         <h3>🔎 무료 음원 검색 <span class="lic">Jamendo · CC 라이선스</span></h3>
         <p class="why">저작권 프리 음원 수십만 곡을 검색해 <b style="color:var(--cy)">바로 BGM으로</b> 씁니다.
-          폰에서도 되고, 유튜브처럼 화면 녹화를 거칠 필요가 없습니다.</p>
+          폰에서도 되고, 화면 녹화를 거칠 필요가 없습니다.</p>
+        <div class="note" style="margin:0 0 12px"><b>가요·팝 같은 상업 음원은 여기 없습니다.</b>
+          인디 뮤지션이 직접 올린 CC 라이선스 곡들이라 음원사가 권리를 가진 곡은 들어갈 수 없습니다.
+          특정 가요를 쓰시려면 <b style="color:var(--cy)">내 음악</b>(갖고 계신 파일) 또는
+          <b style="color:var(--cy)">🔴 탭 소리</b>(유튜브 화면 녹화)를 쓰세요.</div>
 
         <div class="field" id="jamKeyRow" style="margin-top:0">
           <label for="jamKey">Jamendo Client ID <span class="mono" style="color:var(--tx3);font-weight:400">— devportal.jamendo.com 에서 무료 발급, 한 번만 저장</span></label>
@@ -434,7 +443,7 @@ body.hasnav{padding-bottom:104px}
           <button type="button" class="chip" data-jamtag="cinematic">cinematic</button>
           <button type="button" class="chip" data-jamtag="hiphop">hiphop</button>
           <button type="button" class="chip" data-jamtag="jazz">jazz</button>
-          <button type="button" class="chip" data-jamtag="korean">korean</button>
+          <button type="button" class="chip" data-jamtag="ambient">ambient</button>
         </div>
         <div class="row">
           <div><div class="lb">가사 없는 곡만</div><div class="ds">말소리를 넣을 영상이면 켜 두는 게 좋습니다</div></div>
@@ -463,14 +472,17 @@ body.hasnav{padding-bottom:104px}
              아래 &lsquo;사용 가능한 버튼&rsquo;에서 <b>화면 녹화</b>를 위로 끌어다 놓고 <b>완료</b><br>
           ③ <b>화면 녹화</b> 탭 → 소리 선택창에서 <b>미디어 소리</b> (마이크 아님) → <b>녹화 시작</b> → 3초 뒤 시작<br>
           ④ 유튜브 앱에서 곡 재생 → 다 흐르면 화면의 <b>■ 정지</b> 버튼 탭<br>
-          ⑤ 갤러리에 저장된 녹화 영상을 아래 버튼으로 선택
+          ⑤ 갤러리에 저장된 녹화 영상을 아래 버튼으로 선택<br>
+          <b style="color:var(--cy)">깨끗하게 담는 요령</b> — 녹화 전에 <b>방해 금지</b>를 켜세요(알림음이 섞입니다).
+          광고가 있으면 광고가 끝나고 곡이 시작된 뒤에 녹화를 시작하고, 유튜브 <b>자동재생은 꺼</b> 두세요.
         </div>
         <div class="filerow" id="capStepsIos">
           <b style="display:block;margin-bottom:4px">아이폰</b>
           ① 설정 → 제어 센터 → <b>화면 기록</b> 추가 (한 번만)<br>
           ② 제어 센터를 열고 <b>◉ 화면 기록</b> 탭 → 3초 후 시작<br>
           ③ 유튜브 앱에서 곡 재생 → 끝나면 상단 빨간 표시 탭 → 중단<br>
-          ④ 사진 앱에 저장된 영상을 아래 버튼으로 선택
+          ④ 사진 앱에 저장된 영상을 아래 버튼으로 선택<br>
+          <b style="color:var(--cy)">요령</b> — 녹화 전에 <b>방해 금지</b>를 켜고, 광고가 끝난 뒤 녹화를 시작하세요.
         </div>
 
         <label class="drop" for="capFileInput" style="margin-top:12px">
@@ -727,7 +739,7 @@ body.hasnav{padding-bottom:104px}
                <b>화면 녹화</b>를 위로 끌어 놓고 <b>완료</b><br>
             ③ <b>화면 녹화</b> 탭 → 소리 선택창에서 반드시 <b style="color:var(--warn)">미디어 소리</b> (마이크 아님) → 녹화 시작<br>
             ④ 유튜브에서 곡 재생 → 다 흐르면 화면의 <b>■ 정지</b><br>
-            ⑤ 앱의 <b>화면 녹화 영상 선택</b>으로 그 영상을 고르면 소리만 추출됩니다<br>
+            ⑤ 앱의 <b>화면 녹화 영상 선택</b>으로 그 영상을 고르면 소리만 추출됩니다<br>            <b style="color:var(--cy)">요령</b> — 녹화 전 <b>방해 금지</b> 켜기, 광고 끝난 뒤 시작, 유튜브 <b>자동재생 끄기</b><br>
             <b style="color:var(--tx3);font-weight:400">※ 녹화는 2분 안쪽으로 짧게 — 길면 느리고 실패할 수 있습니다</b>
           </div>
         </div>
@@ -796,7 +808,7 @@ body.hasnav{padding-bottom:104px}
             ① <b>설정 → 제어 센터</b>에서 <b>화면 기록</b>을 추가 (처음 한 번만)<br>
             ② 오른쪽 위에서 아래로 쓸어 제어 센터를 열고 <b>◉ 화면 기록</b> 탭 → 3초 뒤 시작<br>
             ③ 유튜브에서 곡 재생 → 다 흐르면 화면 위 <b>빨간 시간 표시</b> 탭 → <b>중단</b><br>
-            ④ 앱의 <b>화면 녹화 영상 선택</b>으로 사진 앱의 그 영상을 고르면 소리만 추출됩니다<br>
+            ④ 앱의 <b>화면 녹화 영상 선택</b>으로 사진 앱의 그 영상을 고르면 소리만 추출됩니다<br>            <b style="color:var(--cy)">요령</b> — 녹화 전 <b>방해 금지</b> 켜기, 광고 끝난 뒤 시작<br>
             <b style="color:var(--tx3);font-weight:400">※ 녹화는 2분 안쪽으로 짧게 — 길면 느리고 실패할 수 있습니다</b>
           </div>
         </div>
@@ -1308,7 +1320,8 @@ async function loadUserFile(file, kind){
   } catch (e){
     setBgmStatus('bad', isVideo
       ? '이 영상에서 소리를 뽑지 못했습니다. 화면 녹화 때 소리 옵션이 꺼져 있었거나(무음), 파일이 너무 크거나, 이 브라우저가 못 여는 코덱일 수 있습니다. 2분 이내로 다시 녹화해 보세요.'
-      : '이 파일은 디코딩할 수 없습니다. MP3 / M4A / WAV를 사용해 주세요.');
+      : '이 파일을 열 수 없습니다. 멜론·지니·벅스의 <b>스트리밍 이용권으로 저장한 곡</b>은 DRM이 걸려 있어 다른 앱이 열지 못합니다 — ' +
+        '<b>다운로드(소장) 상품</b>으로 받은 MP3나, 직접 갖고 계신 MP3/M4A/WAV를 올려 주세요.');
   }
 }
 
@@ -2804,7 +2817,7 @@ async function adminChangePw(){
    ============================================================ */
 /* 배포 전에 여기에 키를 넣어 두면 사용자가 입력하지 않아도 된다.
    Jamendo client_id 는 공개용 식별자라 페이지에 노출되어도 문제 없다. */
-const JAMENDO_CLIENT_ID = '';
+const JAMENDO_CLIENT_ID = 'b622a8e9';
 
 /* --- 유튜브 --- */
 function ytId(u){
