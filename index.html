@@ -374,14 +374,46 @@ body.hasnav{padding-bottom:104px}
       <label class="drop" for="fileInput">
         <div class="big">🎵</div>
         <div class="t">음악 파일 선택</div>
-        <div class="s">MP3 · M4A · WAV · AAC — 기기에서만 처리되고 업로드되지 않습니다</div>
+        <div class="s">MP3 · M4A · WAV · AAC · 영상(MP4/MOV)의 소리만 추출도 가능 — 기기에서만 처리됩니다</div>
       </label>
-      <input type="file" id="fileInput" accept="audio/*" hidden>
+      <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
       <div id="uploadDetail" hidden></div>
     </div>
 
     <div id="paneCapture" hidden>
-      <div class="detail">
+      <!-- 휴대폰: 브라우저가 다른 앱 소리를 못 잡으므로 OS 화면 녹화 → 그 파일에서 소리만 추출 -->
+      <div class="detail" id="capMobile" hidden>
+        <h3>📱 유튜브 소리를 화면 녹화로 담아오기</h3>
+        <p class="why">휴대폰 브라우저는 다른 앱의 소리를 직접 받을 수 없습니다. 대신 <b style="color:var(--cy)">폰의 화면 녹화 기능</b>으로
+          유튜브를 재생하며 녹화하면 소리가 담긴 영상 파일이 생깁니다. 그 파일을 아래에 올리면 <b style="color:var(--cy)">소리만 뽑아</b> BGM으로 씁니다.
+          화면은 버리고 소리만 쓰므로 어떤 화면을 녹화했는지는 상관없습니다.</p>
+
+        <div class="filerow" id="capStepsAndroid">
+          <b style="display:block;margin-bottom:4px">안드로이드</b>
+          ① 화면 위에서 아래로 두 번 내려 빠른 설정 → <b>화면 녹화</b> (없으면 연필 아이콘으로 추가)<br>
+          ② 소리 설정에서 <b>미디어 소리</b> 선택 (마이크 아님) → 녹화 시작<br>
+          ③ 유튜브 앱으로 가서 곡 재생 → 원하는 만큼 흐르면 상단 알림에서 <b>정지</b><br>
+          ④ 갤러리에 저장된 녹화 영상을 아래 버튼으로 선택
+        </div>
+        <div class="filerow" id="capStepsIos">
+          <b style="display:block;margin-bottom:4px">아이폰</b>
+          ① 설정 → 제어 센터 → <b>화면 기록</b> 추가 (한 번만)<br>
+          ② 제어 센터를 열고 <b>◉ 화면 기록</b> 탭 → 3초 후 시작<br>
+          ③ 유튜브 앱에서 곡 재생 → 끝나면 상단 빨간 표시 탭 → 중단<br>
+          ④ 사진 앱에 저장된 영상을 아래 버튼으로 선택
+        </div>
+
+        <label class="drop" for="capFileInput" style="margin-top:12px">
+          <div class="big">🎬</div>
+          <div class="t">화면 녹화 영상 선택 → 소리만 추출</div>
+          <div class="s">MP4 · MOV — 영상은 버리고 오디오 트랙만 BGM으로 씁니다</div>
+        </label>
+        <input type="file" id="capFileInput" accept="video/*,audio/*" hidden>
+        <div class="note" style="margin-top:10px">녹화는 <b>2분 안쪽</b>으로 짧게 잡으세요. 파일이 크면 소리를 뽑는 데 오래 걸리고 메모리가 부족할 수 있습니다.
+          곡의 특정 부분만 쓰려면 다음 단계의 <b>BGM 시작 지점</b>으로 맞추면 됩니다.</div>
+      </div>
+
+      <div class="detail" id="capPc">
         <h3>🔴 다른 탭의 소리를 BGM으로</h3>
         <p class="why">유튜브 등 <b style="color:var(--cy)">다른 탭에서 재생 중인 소리</b>를 그대로 받아 촬영 영상에 합칩니다.
           마이크로 주워담는 게 아니라 브라우저 내부에서 소리를 직접 가져오므로 잡음 없이 깨끗하게 들어갑니다.</p>
@@ -985,7 +1017,7 @@ function showTrackDetail(track, buffer){
     '</div>' +
     '<div class="filerow">🎛️ 구성 악기 — <b>' + track.inst + '</b></div>' +
     '<div class="filerow">© 저작권 — <b>이 앱이 실시간 합성한 오디오</b> · 외부 음원 없음 · 상업적 사용 제한 없음</div>' +
-    '<div class="btnrow"><button type="button" class="btn ghost" id="previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
+    '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
   requestAnimationFrame(() => drawWave($('detWave'), buffer));
 }
 
@@ -1008,8 +1040,9 @@ async function selectTrack(id){
   }
 }
 
-async function loadUserFile(file){
-  setBgmStatus('generating', '오디오 디코딩 중…');
+async function loadUserFile(file, kind){
+  const isVideo = /^video\//.test(file.type) || /\.(mp4|mov|m4v|webm|mkv)$/i.test(file.name);
+  setBgmStatus('generating', isVideo ? '영상에서 소리만 뽑는 중… (파일이 크면 수십 초 걸립니다)' : '오디오 디코딩 중…');
   if (S.bgmLive) stopCapture('');
   try {
     ac();
@@ -1020,7 +1053,7 @@ async function loadUserFile(file){
     });
     S.bgmBuffer = buf;
     S.trackId = null;
-    S.bgmMeta = {name: file.name, kind: '내 파일', extra: Math.round(file.size / 1024) + ' KB'};
+    S.bgmMeta = {name: file.name, kind: kind || (isVideo ? '영상에서 추출' : '내 파일'), extra: Math.round(file.size / 1024) + ' KB'};
     const d = $('uploadDetail');
     d.hidden = false;
     d.className = 'detail';
@@ -1036,11 +1069,13 @@ async function loadUserFile(file){
         '<div><b>파일 크기</b><span>' + Math.round(file.size / 1024) + ' KB</span></div>' +
       '</div>' +
       '<div class="filerow">📁 원본 파일 — <b>' + file.name + '</b> (' + (file.type || 'audio') + ')</div>' +
-      '<div class="btnrow"><button type="button" class="btn ghost" id="previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
+      '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
     requestAnimationFrame(() => drawWave($('upWave'), buf));
     afterBgmReady();
   } catch (e){
-    setBgmStatus('bad', '이 파일은 디코딩할 수 없습니다. MP3 / M4A / WAV를 사용해 주세요.');
+    setBgmStatus('bad', isVideo
+      ? '이 영상에서 소리를 뽑지 못했습니다. 화면 녹화 때 소리 옵션이 꺼져 있었거나(무음), 파일이 너무 크거나, 이 브라우저가 못 여는 코덱일 수 있습니다. 2분 이내로 다시 녹화해 보세요.'
+      : '이 파일은 디코딩할 수 없습니다. MP3 / M4A / WAV를 사용해 주세요.');
   }
 }
 
@@ -1067,7 +1102,7 @@ function togglePreview(){
   if (S.previewSrc){
     try { S.previewSrc.stop(); } catch(e){}
     S.previewSrc = null;
-    document.querySelectorAll('#previewBtn').forEach(b => b.textContent = '미리듣기 ▶');
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶');
     return;
   }
   if (!S.bgmBuffer) return;
@@ -1078,7 +1113,7 @@ function togglePreview(){
   src.connect(S.bgmGain);
   src.start(0, S.offset);
   S.previewSrc = src;
-  document.querySelectorAll('#previewBtn').forEach(b => b.textContent = '미리듣기 ■');
+  document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ■');
 }
 
 /* ============================================================
@@ -1219,7 +1254,7 @@ async function startRecording(){
 
   // BGM을 녹화 시작과 함께 재생 (그래프 경유 → 반드시 파일에 들어감)
   if (S.previewSrc){ try { S.previewSrc.stop(); } catch(e){} S.previewSrc = null;
-    document.querySelectorAll('#previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
   startBgm(c.currentTime + 0.06, S.offset);
 
   S.recording = true; S.lastWasTrim = false;
@@ -1361,7 +1396,7 @@ async function startDub(){
   S.recorder.onstop = onRecStop;
 
   if (S.previewSrc){ try { S.previewSrc.stop(); } catch(e){} S.previewSrc = null;
-    document.querySelectorAll('#previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
 
   S.dubbing = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = false;
   $('dubBtn').textContent = '중지';
@@ -1676,7 +1711,7 @@ function showErr(msg){
 /* --- 이벤트 위임 (인라인 onclick 없음) --- */
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,#previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#capBtn,#trimBtn,#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm]');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#capBtn,#trimBtn,#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm]');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -1692,9 +1727,16 @@ document.addEventListener('click', async (ev) => {
     $('paneBuiltin').hidden = t.dataset.src !== 'builtin';
     $('paneUpload').hidden = t.dataset.src !== 'upload';
     $('paneCapture').hidden = t.dataset.src !== 'capture';
-    if (t.dataset.src === 'capture' && !(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia)){
-      $('capBtn').disabled = true;
-      capErr('이 브라우저(휴대폰)는 탭 소리 캡처를 지원하지 않습니다. PC 크롬·엣지에서 사용하거나, 음악 파일을 "내 음악"으로 올려 주세요.');
+    if (t.dataset.src === 'capture'){
+      const pc = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      $('capPc').hidden = !pc;
+      $('capMobile').hidden = pc;
+      if (!pc){
+        const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        // 감지된 기기 안내를 위로
+        const par = $('capStepsAndroid').parentElement;
+        par.insertBefore(ios ? $('capStepsIos') : $('capStepsAndroid'), ios ? $('capStepsAndroid') : $('capStepsIos'));
+      }
     }
     return;
   }
@@ -1732,7 +1774,7 @@ document.addEventListener('click', async (ev) => {
   if (t.id === 'dubBtn'){ S.dubbing ? stopDub() : await startDub(); return; }
   if (t.id === 'dlBtn'){ download(); return; }
   if (t.id === 'shareBtn'){ await shareOut(); return; }
-  if (t.id === 'previewBtn'){ togglePreview(); return; }
+  if (t.classList.contains('previewBtn')){ togglePreview(); return; }
   if (t.id === 'againBtn'){ goStep(1); return; }
   if (t.id === 'capBtn'){ S.bgmLive ? stopCapture() : await startCapture(); return; }
 
@@ -1795,7 +1837,18 @@ document.addEventListener('click', async (ev) => {
   }
 });
 
-$('fileInput').addEventListener('change', (e) => { if (e.target.files[0]) loadUserFile(e.target.files[0]); });
+$('fileInput').addEventListener('change', (e) => {
+  if (e.target.files[0]){ $('paneUpload').appendChild($('uploadDetail')); loadUserFile(e.target.files[0]); }
+  e.target.value = '';
+});
+$('capFileInput').addEventListener('change', (e) => {
+  if (e.target.files[0]){
+    // 결과 패널은 업로드 탭의 것을 재사용 — 캡처 패널 안으로 옮겨 보여준다
+    $('capMobile').appendChild($('uploadDetail'));
+    loadUserFile(e.target.files[0], '화면 녹화에서 추출');
+  }
+  e.target.value = '';
+});
 $('adminPw').addEventListener('keydown', (e) => { if (e.key === 'Enter') adminAuthSubmit(); });
 $('adminPw2').addEventListener('keydown', (e) => { if (e.key === 'Enter') adminAuthSubmit(); });
 $('authPw').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('authPw2Row').hidden) $('authBtn').click(); });
