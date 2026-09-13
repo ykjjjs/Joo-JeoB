@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Black+Han+Sans&family=Do+Hyeon&family=Jua&family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Gamja+Flower&family=Song+Myung&family=Noto+Sans+KR:wght@400;700;900&display=swap">
 <style>
 :root{
   --bg:#070b16; --bg2:#0a1020; --panel:#0e1728; --panel2:#131f36; --line:#1e2d4a;
@@ -254,6 +254,45 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
 .navhint{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--tx3);text-align:center;
   min-width:52px;line-height:1.3}
 body.hasnav{padding-bottom:104px}
+
+/* ── 자막 편집 ── */
+.vidwrap{position:relative;margin-top:12px;line-height:0}
+.vidwrap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:16px}
+.tabs{display:flex;gap:6px;background:#0a1224;border:1px solid var(--line);border-radius:12px;padding:4px;margin:12px 0 0}
+.tabs button{flex:1;padding:10px 6px;border:0;border-radius:9px;background:transparent;color:var(--tx2);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.16s}
+.tabs button.on{background:var(--cy);color:#04121a;box-shadow:0 3px 14px rgba(34,211,238,.28)}
+.tabpane{border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;background:#0a1224;padding:14px 13px;margin-bottom:2px}
+textarea.sub{width:100%;min-height:96px;padding:12px;border:1px solid var(--line);border-radius:11px;
+  background:#08101f;color:var(--tx);font-family:inherit;font-size:14px;line-height:1.6;resize:vertical}
+textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
+.cue{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel2);margin-bottom:6px}
+.cue input[type=text]{flex:1;min-width:0;padding:8px 9px;border:1px solid var(--line);border-radius:8px;
+  background:#08101f;color:var(--tx);font-family:inherit;font-size:13px}
+.cue .tm{display:flex;flex-direction:column;gap:3px;flex:0 0 66px}
+.cue .tm input{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:#08101f;
+  color:var(--cy);font-family:var(--mono);font-size:11px;text-align:center}
+.cue .del{flex:0 0 auto;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);
+  color:var(--bad);font-family:inherit;font-size:12px;cursor:pointer}
+.swatches{display:flex;gap:7px;flex-wrap:wrap}
+.sw-c{width:34px;height:34px;border-radius:9px;border:2px solid var(--line);cursor:pointer;padding:0}
+.sw-c.on{border-color:var(--cy);box-shadow:0 0 0 2px rgba(34,211,238,.35)}
+.fontgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.fontgrid button{padding:11px 8px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);
+  color:var(--tx);font-size:15px;cursor:pointer;line-height:1.3}
+.fontgrid button.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
+.fontgrid button small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--tx3);margin-top:3px}
+.posgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:170px}
+.posgrid button{aspect-ratio:1.1;border:1px solid var(--line);border-radius:9px;background:var(--panel2);
+  color:var(--tx3);font-size:14px;cursor:pointer;display:grid;place-items:center}
+.posgrid button.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
+.animgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.animgrid button{padding:10px 4px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);
+  color:var(--tx2);font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;line-height:1.35}
+.animgrid button.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
+.animgrid button b{display:block;font-size:15px;margin-bottom:2px}
+input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-radius:9px;background:#08101f;padding:2px;cursor:pointer}
 
 /* ── 음원 검색 / 유튜브 임베드 ── */
 .jamrow img{width:44px;height:44px;flex:0 0 44px;border-radius:8px}
@@ -653,25 +692,121 @@ body.hasnav{padding-bottom:104px}
 
   <!-- 4. 결과 -->
   <section class="card step" data-step="4" id="resultCard" hidden>
-    <h2><span class="n">4</span> 결과 · 검증 · 다운로드</h2>
+    <h2><span class="n">4</span> 결과 · 자막 · 다운로드</h2>
     <p class="hint">파일을 실제로 디코딩해서 배경음악이 살아있는지 확인합니다.</p>
     <div id="repBox"></div>
     <canvas class="wave" id="resWave" hidden></canvas>
     <div class="wavelabel" id="resWaveLb" hidden><span>녹화된 오디오 파형</span><span id="resWaveDur"></span></div>
-    <video class="result" id="resVideo" controls playsinline style="margin-top:12px"></video>
+    <div class="vidwrap">
+      <video class="result" id="resVideo" controls playsinline></video>
+      <canvas id="subPreview"></canvas>
+    </div>
 
-    <div class="detail" id="trimBox" style="margin-top:12px">
-      <h3>✂️ 자르기</h3>
-      <p class="why">손잡이를 움직이면 미리보기가 그 지점으로 이동합니다. 앞뒤 불필요한 부분을 잘라 새 파일로 저장합니다.</p>
+    <div class="tabs" id="editTabs">
+      <button type="button" data-tab="cut" class="on">✂️ 구간</button>
+      <button type="button" data-tab="text">💬 자막</button>
+      <button type="button" data-tab="style">🎨 꾸미기</button>
+    </div>
+
+    <!-- 구간 -->
+    <div class="tabpane" id="tabCut">
+      <p class="why" style="margin:0 0 11px">손잡이를 움직이면 미리보기가 그 지점으로 이동합니다.</p>
       <div class="slabel"><span>시작</span><span class="v" id="trimStartV">0:00</span></div>
       <input type="range" id="trimStart" min="0" max="0" step="0.1" value="0">
       <div class="slabel" style="margin-top:12px"><span>끝</span><span class="v" id="trimEndV">0:00</span></div>
       <input type="range" id="trimEnd" min="0" max="0" step="0.1" value="0">
       <div class="slabel" style="margin-top:10px"><span id="trimMsg">선택 구간</span><span class="v" id="trimLen">—</span></div>
-      <div class="prog" style="position:relative;margin-top:8px;border-radius:2px;overflow:hidden"><i id="trimProg"></i></div>
-      <button type="button" class="btn ghost" id="trimBtn" disabled>이 구간만 잘라서 새 파일 만들기</button>
-      <div class="err" id="trimErr" hidden></div>
     </div>
+
+    <!-- 자막 -->
+    <div class="tabpane" id="tabText" hidden>
+      <p class="why" style="margin:0 0 10px">한 줄에 자막 하나씩 적으면 <b style="color:var(--cy)">리듬에 맞춰 자동으로 시간이 배분</b>됩니다.
+        SRT·VTT 파일을 올리면 시간까지 그대로 가져옵니다.</p>
+      <textarea class="sub" id="subText" placeholder="첫 줄 자막&#10;둘째 줄 자막&#10;셋째 줄 자막"></textarea>
+      <div class="btnrow" style="gap:8px">
+        <button type="button" class="btn primary" id="subApply" style="flex:1.4;margin-top:10px">리듬 맞춰 넣기</button>
+        <label class="btn ghost" for="subFile" style="flex:1;margin-top:10px;cursor:pointer">파일 열기</label>
+      </div>
+      <input type="file" id="subFile" accept=".srt,.vtt,.txt,text/plain" hidden>
+
+      <div class="row stack" style="border-bottom:0">
+        <div><div class="lb">문구 리듬</div><div class="ds">자막이 넘어가는 박자를 정합니다</div></div>
+        <div class="chips" id="rhythmChips">
+          <button type="button" class="chip" data-rhy="fast">빠르게</button>
+          <button type="button" class="chip on" data-rhy="normal">보통</button>
+          <button type="button" class="chip" data-rhy="slow">천천히</button>
+          <button type="button" class="chip" data-rhy="beat">박자</button>
+        </div>
+      </div>
+      <div class="row stack" id="bpmRow" hidden style="border-bottom:0">
+        <div class="slabel"><span>BPM · 한 줄당 박자</span><span class="v" id="bpmV">90 · 4박</span></div>
+        <div class="inline">
+          <input type="range" id="subBpm" min="50" max="180" step="1" value="90" style="flex:2">
+          <input type="range" id="subBeats" min="1" max="8" step="1" value="4" style="flex:1">
+        </div>
+      </div>
+      <div class="row stack" style="border-bottom:0">
+        <div class="slabel"><span>시작 시각</span><span class="v" id="subOffV">0.0초</span></div>
+        <input type="range" id="subOff" min="0" max="20" step="0.1" value="0">
+      </div>
+
+      <div class="slabel" style="margin:14px 0 7px"><span id="cueCount">자막 0개</span>
+        <span class="v"><button type="button" id="cueAdd" style="border:0;background:transparent;color:var(--cy);font:inherit;font-size:12px;cursor:pointer">+ 한 줄 추가</button>
+        <button type="button" id="cueClear" style="border:0;background:transparent;color:var(--bad);font:inherit;font-size:12px;cursor:pointer;margin-left:8px">전체 삭제</button></span></div>
+      <div id="cueList"></div>
+    </div>
+
+    <!-- 꾸미기 -->
+    <div class="tabpane" id="tabStyle" hidden>
+      <div class="lb" style="margin-bottom:7px">글자체</div>
+      <div class="fontgrid" id="fontGrid"></div>
+
+      <div class="row stack" style="border-bottom:0;margin-top:6px">
+        <div class="slabel"><span>글자 크기</span><span class="v" id="subSizeV">6.0%</span></div>
+        <input type="range" id="subSize" min="25" max="140" step="1" value="60">
+      </div>
+
+      <div class="row stack" style="border-bottom:0">
+        <div><div class="lb">글자색</div></div>
+        <div class="swatches" id="colorSw" style="margin-top:8px"></div>
+        <div class="inline" style="margin-top:9px">
+          <input type="color" id="subColor" value="#ffffff">
+          <input type="color" id="subStroke" value="#000000">
+          <div class="ds" style="flex:1;align-self:center">왼쪽 글자색 · 오른쪽 테두리색</div>
+        </div>
+      </div>
+
+      <div class="row stack" style="border-bottom:0">
+        <div class="slabel"><span>테두리 두께</span><span class="v" id="subSwV">보통</span></div>
+        <input type="range" id="subStrokeW" min="0" max="30" step="1" value="14">
+      </div>
+
+      <div class="row">
+        <div><div class="lb">배경 박스</div><div class="ds">글자 뒤에 반투명 판을 깝니다</div></div>
+        <div class="sw" id="subBoxSw" role="switch" aria-checked="false"></div>
+      </div>
+
+      <div class="row stack" style="border-bottom:0">
+        <div><div class="lb">위치</div><div class="ds">칸을 누르고 슬라이더로 미세 조정</div></div>
+        <div class="posgrid" id="posGrid" style="margin-top:9px"></div>
+        <div class="slabel" style="margin-top:11px"><span>좌우</span><span class="v" id="posXV">50%</span></div>
+        <input type="range" id="subPosX" min="5" max="95" step="1" value="50">
+        <div class="slabel" style="margin-top:10px"><span>위아래</span><span class="v" id="posYV">82%</span></div>
+        <input type="range" id="subPosY" min="5" max="95" step="1" value="82">
+      </div>
+
+      <div class="lb" style="margin:14px 0 7px">동적 움직임</div>
+      <div class="animgrid" id="animGrid"></div>
+      <div class="row stack" style="border-bottom:0">
+        <div class="slabel"><span>움직임 속도</span><span class="v" id="animSpV">1.0×</span></div>
+        <input type="range" id="animSpeed" min="3" max="30" step="1" value="10">
+      </div>
+    </div>
+
+    <div class="prog" style="position:relative;margin-top:12px;border-radius:2px;overflow:hidden"><i id="trimProg"></i></div>
+    <button type="button" class="btn primary" id="trimBtn" disabled>✨ 편집 적용해서 내보내기</button>
+    <div class="ds" id="exportHint" style="margin-top:6px;text-align:center">구간을 자르거나 자막을 넣으면 켜집니다</div>
+    <div class="err" id="trimErr" hidden></div>
 
     <div class="btnrow">
       <button type="button" class="btn primary" id="shareBtn" style="flex:1.3" hidden>공유해서 보내기</button>
@@ -759,6 +894,26 @@ body.hasnav{padding-bottom:104px}
             <li><b>📦 MP4 · H.264 + AAC</b> 로 나오면 어느 기기에서든 그대로 재생됩니다</li>
           </ul>
           <p>앞뒤를 다듬으려면 <b>구간 자르기</b>를 쓰세요. 자른 뒤에도 BGM은 그대로 남습니다.</p>
+        </div>
+
+        <div class="guide-sec">
+          <h4><i>5.5</i> 자막 넣기</h4>
+          <p>결과 화면의 <b>💬 자막</b> 탭에 한 줄에 하나씩 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르면
+            글자수에 맞춰 시간이 자동 배분됩니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
+          <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
+            움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
+          <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
+            <span class="hl">한 번에</span> 처리돼 화질 손실이 한 번뿐입니다.</p>
+        </div>
+
+        <div class="guide-sec">
+          <h4><i>5.5</i> 자막 넣기</h4>
+          <p>결과 화면의 <b>💬 자막</b> 탭에 한 줄에 하나씩 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르면
+            글자수에 맞춰 시간이 자동 배분됩니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
+          <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
+            움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
+          <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
+            <span class="hl">한 번에</span> 처리돼 화질 손실이 한 번뿐입니다.</p>
         </div>
 
         <div class="guide-sec">
@@ -1506,6 +1661,7 @@ async function startRecording(){
   S.recording = true; S.lastWasTrim = false;
   S.silentTicks = 0;
   S.silenceFlag = false;
+  S.subs = []; if ($('subText')) $('subText').value = '';   // 새 촬영 → 이전 자막은 시간축이 달라 버린다
   S.startedAt = performance.now();
   S.recorder.start(200);
   // rAF는 화면이 꺼지거나 앱이 백그라운드로 가면 멈춘다 → 타이머로 이중 안전장치
@@ -1645,6 +1801,7 @@ async function startDub(){
     document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
 
   S.dubbing = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = false;
+  S.subs = []; if ($('subText')) $('subText').value = '';
   $('dubBtn').textContent = '중지';
   $('dubBtn').classList.remove('primary'); $('dubBtn').classList.add('stop');
   $('dubMsg').textContent = '인코딩 중… 화면을 끄지 마세요';
@@ -1708,6 +1865,9 @@ async function onRecStop(){
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
   setupTrim(dur);
+  renderStyleControls(); renderCues(); syncStyleInputs();
+  startSubPreview(); ensureFont(S.subStyle.font);
+  updateExportBtn();
 }
 
 /* 컨테이너·코덱을 파일 바이트에서 직접 확인한다.
@@ -1958,7 +2118,7 @@ function showErr(msg){
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
   if (ev.target === $('helpSheet')){ $('helpSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm]');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-rhy],[data-cdel],#subApply,#cueAdd,#cueClear,#subBoxSw');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -1994,6 +2154,63 @@ document.addEventListener('click', async (ev) => {
     return;
   }
   if (t.dataset.track){ await selectTrack(t.dataset.track); return; }
+
+  /* --- 자막 편집 --- */
+  if (t.dataset.tab){
+    document.querySelectorAll('#editTabs button').forEach(x => x.classList.toggle('on', x === t));
+    $('tabCut').hidden   = t.dataset.tab !== 'cut';
+    $('tabText').hidden  = t.dataset.tab !== 'text';
+    $('tabStyle').hidden = t.dataset.tab !== 'style';
+    return;
+  }
+  if (t.dataset.rhy){
+    S.rhythm = t.dataset.rhy; syncStyleInputs();
+    if ($('subText').value.trim()) applyRhythm();
+    return;
+  }
+  if (t.dataset.font){
+    S.subStyle.font = t.dataset.font;
+    S.subStyle.weight = (SUB_FONTS.find(f => f.id === t.dataset.font) || {}).w || 700;
+    document.querySelectorAll('[data-font]').forEach(x => x.classList.toggle('on', x === t));
+    await ensureFont(S.subStyle.font);
+    return;
+  }
+  if (t.dataset.subcolor){
+    S.subStyle.color = t.dataset.subcolor; $('subColor').value = t.dataset.subcolor;
+    document.querySelectorAll('[data-subcolor]').forEach(x => x.classList.toggle('on', x === t));
+    return;
+  }
+  if (t.dataset.pos){
+    const p = POS_PRESETS[+t.dataset.pos];
+    S.subStyle.posX = p.x; S.subStyle.posY = p.y;
+    document.querySelectorAll('[data-pos]').forEach(x => x.classList.toggle('on', x === t));
+    syncStyleInputs();
+    return;
+  }
+  if (t.dataset.anim){
+    S.subStyle.anim = t.dataset.anim;
+    document.querySelectorAll('[data-anim]').forEach(x => x.classList.toggle('on', x === t));
+    return;
+  }
+  if (t.id === 'subBoxSw'){
+    S.subStyle.box = !S.subStyle.box;
+    t.classList.toggle('on', S.subStyle.box); t.setAttribute('aria-checked', String(S.subStyle.box));
+    return;
+  }
+  if (t.id === 'subApply'){ applyRhythm(); return; }
+  if (t.id === 'cueAdd'){
+    const last = S.subs[S.subs.length - 1];
+    const st0 = last ? last.end + 0.1 : 0;
+    S.subs.push({id:'c' + Math.random().toString(36).slice(2), text:'새 자막', start:st0, end:st0 + 1.5});
+    renderCues(); updateExportBtn(); return;
+  }
+  if (t.id === 'cueClear'){
+    if (S.subs.length && !confirm('자막을 모두 지울까요?')) return;
+    S.subs = []; renderCues(); updateExportBtn(); return;
+  }
+  if (t.dataset.cdel !== undefined){
+    S.subs.splice(+t.dataset.cdel, 1); renderCues(); updateExportBtn(); return;
+  }
 
   // 검색 태그 칩은 일반 설정 칩보다 먼저 처리 (같은 .chip 클래스)
   if (t.dataset.jamtag){ $('jamQ').value = t.dataset.jamtag; await jamSearch(t.dataset.jamtag); return; }
@@ -2139,6 +2356,49 @@ $('ytUrl').addEventListener('keydown', (e) => { if (e.key === 'Enter'){ e.preven
 $('adminPw2').addEventListener('keydown', (e) => { if (e.key === 'Enter') adminAuthSubmit(); });
 $('authPw').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('authPw2Row').hidden) $('authBtn').click(); });
 $('authPw2').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('authBtn').click(); });
+$('subSize').addEventListener('input', (e) => {
+  S.subStyle.size = +e.target.value / 1000;
+  $('subSizeV').textContent = (S.subStyle.size * 100).toFixed(1) + '%';
+});
+$('subColor').addEventListener('input', (e) => {
+  S.subStyle.color = e.target.value;
+  document.querySelectorAll('[data-subcolor]').forEach(x => x.classList.toggle('on', x.dataset.subcolor === e.target.value));
+});
+$('subStroke').addEventListener('input', (e) => { S.subStyle.stroke = e.target.value; });
+$('subStrokeW').addEventListener('input', (e) => {
+  S.subStyle.strokeW = +e.target.value / 100;
+  $('subSwV').textContent = S.subStyle.strokeW === 0 ? '없음' : S.subStyle.strokeW < 0.1 ? '얇게' : S.subStyle.strokeW < 0.2 ? '보통' : '굵게';
+});
+$('subPosX').addEventListener('input', (e) => { S.subStyle.posX = +e.target.value / 100; $('posXV').textContent = e.target.value + '%'; });
+$('subPosY').addEventListener('input', (e) => { S.subStyle.posY = +e.target.value / 100; $('posYV').textContent = e.target.value + '%'; });
+$('animSpeed').addEventListener('input', (e) => { S.subStyle.speed = +e.target.value / 10; $('animSpV').textContent = S.subStyle.speed.toFixed(1) + '×'; });
+$('subOff').addEventListener('input', (e) => { S.subOff = +e.target.value; $('subOffV').textContent = S.subOff.toFixed(1) + '초'; });
+$('subBpm').addEventListener('input', (e) => { S.subBpm = +e.target.value; $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박'; });
+$('subBeats').addEventListener('input', (e) => { S.subBeats = +e.target.value; $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박'; });
+['subOff','subBpm','subBeats'].forEach(id => $(id).addEventListener('change', () => { if ($('subText').value.trim()) applyRhythm(); }));
+
+$('subFile').addEventListener('change', async (e) => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const cues = parseSubs(await f.text());
+    if (!cues.length){ trimErr('자막을 읽지 못했습니다. SRT·VTT 또는 한 줄에 하나씩 적은 텍스트 파일을 올려 주세요.'); return; }
+    S.subs = cues;
+    $('subText').value = cues.map(c => c.text).join('\n');
+    renderCues(); updateExportBtn(); trimErr('');
+  } catch (err){ trimErr('파일을 읽지 못했습니다.'); }
+});
+
+// 큐 인라인 편집
+$('cueList').addEventListener('input', (e) => {
+  const row = e.target.closest('[data-cue]'); if (!row) return;
+  const c = S.subs[+row.dataset.cue]; if (!c) return;
+  const f = e.target.dataset.cf;
+  if (f === 'text') c.text = e.target.value;
+  else if (f === 'start') c.start = Math.max(0, parseFloat(e.target.value) || 0);
+  else if (f === 'end') c.end = Math.max(0.2, parseFloat(e.target.value) || 0);
+});
+
 $('trimStart').addEventListener('input', (e) => {
   const st = $('trimStart'), en = $('trimEnd');
   if (+st.value > +en.value - 0.5) st.value = Math.max(0, +en.value - 0.5);
@@ -2578,8 +2838,8 @@ function updateTrimLabels(){
   const len = Math.max(0, b - a);
   $('trimLen').textContent = trimSec(len) + ' / ' + trimSec(d);
   const whole = a <= 0.05 && b >= d - 0.05;
-  $('trimBtn').disabled = S.trimming || len < 0.5 || whole || !S.outBlob;
-  $('trimMsg').textContent = whole ? '선택 구간 (전체 — 자를 부분을 정하세요)' : '선택 구간';
+  $('trimMsg').textContent = whole ? '선택 구간 (전체)' : '선택 구간';
+  if (typeof updateExportBtn === 'function') updateExportBtn();
 }
 
 async function startTrim(){
@@ -2587,6 +2847,7 @@ async function startTrim(){
   if (!S.outBlob || S.trimming) return;
   const a = +$('trimStart').value, b = +$('trimEnd').value;
   if (b - a < 0.5){ trimErr('구간이 너무 짧습니다.'); return; }
+  if (S.subs.length) await ensureFont(S.subStyle.font);
 
   const c = ac();
   if (c.state !== 'running') await c.resume();
@@ -2631,13 +2892,15 @@ async function startTrim(){
   };
 
   S.trimming = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = true;
-  $('trimBtn').textContent = '자르는 중…'; $('trimBtn').disabled = true;
-  $('trimMsg').textContent = '인코딩 중 — 구간 길이만큼 걸립니다';
+  $('trimBtn').textContent = S.subs.length ? '자막 입히는 중…' : '자르는 중…';
+  $('trimBtn').disabled = true;
+  $('exportHint').textContent = '인코딩 중 — 구간 길이만큼 걸립니다. 화면을 끄지 마세요';
   updateNav();
 
   trimVideo.currentTime = a;
   await new Promise((res) => { trimVideo.onseeked = res; setTimeout(res, 1500); });
   g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
+  drawSubs(g, cv.width, cv.height, a);
   await trimVideo.play();
   S.recorder.start(200);
 
@@ -2645,6 +2908,7 @@ async function startTrim(){
   const draw = () => {
     if (!S.trimming) return;
     g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
+    drawSubs(g, cv.width, cv.height, trimVideo.currentTime);
     const p = Math.min(1, (trimVideo.currentTime - a) / total);
     $('trimProg').style.width = (p * 100) + '%';
     if (trimVideo.currentTime >= b - 0.04 || trimVideo.ended){ finishTrim(); return; }
@@ -2656,10 +2920,16 @@ async function startTrim(){
 
 function finishTrim(){
   if (!S.trimming) return;
+  const cutA = +$('trimStart').value, cutB = +$('trimEnd').value;
+  // 새 파일 기준으로 자막 시간을 다시 잡는다 (잘려나간 구간 밖 자막은 버린다)
+  S.subs = S.subs
+    .map(c => ({id:c.id, text:c.text, start: c.start - cutA, end: Math.min(c.end, cutB) - cutA}))
+    .filter(c => c.end > 0.05 && c.start < (cutB - cutA))
+    .map(c => ({id:c.id, text:c.text, start: Math.max(0, c.start), end: c.end}));
   S.trimming = false; S.recording = false;
   try { trimVideo.pause(); } catch(e){}
   try { S.recorder.stop(); } catch(e){}
-  $('trimBtn').textContent = '이 구간만 잘라서 새 파일 만들기';
+  $('trimBtn').textContent = '✨ 편집 적용해서 내보내기';
   $('trimProg').style.width = '0%';
   updateNav();
 }
@@ -2990,8 +3260,347 @@ function openHelp(){
   showAuth();
 })();
 
+
+/* ============================================================
+   12) 자막 — 편집 · 리듬 · 애니메이션 · 굽기(burn-in)
+   자막은 "지금 미리보기 중인 영상"의 시간축을 기준으로 저장한다.
+   내보낼 때 구간 자르기와 함께 한 번에 인코딩하므로 화질 손실이 한 번뿐이다.
+   ============================================================ */
+const SUB_FONTS = [
+  {id:'Noto Sans KR',      label:'기본',    w:900, sample:'가나다 ABC'},
+  {id:'Black Han Sans',    label:'임팩트',  w:400, sample:'가나다 ABC'},
+  {id:'Do Hyeon',          label:'도현',    w:400, sample:'가나다 ABC'},
+  {id:'Jua',               label:'주아',    w:400, sample:'가나다 ABC'},
+  {id:'Gaegu',             label:'개구',    w:700, sample:'가나다 ABC'},
+  {id:'Nanum Pen Script',  label:'펜글씨',  w:400, sample:'가나다 ABC'},
+  {id:'Gamja Flower',      label:'감자꽃',  w:400, sample:'가나다 ABC'},
+  {id:'Song Myung',        label:'명조',    w:400, sample:'가나다 ABC'}
+];
+const SUB_COLORS = ['#ffffff','#fff27a','#22d3ee','#ff7ab8','#7cf59b','#ffa94d','#b39dff','#0a0e1a'];
+const SUB_ANIMS = [
+  {id:'none',    icon:'▪',  label:'없음'},
+  {id:'fade',    icon:'◐',  label:'서서히'},
+  {id:'typing',  icon:'⌨',  label:'타자'},
+  {id:'pop',     icon:'✦',  label:'팝'},
+  {id:'slide',   icon:'↑',  label:'올라오기'},
+  {id:'zoom',    icon:'⊙',  label:'줌아웃'},
+  {id:'bounce',  icon:'⇅',  label:'통통'},
+  {id:'wave',    icon:'〜', label:'물결'},
+  {id:'shake',   icon:'⚡', label:'흔들'},
+  {id:'karaoke', icon:'🎤', label:'노래방'}
+];
+const POS_PRESETS = [
+  {x:0.5,  y:0.12, ic:'▲'}, {x:0.5, y:0.12, ic:'▲'}, {x:0.5, y:0.12, ic:'▲'},
+  {x:0.22, y:0.5,  ic:'◀'}, {x:0.5, y:0.5,  ic:'●'}, {x:0.78, y:0.5, ic:'▶'},
+  {x:0.5,  y:0.86, ic:'▼'}, {x:0.5, y:0.86, ic:'▼'}, {x:0.5, y:0.86, ic:'▼'}
+];
+
+S.subs = [];
+S.subStyle = {font:'Noto Sans KR', weight:900, size:0.060, color:'#ffffff', stroke:'#000000',
+  strokeW:0.14, box:false, boxColor:'rgba(8,16,31,.62)', posX:0.5, posY:0.82,
+  maxWidth:0.86, anim:'pop', speed:1.0};
+S.rhythm = 'normal';
+S.subOff = 0; S.subBpm = 90; S.subBeats = 4;
+S.fontsReady = {};
+
+/* --- 폰트 로딩: 캔버스에 그리기 전에 실제로 준비돼야 한다 --- */
+async function ensureFont(fam){
+  if (S.fontsReady[fam]) return;
+  try {
+    const f = SUB_FONTS.find(x => x.id === fam);
+    const w = f ? f.w : 700;
+    if (document.fonts && document.fonts.load){
+      await document.fonts.load(w + ' 48px "' + fam + '"', '가나다ABC');
+      await document.fonts.ready;
+    }
+  } catch(e){}
+  S.fontsReady[fam] = true;
+}
+
+/* --- 시간 파싱 / 포맷 --- */
+function tcSec(str){
+  const m = String(str).match(/(?:(\d+):)?(\d{1,2}):(\d{1,2})[,.](\d{1,3})/);
+  if (m) return (+(m[1]||0))*3600 + (+m[2])*60 + (+m[3]) + (+m[4])/Math.pow(10, m[4].length);
+  const n = parseFloat(str); return isFinite(n) ? n : 0;
+}
+function secStr(v){ return (Math.max(0, v)).toFixed(1); }
+
+/* --- 문구 리듬: 줄 목록 → 시간 배분 --- */
+function rhythmTimes(lines, dur){
+  const off = S.subOff;
+  const avail = Math.max(0.5, dur - off);
+  const out = [];
+  if (S.rhythm === 'beat'){
+    const per = (60 / S.subBpm) * S.subBeats;
+    let t = off;
+    for (const L of lines){ out.push({start:t, end:t + per * 0.96}); t += per; }
+    return out;
+  }
+  const gap = {fast:0.04, normal:0.08, slow:0.12}[S.rhythm] || 0.08;
+  const weights = lines.map(L => Math.max(2, [...L].length));
+  const sum = weights.reduce((a,b) => a+b, 0);
+  let t = off;
+  lines.forEach((L, i) => {
+    let span = avail * (weights[i] / sum);
+    if (S.rhythm === 'fast') span = Math.min(span, 1.6);
+    if (S.rhythm === 'slow') span = Math.max(span, 1.4);
+    out.push({start:t, end:t + span * (1 - gap)});
+    t += span;
+  });
+  return out;
+}
+
+function applyRhythm(){
+  const raw = $('subText').value.split('\n').map(x => x.trim()).filter(Boolean);
+  if (!raw.length){ renderCues(); return; }
+  const dur = currentDur();
+  const times = rhythmTimes(raw, dur);
+  S.subs = raw.map((text, i) => ({id: 'c' + Date.now() + '_' + i, text, start: times[i].start, end: times[i].end}));
+  renderCues(); updateExportBtn();
+}
+
+function currentDur(){
+  const v = $('resVideo');
+  return (v && isFinite(v.duration) && v.duration > 0) ? v.duration : (+$('trimEnd').max || 15);
+}
+
+/* --- 자막 파일 파싱 (SRT / VTT / 일반 텍스트) --- */
+function parseSubs(txt){
+  const t = txt.replace(/\r/g, '');
+  if (/-->/.test(t)){
+    const out = [];
+    const blocks = t.split(/\n\s*\n/);
+    for (const b of blocks){
+      const lines = b.split('\n').filter(x => x.trim() && !/^WEBVTT/i.test(x));
+      const ti = lines.findIndex(x => x.includes('-->'));
+      if (ti < 0) continue;
+      const [a, z] = lines[ti].split('-->');
+      const text = lines.slice(ti + 1).join('\n').trim();
+      if (!text) continue;
+      out.push({id:'c' + Math.random().toString(36).slice(2), start: tcSec(a), end: tcSec(z), text});
+    }
+    return out;
+  }
+  const lines = t.split('\n').map(x => x.trim()).filter(Boolean);
+  const times = rhythmTimes(lines, currentDur());
+  return lines.map((text, i) => ({id:'c' + Math.random().toString(36).slice(2), text, start:times[i].start, end:times[i].end}));
+}
+
+/* --- 큐 목록 UI --- */
+function renderCues(){
+  const box = $('cueList');
+  $('cueCount').textContent = '자막 ' + S.subs.length + '개';
+  if (!S.subs.length){ box.innerHTML = '<div class="empty">아직 자막이 없습니다. 위에 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르세요.</div>'; return; }
+  box.innerHTML = S.subs.map((c, i) =>
+    '<div class="cue" data-cue="' + i + '">' +
+      '<div class="tm"><input type="text" inputmode="decimal" data-cf="start" value="' + secStr(c.start) + '">' +
+      '<input type="text" inputmode="decimal" data-cf="end" value="' + secStr(c.end) + '"></div>' +
+      '<input type="text" data-cf="text" value="' + escapeAttr(c.text) + '">' +
+      '<button type="button" class="del" data-cdel="' + i + '">✕</button>' +
+    '</div>'
+  ).join('');
+}
+
+/* --- 스타일 컨트롤 UI --- */
+function renderStyleControls(){
+  $('fontGrid').innerHTML = SUB_FONTS.map(f =>
+    '<button type="button" data-font="' + f.id + '" class="' + (S.subStyle.font === f.id ? 'on' : '') + '" ' +
+    'style="font-family:\'' + f.id + '\',sans-serif;font-weight:' + f.w + '">' + f.sample +
+    '<small>' + f.label + '</small></button>'
+  ).join('');
+  $('colorSw').innerHTML = SUB_COLORS.map(c =>
+    '<button type="button" class="sw-c ' + (S.subStyle.color === c ? 'on' : '') + '" data-subcolor="' + c + '" style="background:' + c + '"></button>'
+  ).join('');
+  $('posGrid').innerHTML = POS_PRESETS.map((p, i) =>
+    '<button type="button" data-pos="' + i + '">' + p.ic + '</button>'
+  ).join('');
+  $('animGrid').innerHTML = SUB_ANIMS.map(a =>
+    '<button type="button" data-anim="' + a.id + '" class="' + (S.subStyle.anim === a.id ? 'on' : '') + '">' +
+    '<b>' + a.icon + '</b>' + a.label + '</button>'
+  ).join('');
+}
+
+/* ============================================================
+   자막 렌더러 — 미리보기와 내보내기가 같은 함수를 쓴다
+   ============================================================ */
+function roundRect(g, x, y, w, h, r){
+  g.beginPath();
+  g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r);
+  g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  g.lineTo(x + r, y + h); g.quadraticCurveTo(x, y + h, x, y + h - r);
+  g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath();
+}
+function wrapLines(g, text, maxW){
+  const out = [];
+  for (const para of String(text).split('\n')){
+    let line = '';
+    for (const ch of para){
+      const test = line + ch;
+      if (g.measureText(test).width > maxW && line){ out.push(line); line = ch; }
+      else line = test;
+    }
+    out.push(line);
+  }
+  return out;
+}
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeBack = (x) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+
+function animState(kind, t, d, sp){
+  sp = sp || 1;
+  const IN = Math.max(0.08, Math.min(0.5, d * 0.35) / sp);
+  const p = Math.min(1, t / IN), e = easeOut(p);
+  const OUT = Math.max(0.001, d - 0.18);
+  const fadeOut = t > OUT ? Math.max(0, 1 - (t - OUT) / 0.18) : 1;
+  switch (kind){
+    case 'fade':   return {a:e * fadeOut, s:1, dx:0, dy:0};
+    case 'pop':    return {a:Math.min(1, p * 2) * fadeOut, s:0.55 + 0.45 * easeBack(p), dx:0, dy:0};
+    case 'slide':  return {a:e * fadeOut, s:1, dx:0, dy:(1 - e) * 0.09};
+    case 'zoom':   return {a:e * fadeOut, s:1.45 - 0.45 * e, dx:0, dy:0};
+    case 'bounce': return {a:fadeOut, s:1, dx:0, dy:-Math.abs(Math.sin(t * 3.4 * sp)) * 0.016};
+    case 'shake':  return {a:fadeOut, s:1, dx:Math.sin(t * 34 * sp) * 0.005, dy:Math.cos(t * 29 * sp) * 0.004};
+    default:       return {a:fadeOut, s:1, dx:0, dy:0};
+  }
+}
+
+function drawCue(g, W, H, cue, t, d){
+  const st = S.subStyle;
+  const fs = Math.max(9, st.size * H);
+  const fw = (SUB_FONTS.find(f => f.id === st.font) || {}).w || 700;
+  g.save();
+  g.font = fw + ' ' + fs + 'px "' + st.font + '", "Noto Sans KR", sans-serif';
+  g.textBaseline = 'middle';
+  g.lineJoin = 'round'; g.miterLimit = 2;
+
+  const chars = [...cue.text].filter(c => c !== '\n').length;
+  let reveal = 1;
+  if (st.anim === 'typing'){
+    const dur = Math.min(d * 0.75, Math.max(0.3, chars * 0.075 / st.speed));
+    reveal = dur > 0 ? Math.min(1, t / dur) : 1;
+  }
+
+  const lines = wrapLines(g, cue.text, st.maxWidth * W);
+  const lh = fs * 1.28;
+  const totalH = lines.length * lh;
+  const A = animState(st.anim, t, d, st.speed);
+  if (A.a <= 0.01){ g.restore(); return; }
+
+  g.globalAlpha = A.a;
+  g.translate(st.posX * W + A.dx * W, st.posY * H + A.dy * H);
+  g.scale(A.s, A.s);
+
+  if (st.box){
+    let bw = 0; lines.forEach(l => { bw = Math.max(bw, g.measureText(l).width); });
+    const pad = fs * 0.36;
+    g.fillStyle = st.boxColor;
+    roundRect(g, -bw / 2 - pad, -totalH / 2 - pad * 0.55, bw + pad * 2, totalH + pad * 1.1, fs * 0.3);
+    g.fill();
+  }
+
+  const sw = st.strokeW * fs;
+  const perChar = (st.anim === 'wave' || st.anim === 'karaoke' || st.anim === 'typing');
+  let gi = 0;
+  const shown = Math.ceil(chars * reveal);
+
+  lines.forEach((line, li) => {
+    const y = -totalH / 2 + lh * li + lh / 2;
+    if (!perChar){
+      g.textAlign = 'center';
+      if (sw > 0){ g.strokeStyle = st.stroke; g.lineWidth = sw; g.strokeText(line, 0, y); }
+      g.fillStyle = st.color; g.fillText(line, 0, y);
+      return;
+    }
+    g.textAlign = 'center';
+    const arr = [...line];
+    const ws = arr.map(ch => g.measureText(ch).width);
+    const tot = ws.reduce((a, b) => a + b, 0);
+    let x = -tot / 2;
+    arr.forEach((ch, ci) => {
+      const w = ws[ci], cx = x + w / 2;
+      x += w;
+      const idx = gi++;
+      if (st.anim === 'typing' && idx >= shown) return;
+      let dy = 0, col = st.color;
+      if (st.anim === 'wave') dy = Math.sin(t * 4.2 * st.speed + idx * 0.55) * fs * 0.16;
+      if (st.anim === 'karaoke'){
+        const lit = (t / Math.max(0.2, d)) * chars;
+        col = idx < lit ? st.color : 'rgba(255,255,255,.38)';
+      }
+      if (sw > 0){ g.strokeStyle = st.stroke; g.lineWidth = sw; g.strokeText(ch, cx, y + dy); }
+      g.fillStyle = col; g.fillText(ch, cx, y + dy);
+      if (st.anim === 'typing' && idx === shown - 1 && reveal < 1 && Math.floor(t * 6) % 2 === 0){
+        g.fillStyle = st.color;
+        g.fillRect(cx + w / 2 + fs * 0.06, y - fs * 0.42, fs * 0.08, fs * 0.84);
+      }
+    });
+  });
+  g.restore();
+}
+
+function drawSubs(g, W, H, time){
+  if (!S.subs.length) return;
+  for (const c of S.subs){
+    if (time >= c.start && time < c.end) drawCue(g, W, H, c, time - c.start, Math.max(0.2, c.end - c.start));
+  }
+}
+
+/* --- 실시간 미리보기 --- */
+let subPrevRaf = 0;
+function startSubPreview(){
+  cancelAnimationFrame(subPrevRaf);
+  const cv = $('subPreview'), v = $('resVideo');
+  const loop = () => {
+    subPrevRaf = requestAnimationFrame(loop);
+    if (S.step !== 4 || !v.videoWidth) return;
+    const r = v.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if (!w || !h) return;
+    if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+    const g = cv.getContext('2d');
+    g.clearRect(0, 0, w, h);
+    drawSubs(g, w, h, v.currentTime);
+  };
+  loop();
+}
+
+/* --- 컨트롤 ↔ 상태 동기화 --- */
+function syncStyleInputs(){
+  const st = S.subStyle;
+  $('subSize').value = Math.round(st.size * 1000);      $('subSizeV').textContent = (st.size * 100).toFixed(1) + '%';
+  $('subColor').value = st.color;                        $('subStroke').value = st.stroke;
+  $('subStrokeW').value = Math.round(st.strokeW * 100);
+  $('subSwV').textContent = st.strokeW === 0 ? '없음' : st.strokeW < 0.1 ? '얇게' : st.strokeW < 0.2 ? '보통' : '굵게';
+  $('subBoxSw').classList.toggle('on', st.box);
+  $('subPosX').value = Math.round(st.posX * 100);        $('posXV').textContent = Math.round(st.posX * 100) + '%';
+  $('subPosY').value = Math.round(st.posY * 100);        $('posYV').textContent = Math.round(st.posY * 100) + '%';
+  $('animSpeed').value = Math.round(st.speed * 10);      $('animSpV').textContent = st.speed.toFixed(1) + '×';
+  $('subOff').value = S.subOff;                          $('subOffV').textContent = S.subOff.toFixed(1) + '초';
+  $('subBpm').value = S.subBpm; $('subBeats').value = S.subBeats;
+  $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박';
+  $('bpmRow').hidden = S.rhythm !== 'beat';
+  document.querySelectorAll('#rhythmChips .chip').forEach(c => c.classList.toggle('on', c.dataset.rhy === S.rhythm));
+}
+
+/* --- 내보내기 버튼 상태 --- */
+function trimChanged(){
+  const a = +$('trimStart').value, b = +$('trimEnd').value, d = +$('trimEnd').max;
+  return !(a <= 0.05 && b >= d - 0.05);
+}
+function updateExportBtn(){
+  const hasSub = S.subs.length > 0, cut = trimChanged();
+  const len = +$('trimEnd').value - +$('trimStart').value;
+  $('trimBtn').disabled = S.trimming || !S.outBlob || len < 0.5 || (!hasSub && !cut);
+  $('exportHint').textContent = S.trimming ? '인코딩 중 — 구간 길이만큼 걸립니다'
+    : (!hasSub && !cut) ? '구간을 자르거나 자막을 넣으면 켜집니다'
+    : (hasSub && cut) ? '자막 ' + S.subs.length + '개 + 구간 자르기를 한 번에 적용합니다'
+    : hasSub ? '자막 ' + S.subs.length + '개를 영상에 입힙니다'
+    : '선택한 구간만 남깁니다';
+}
+
 /* 테스트 훅 (헤드리스 검증용) */
-window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo};
+window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
+  applyRhythm, parseSubs, drawSubs, renderCues, rhythmTimes, SUB_FONTS, SUB_ANIMS, ensureFont};
 </script>
 </body>
 </html>
