@@ -275,6 +275,11 @@ textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
   color:var(--cy);font-family:var(--mono);font-size:11px;text-align:center}
 .cue .del{flex:0 0 auto;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);
   color:var(--bad);font-family:inherit;font-size:12px;cursor:pointer}
+.tl{position:relative;height:34px;border-radius:9px;background:#08101f;border:1px solid var(--line);overflow:hidden}
+.tl i{position:absolute;top:6px;bottom:6px;border-radius:5px;background:linear-gradient(180deg,var(--cy),var(--cy2));
+  opacity:.85;cursor:pointer;min-width:3px}
+.tl i:hover{opacity:1}
+.tl .empty-tl{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;color:var(--tx3)}
 .swatches{display:flex;gap:7px;flex-wrap:wrap}
 .sw-c{width:34px;height:34px;border-radius:9px;border:2px solid var(--line);cursor:pointer;padding:0}
 .sw-c.on{border-color:var(--cy);box-shadow:0 0 0 2px rgba(34,211,238,.35)}
@@ -720,40 +725,34 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
     <!-- 자막 -->
     <div class="tabpane" id="tabText" hidden>
-      <p class="why" style="margin:0 0 10px">한 줄에 자막 하나씩 적으면 <b style="color:var(--cy)">리듬에 맞춰 자동으로 시간이 배분</b>됩니다.
-        SRT·VTT 파일을 올리면 시간까지 그대로 가져옵니다.</p>
-      <textarea class="sub" id="subText" placeholder="첫 줄 자막&#10;둘째 줄 자막&#10;셋째 줄 자막"></textarea>
-      <div class="btnrow" style="gap:8px">
-        <button type="button" class="btn primary" id="subApply" style="flex:1.4;margin-top:10px">리듬 맞춰 넣기</button>
-        <label class="btn ghost" for="subFile" style="flex:1;margin-top:10px;cursor:pointer">파일 열기</label>
+      <p class="why" style="margin:0 0 9px"><b style="color:var(--cy)">한 줄에 자막 하나씩</b> 적으면 바로 영상에 올라갑니다. 버튼 누를 필요 없습니다.</p>
+      <textarea class="sub" id="subText" rows="5" placeholder="오늘 우리 모임&#10;다들 고생 많았어요&#10;내년에 또 만나요"></textarea>
+
+      <div class="row stack" style="border-bottom:0;padding-top:14px">
+        <div><div class="lb">배치</div></div>
+        <div class="chips" id="layChips" style="margin-top:8px">
+          <button type="button" class="chip on" data-lay="spread">영상 전체에 고르게</button>
+          <button type="button" class="chip" data-lay="seq">처음부터 이어서</button>
+        </div>
       </div>
-      <input type="file" id="subFile" accept=".srt,.vtt,.txt,text/plain" hidden>
 
       <div class="row stack" style="border-bottom:0">
-        <div><div class="lb">문구 리듬</div><div class="ds">자막이 넘어가는 박자를 정합니다</div></div>
-        <div class="chips" id="rhythmChips">
-          <button type="button" class="chip" data-rhy="fast">빠르게</button>
-          <button type="button" class="chip on" data-rhy="normal">보통</button>
-          <button type="button" class="chip" data-rhy="slow">천천히</button>
-          <button type="button" class="chip" data-rhy="beat">박자</button>
-        </div>
-      </div>
-      <div class="row stack" id="bpmRow" hidden style="border-bottom:0">
-        <div class="slabel"><span>BPM · 한 줄당 박자</span><span class="v" id="bpmV">90 · 4박</span></div>
-        <div class="inline">
-          <input type="range" id="subBpm" min="50" max="180" step="1" value="90" style="flex:2">
-          <input type="range" id="subBeats" min="1" max="8" step="1" value="4" style="flex:1">
-        </div>
+        <div class="slabel"><span>넘어가는 속도</span><span class="v" id="cpsV">보통</span></div>
+        <input type="range" id="subCps" min="25" max="95" step="1" value="50">
       </div>
       <div class="row stack" style="border-bottom:0">
         <div class="slabel"><span>시작 시각</span><span class="v" id="subOffV">0.0초</span></div>
         <input type="range" id="subOff" min="0" max="20" step="0.1" value="0">
       </div>
 
-      <div class="slabel" style="margin:14px 0 7px"><span id="cueCount">자막 0개</span>
-        <span class="v"><button type="button" id="cueAdd" style="border:0;background:transparent;color:var(--cy);font:inherit;font-size:12px;cursor:pointer">+ 한 줄 추가</button>
-        <button type="button" id="cueClear" style="border:0;background:transparent;color:var(--bad);font:inherit;font-size:12px;cursor:pointer;margin-left:8px">전체 삭제</button></span></div>
-      <div id="cueList"></div>
+      <div class="slabel" style="margin:15px 0 6px"><span id="cueCount">자막 없음</span><span class="v" id="tlHint"></span></div>
+      <div class="tl" id="subTl"></div>
+
+      <div class="btnrow">
+        <label class="btn ghost" for="subFile" style="flex:1;cursor:pointer">SRT·VTT 파일 불러오기</label>
+        <button type="button" class="btn ghost" id="cueClear" style="flex:0 0 92px">지우기</button>
+      </div>
+      <input type="file" id="subFile" accept=".srt,.vtt,.txt,text/plain" hidden>
     </div>
 
     <!-- 꾸미기 -->
@@ -898,8 +897,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
         <div class="guide-sec">
           <h4><i>5.5</i> 자막 넣기</h4>
-          <p>결과 화면의 <b>💬 자막</b> 탭에 한 줄에 하나씩 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르면
-            글자수에 맞춰 시간이 자동 배분됩니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
+          <p>결과 화면의 <b>💬 자막</b> 탭, <b>한 칸에 한 줄씩</b> 적기만 하면 바로 영상에 올라갑니다.
+            버튼을 누를 필요도, 시간을 입력할 필요도 없습니다.</p>
+          <p>배치는 <b>영상 전체에 고르게</b>(기본)와 <b>처음부터 이어서</b> 중에 고르고,
+            넘어가는 속도만 슬라이더로 맞추면 됩니다. 아래 막대 그래프로 어디에 놓였는지 보이고,
+            막대를 누르면 그 지점으로 미리보기가 이동합니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
           <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
             움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
           <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
@@ -908,8 +910,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
         <div class="guide-sec">
           <h4><i>5.5</i> 자막 넣기</h4>
-          <p>결과 화면의 <b>💬 자막</b> 탭에 한 줄에 하나씩 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르면
-            글자수에 맞춰 시간이 자동 배분됩니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
+          <p>결과 화면의 <b>💬 자막</b> 탭, <b>한 칸에 한 줄씩</b> 적기만 하면 바로 영상에 올라갑니다.
+            버튼을 누를 필요도, 시간을 입력할 필요도 없습니다.</p>
+          <p>배치는 <b>영상 전체에 고르게</b>(기본)와 <b>처음부터 이어서</b> 중에 고르고,
+            넘어가는 속도만 슬라이더로 맞추면 됩니다. 아래 막대 그래프로 어디에 놓였는지 보이고,
+            막대를 누르면 그 지점으로 미리보기가 이동합니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
           <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
             움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
           <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
@@ -1865,7 +1870,7 @@ async function onRecStop(){
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
   setupTrim(dur);
-  renderStyleControls(); renderCues(); syncStyleInputs();
+  renderStyleControls(); renderTimeline(); syncStyleInputs();
   startSubPreview(); ensureFont(S.subStyle.font);
   updateExportBtn();
 }
@@ -2118,7 +2123,7 @@ function showErr(msg){
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
   if (ev.target === $('helpSheet')){ $('helpSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-rhy],[data-cdel],#subApply,#cueAdd,#cueClear,#subBoxSw');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek]');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -2163,9 +2168,14 @@ document.addEventListener('click', async (ev) => {
     $('tabStyle').hidden = t.dataset.tab !== 'style';
     return;
   }
-  if (t.dataset.rhy){
-    S.rhythm = t.dataset.rhy; syncStyleInputs();
-    if ($('subText').value.trim()) applyRhythm();
+  if (t.dataset.lay){
+    S.subLayout = t.dataset.lay;
+    document.querySelectorAll('[data-lay]').forEach(x => x.classList.toggle('on', x === t));
+    applySubs();
+    return;
+  }
+  if (t.dataset.seek !== undefined){
+    try { $('resVideo').currentTime = +t.dataset.seek + 0.05; } catch(e){}
     return;
   }
   if (t.dataset.font){
@@ -2197,19 +2207,9 @@ document.addEventListener('click', async (ev) => {
     t.classList.toggle('on', S.subStyle.box); t.setAttribute('aria-checked', String(S.subStyle.box));
     return;
   }
-  if (t.id === 'subApply'){ applyRhythm(); return; }
-  if (t.id === 'cueAdd'){
-    const last = S.subs[S.subs.length - 1];
-    const st0 = last ? last.end + 0.1 : 0;
-    S.subs.push({id:'c' + Math.random().toString(36).slice(2), text:'새 자막', start:st0, end:st0 + 1.5});
-    renderCues(); updateExportBtn(); return;
-  }
   if (t.id === 'cueClear'){
-    if (S.subs.length && !confirm('자막을 모두 지울까요?')) return;
-    S.subs = []; renderCues(); updateExportBtn(); return;
-  }
-  if (t.dataset.cdel !== undefined){
-    S.subs.splice(+t.dataset.cdel, 1); renderCues(); updateExportBtn(); return;
+    S.subs = []; $('subText').value = ''; S.subManual = false;
+    renderTimeline(); updateExportBtn(); return;
   }
 
   // 검색 태그 칩은 일반 설정 칩보다 먼저 처리 (같은 .chip 클래스)
@@ -2372,10 +2372,16 @@ $('subStrokeW').addEventListener('input', (e) => {
 $('subPosX').addEventListener('input', (e) => { S.subStyle.posX = +e.target.value / 100; $('posXV').textContent = e.target.value + '%'; });
 $('subPosY').addEventListener('input', (e) => { S.subStyle.posY = +e.target.value / 100; $('posYV').textContent = e.target.value + '%'; });
 $('animSpeed').addEventListener('input', (e) => { S.subStyle.speed = +e.target.value / 10; $('animSpV').textContent = S.subStyle.speed.toFixed(1) + '×'; });
-$('subOff').addEventListener('input', (e) => { S.subOff = +e.target.value; $('subOffV').textContent = S.subOff.toFixed(1) + '초'; });
-$('subBpm').addEventListener('input', (e) => { S.subBpm = +e.target.value; $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박'; });
-$('subBeats').addEventListener('input', (e) => { S.subBeats = +e.target.value; $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박'; });
-['subOff','subBpm','subBeats'].forEach(id => $(id).addEventListener('change', () => { if ($('subText').value.trim()) applyRhythm(); }));
+$('subOff').addEventListener('input', (e) => {
+  S.subOff = +e.target.value; $('subOffV').textContent = S.subOff.toFixed(1) + '초';
+  applySubsSoon();
+});
+$('subCps').addEventListener('input', (e) => {
+  S.subCps = +e.target.value / 10;
+  $('cpsV').textContent = S.subCps < 3.6 ? '느리게' : S.subCps > 6.8 ? '빠르게' : '보통';
+  applySubsSoon();
+});
+$('subText').addEventListener('input', () => { S.subManual = false; applySubsSoon(); });
 
 $('subFile').addEventListener('change', async (e) => {
   const f = e.target.files[0]; e.target.value = '';
@@ -2384,19 +2390,10 @@ $('subFile').addEventListener('change', async (e) => {
     const cues = parseSubs(await f.text());
     if (!cues.length){ trimErr('자막을 읽지 못했습니다. SRT·VTT 또는 한 줄에 하나씩 적은 텍스트 파일을 올려 주세요.'); return; }
     S.subs = cues;
+    S.subManual = true;
     $('subText').value = cues.map(c => c.text).join('\n');
-    renderCues(); updateExportBtn(); trimErr('');
+    renderTimeline(); updateExportBtn(); trimErr('');
   } catch (err){ trimErr('파일을 읽지 못했습니다.'); }
-});
-
-// 큐 인라인 편집
-$('cueList').addEventListener('input', (e) => {
-  const row = e.target.closest('[data-cue]'); if (!row) return;
-  const c = S.subs[+row.dataset.cue]; if (!c) return;
-  const f = e.target.dataset.cf;
-  if (f === 'text') c.text = e.target.value;
-  else if (f === 'start') c.start = Math.max(0, parseFloat(e.target.value) || 0);
-  else if (f === 'end') c.end = Math.max(0.2, parseFloat(e.target.value) || 0);
 });
 
 $('trimStart').addEventListener('input', (e) => {
@@ -3299,8 +3296,9 @@ S.subs = [];
 S.subStyle = {font:'Noto Sans KR', weight:900, size:0.060, color:'#ffffff', stroke:'#000000',
   strokeW:0.14, box:false, boxColor:'rgba(8,16,31,.62)', posX:0.5, posY:0.82,
   maxWidth:0.86, anim:'pop', speed:1.0};
-S.rhythm = 'normal';
-S.subOff = 0; S.subBpm = 90; S.subBeats = 4;
+S.subLayout = 'spread';   // spread(고르게) | seq(이어서)
+S.subCps = 5.0;           // 초당 읽는 글자 수
+S.subOff = 0;
 S.fontsReady = {};
 
 /* --- 폰트 로딩: 캔버스에 그리기 전에 실제로 준비돼야 한다 --- */
@@ -3325,44 +3323,69 @@ function tcSec(str){
 }
 function secStr(v){ return (Math.max(0, v)).toFixed(1); }
 
-/* --- 문구 리듬: 줄 목록 → 시간 배분 --- */
-function rhythmTimes(lines, dur){
-  const off = S.subOff;
-  const avail = Math.max(0.5, dur - off);
+/* --- 자동 배치 ---
+   읽기 속도로 각 줄의 표시 시간을 정하고, 남는 시간은 줄 사이에 나눠 영상 전체에 편다.
+   전에는 영상 길이를 글자수 비례로 통째로 쪼개서, 짧은 자막 몇 줄이 10초씩 떠 있었다. */
+function autoPlace(lines, dur){
+  const cps = S.subCps;                       // 초당 읽는 글자 수
+  const off = Math.min(S.subOff, Math.max(0, dur - 1.2));
+  const avail = Math.max(1.2, dur - off - 0.12);
+
+  // 줄마다 자연스러운 표시 시간 (0.9 ~ 4.5초)
+  const nat = lines.map(L => {
+    const n = [...String(L).replace(/\s+/g, '')].length || 1;
+    return Math.min(4.5, Math.max(0.9, n / cps + 0.35));
+  });
+  const total = nat.reduce((x, y) => x + y, 0);
   const out = [];
-  if (S.rhythm === 'beat'){
-    const per = (60 / S.subBpm) * S.subBeats;
-    let t = off;
-    for (const L of lines){ out.push({start:t, end:t + per * 0.96}); t += per; }
+  let t = off;
+
+  if (S.subLayout === 'seq' || total >= avail){
+    const k = total > avail ? avail / total : 1;     // 넘치면 비례 압축
+    for (const d of nat){ const dd = d * k; out.push({start:t, end:t + dd * 0.94}); t += dd; }
     return out;
   }
-  const gap = {fast:0.04, normal:0.08, slow:0.12}[S.rhythm] || 0.08;
-  const weights = lines.map(L => Math.max(2, [...L].length));
-  const sum = weights.reduce((a,b) => a+b, 0);
-  let t = off;
-  lines.forEach((L, i) => {
-    let span = avail * (weights[i] / sum);
-    if (S.rhythm === 'fast') span = Math.min(span, 1.6);
-    if (S.rhythm === 'slow') span = Math.max(span, 1.4);
-    out.push({start:t, end:t + span * (1 - gap)});
-    t += span;
-  });
+  // 고르게: 줄마다 같은 크기의 칸을 주고, 그 칸을 적당히 채운다
+  // (자연 시간만 쓰면 1초 떴다가 9초 비어 있는 식이 된다)
+  const slot = avail / lines.length;
+  for (let i = 0; i < nat.length; i++){
+    // 읽기 시간을 기준으로 칸을 채우되, 속도 설정이 결과에 그대로 드러나게 한다
+    const d = Math.min(slot * 0.92, 4.5, Math.max(nat[i], Math.min(slot * 0.75, nat[i] * 2.2)));
+    out.push({start: off + slot * i, end: off + slot * i + d});
+  }
   return out;
-}
-
-function applyRhythm(){
-  const raw = $('subText').value.split('\n').map(x => x.trim()).filter(Boolean);
-  if (!raw.length){ renderCues(); return; }
-  const dur = currentDur();
-  const times = rhythmTimes(raw, dur);
-  S.subs = raw.map((text, i) => ({id: 'c' + Date.now() + '_' + i, text, start: times[i].start, end: times[i].end}));
-  renderCues(); updateExportBtn();
 }
 
 function currentDur(){
   const v = $('resVideo');
   return (v && isFinite(v.duration) && v.duration > 0) ? v.duration : (+$('trimEnd').max || 15);
 }
+
+/* 텍스트 칸 → 자막. 입력할 때마다 자동 호출된다. */
+function applySubs(){
+  const raw = $('subText').value.split('\n').map(x => x.trim()).filter(Boolean);
+  if (!raw.length){ S.subs = []; renderTimeline(); updateExportBtn(); return; }
+  const times = autoPlace(raw, currentDur());
+  S.subs = raw.map((text, i) => ({id:'c' + i, text, start:times[i].start, end:times[i].end}));
+  renderTimeline(); updateExportBtn();
+}
+let subTypeTimer = 0;
+function applySubsSoon(){ clearTimeout(subTypeTimer); subTypeTimer = setTimeout(applySubs, 220); }
+
+/* --- 타임라인 (읽기 전용 · 누르면 그 지점으로 이동) --- */
+function renderTimeline(){
+  const box = $('subTl'), dur = currentDur();
+  $('cueCount').textContent = S.subs.length ? '자막 ' + S.subs.length + '개' : '자막 없음';
+  $('tlHint').textContent = S.subs.length
+    ? fmtTime(S.subs[0].start) + ' ~ ' + fmtTime(S.subs[S.subs.length - 1].end) + ' / ' + fmtTime(dur) : '';
+  if (!S.subs.length){ box.innerHTML = '<div class="empty-tl">위 칸에 문구를 적으면 여기 배치가 보입니다</div>'; return; }
+  box.innerHTML = S.subs.map((c, i) => {
+    const l = Math.max(0, Math.min(100, c.start / dur * 100));
+    const w = Math.max(0.8, Math.min(100 - l, (c.end - c.start) / dur * 100));
+    return '<i data-seek="' + c.start.toFixed(2) + '" style="left:' + l + '%;width:' + w + '%" title="' + escapeAttr(c.text) + '"></i>';
+  }).join('');
+}
+const renderCues = renderTimeline;   // 이전 이름 호환
 
 /* --- 자막 파일 파싱 (SRT / VTT / 일반 텍스트) --- */
 function parseSubs(txt){
@@ -3382,23 +3405,8 @@ function parseSubs(txt){
     return out;
   }
   const lines = t.split('\n').map(x => x.trim()).filter(Boolean);
-  const times = rhythmTimes(lines, currentDur());
+  const times = autoPlace(lines, currentDur());
   return lines.map((text, i) => ({id:'c' + Math.random().toString(36).slice(2), text, start:times[i].start, end:times[i].end}));
-}
-
-/* --- 큐 목록 UI --- */
-function renderCues(){
-  const box = $('cueList');
-  $('cueCount').textContent = '자막 ' + S.subs.length + '개';
-  if (!S.subs.length){ box.innerHTML = '<div class="empty">아직 자막이 없습니다. 위에 문구를 적고 <b>리듬 맞춰 넣기</b>를 누르세요.</div>'; return; }
-  box.innerHTML = S.subs.map((c, i) =>
-    '<div class="cue" data-cue="' + i + '">' +
-      '<div class="tm"><input type="text" inputmode="decimal" data-cf="start" value="' + secStr(c.start) + '">' +
-      '<input type="text" inputmode="decimal" data-cf="end" value="' + secStr(c.end) + '"></div>' +
-      '<input type="text" data-cf="text" value="' + escapeAttr(c.text) + '">' +
-      '<button type="button" class="del" data-cdel="' + i + '">✕</button>' +
-    '</div>'
-  ).join('');
 }
 
 /* --- 스타일 컨트롤 UI --- */
@@ -3432,14 +3440,28 @@ function roundRect(g, x, y, w, h, r){
 }
 function wrapLines(g, text, maxW){
   const out = [];
-  for (const para of String(text).split('\n')){
-    let line = '';
-    for (const ch of para){
+  const charWrap = (str) => {           // 한 덩어리가 한 줄보다 길 때만
+    const r = []; let line = '';
+    for (const ch of str){
       const test = line + ch;
-      if (g.measureText(test).width > maxW && line){ out.push(line); line = ch; }
+      if (g.measureText(test).width > maxW && line){ r.push(line); line = ch; }
       else line = test;
     }
-    out.push(line);
+    if (line) r.push(line);
+    return r;
+  };
+  for (const para of String(text).split('\n')){
+    const words = para.split(/\s+/).filter(Boolean);
+    if (!words.length){ out.push(''); continue; }
+    let line = '';
+    for (const w of words){
+      const test = line ? line + ' ' + w : w;
+      if (g.measureText(test).width > maxW && line){
+        out.push(...(g.measureText(line).width > maxW ? charWrap(line) : [line]));
+        line = w;
+      } else line = test;
+    }
+    out.push(...(g.measureText(line).width > maxW ? charWrap(line) : [line]));
   }
   return out;
 }
@@ -3576,10 +3598,9 @@ function syncStyleInputs(){
   $('subPosY').value = Math.round(st.posY * 100);        $('posYV').textContent = Math.round(st.posY * 100) + '%';
   $('animSpeed').value = Math.round(st.speed * 10);      $('animSpV').textContent = st.speed.toFixed(1) + '×';
   $('subOff').value = S.subOff;                          $('subOffV').textContent = S.subOff.toFixed(1) + '초';
-  $('subBpm').value = S.subBpm; $('subBeats').value = S.subBeats;
-  $('bpmV').textContent = S.subBpm + ' · ' + S.subBeats + '박';
-  $('bpmRow').hidden = S.rhythm !== 'beat';
-  document.querySelectorAll('#rhythmChips .chip').forEach(c => c.classList.toggle('on', c.dataset.rhy === S.rhythm));
+  $('subCps').value = Math.round(S.subCps * 10);
+  $('cpsV').textContent = S.subCps < 3.6 ? '느리게' : S.subCps > 6.8 ? '빠르게' : '보통';
+  document.querySelectorAll('[data-lay]').forEach(c => c.classList.toggle('on', c.dataset.lay === S.subLayout));
 }
 
 /* --- 내보내기 버튼 상태 --- */
@@ -3600,7 +3621,7 @@ function updateExportBtn(){
 
 /* 테스트 훅 (헤드리스 검증용) */
 window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
-  applyRhythm, parseSubs, drawSubs, renderCues, rhythmTimes, SUB_FONTS, SUB_ANIMS, ensureFont};
+  applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont};
 </script>
 </body>
 </html>
