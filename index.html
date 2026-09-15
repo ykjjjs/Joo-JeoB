@@ -275,6 +275,12 @@ textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
   color:var(--cy);font-family:var(--mono);font-size:11px;text-align:center}
 .cue .del{flex:0 0 auto;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);
   color:var(--bad);font-family:inherit;font-size:12px;cursor:pointer}
+.donebar{display:flex;align-items:center;gap:11px;margin-top:12px;padding:12px 13px;border-radius:13px;
+  background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.4)}
+.donebar b{display:block;font-size:13px;color:var(--ok);margin-bottom:2px}
+.donebar span{display:block;font-size:11.5px;color:var(--tx2);line-height:1.5}
+.donebar button{flex:0 0 auto;align-self:stretch;padding:0 13px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel2);color:var(--cy);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .tl{position:relative;height:34px;border-radius:9px;background:#08101f;border:1px solid var(--line);overflow:hidden}
 .tl i{position:absolute;top:6px;bottom:6px;border-radius:5px;background:linear-gradient(180deg,var(--cy),var(--cy2));
   opacity:.85;cursor:pointer;min-width:3px}
@@ -707,6 +713,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <canvas id="subPreview"></canvas>
     </div>
 
+    <div class="donebar" id="doneBar" hidden>
+      <div><b>✅ 자막이 입혀진 완성본입니다</b><span>아래에서 저장하거나, 자막을 더 손보려면 편집으로 돌아가세요.</span></div>
+      <button type="button" id="reEditBtn">자막 다시 편집</button>
+    </div>
+
     <div class="tabs" id="editTabs">
       <button type="button" data-tab="cut" class="on">✂️ 구간</button>
       <button type="button" data-tab="text">💬 자막</button>
@@ -1053,6 +1064,7 @@ const S = {
   mode:'shoot', srcGain:null, dubNode:null, dubReady:false, dubbing:false,
   useSrcAudio:false, srcVolume:0.7,
   user:null, step:1, saved:false, trackId:null,
+  baseBlob:null, editMode:true,
   ytLoaded:false, jamResults:[], jamTrack:null, capSelfTab:false, monBeforeCap:null,
   bgmLive:null, bgmLiveNode:null, trimming:false, trimNode:null, trimGain:null
 };
@@ -1848,7 +1860,10 @@ function stopDub(){
    ============================================================ */
 async function onRecStop(){
   const blob = new Blob(S.chunks, {type: S.outMime.split(';')[0]});
+  const isExport = S.lastWasTrim;      // 자막·자르기 내보내기 결과인가
   S.outBlob = blob;
+  if (!isExport) S.baseBlob = blob;    // 새 촬영본만 편집 원본이 된다
+  S.editMode = !isExport;              // 완성본을 보는 동안에는 자막 오버레이를 끈다
   S.saved = false;
   const wasResult = S.step === 4;
   S.step = 4;
@@ -1856,7 +1871,8 @@ async function onRecStop(){
   $('repBox').innerHTML = '<div class="rep warn"><span class="ic">⏳</span><div><b>검증 중…</b><span>녹화 파일을 디코딩해 배경음악이 실제로 들어갔는지 확인합니다.</span></div></div>';
   $('resVideo').src = URL.createObjectURL(blob);
   if (!wasResult) history.pushState({rs: 4}, '');
-  setupTrim(0); $('trimBtn').disabled = true;
+  if (!isExport) setupTrim(0);        // 내보내기 결과일 때는 편집 구간을 건드리지 않는다
+  $('trimBtn').disabled = true;
   const canShare = !!(navigator.canShare && navigator.share);
   $('shareBtn').hidden = !canShare;
   $('dlBtn').classList.toggle('primary', !canShare);
@@ -1869,10 +1885,10 @@ async function onRecStop(){
   renderReport(rep);
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
-  setupTrim(dur);
+  if (!isExport) setupTrim(dur);       // 완성본을 볼 때는 편집 구간을 그대로 둔다
   renderStyleControls(); renderTimeline(); syncStyleInputs();
   startSubPreview(); ensureFont(S.subStyle.font);
-  updateExportBtn();
+  applyEditMode();
 }
 
 /* 컨테이너·코덱을 파일 바이트에서 직접 확인한다.
@@ -2014,7 +2030,7 @@ function renderReport(r){
   // 저장된 파일의 실제 프레임 — 화면 UI가 합성되지 않았음을 눈으로 확인
   if (r.frame){
     html += '<div class="rep ok" style="display:block">' +
-      '<b>🖼️ 저장된 파일에는 영상과 음악만 들어 있습니다</b>' +
+      '<b>🖼️ 저장된 파일에는 영상' + (S.subs.length && !S.editMode ? '·음악·자막' : '과 음악') + '만 들어 있습니다</b>' +
       '<span>버튼·안내 문구·REC 표시·타이머는 화면에만 있고 파일에는 합성되지 않습니다. ' +
       '아래는 방금 저장된 파일에서 직접 꺼낸 프레임입니다.</span>' +
       '<img src="' + r.frame.url + '" alt="저장된 파일의 실제 프레임" ' +
@@ -2123,7 +2139,7 @@ function showErr(msg){
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
   if (ev.target === $('helpSheet')){ $('helpSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek]');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek],#reEditBtn');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -2168,6 +2184,7 @@ document.addEventListener('click', async (ev) => {
     $('tabStyle').hidden = t.dataset.tab !== 'style';
     return;
   }
+  if (t.id === 'reEditBtn'){ backToEdit(); return; }
   if (t.dataset.lay){
     S.subLayout = t.dataset.lay;
     document.querySelectorAll('[data-lay]').forEach(x => x.classList.toggle('on', x === t));
@@ -2706,7 +2723,7 @@ function goStep(n, viaPop){
   if (S.step === 4 && n < 4 && S.outBlob && !S.saved){
     if (!confirm('아직 저장하지 않은 영상이 있습니다.\n이전 단계로 돌아가면 이 결과는 사라집니다. 계속할까요?')) return;
   }
-  if (n < 4){ S.outBlob = null; S.saved = false; }
+  if (n < 4){ S.outBlob = null; S.baseBlob = null; S.editMode = true; S.saved = false; }
   S.step = n;
   renderStep();
   window.scrollTo({top: 0, behavior: 'smooth'});
@@ -2841,7 +2858,8 @@ function updateTrimLabels(){
 
 async function startTrim(){
   trimErr('');
-  if (!S.outBlob || S.trimming) return;
+  const src = S.baseBlob || S.outBlob;          // 항상 촬영 원본에서 다시 굽는다
+  if (!src || S.trimming) return;
   const a = +$('trimStart').value, b = +$('trimEnd').value;
   if (b - a < 0.5){ trimErr('구간이 너무 짧습니다.'); return; }
   if (S.subs.length) await ensureFont(S.subStyle.font);
@@ -2855,9 +2873,9 @@ async function startTrim(){
     S.trimGain = c.createGain(); S.trimGain.gain.value = 1;
     S.trimNode.connect(S.trimGain); S.trimGain.connect(S.mixBus);
   }
-  if (trimVideo._blob !== S.outBlob){
-    trimVideo.src = URL.createObjectURL(S.outBlob);
-    trimVideo._blob = S.outBlob;
+  if (trimVideo._blob !== src){
+    trimVideo.src = URL.createObjectURL(src);
+    trimVideo._blob = src;
     await new Promise((res) => { trimVideo.onloadeddata = res; trimVideo.onerror = res; setTimeout(res, 4000); });
   }
   if (!trimVideo.videoWidth){ trimErr('영상을 열 수 없어 자를 수 없습니다.'); return; }
@@ -2917,12 +2935,8 @@ async function startTrim(){
 
 function finishTrim(){
   if (!S.trimming) return;
-  const cutA = +$('trimStart').value, cutB = +$('trimEnd').value;
-  // 새 파일 기준으로 자막 시간을 다시 잡는다 (잘려나간 구간 밖 자막은 버린다)
-  S.subs = S.subs
-    .map(c => ({id:c.id, text:c.text, start: c.start - cutA, end: Math.min(c.end, cutB) - cutA}))
-    .filter(c => c.end > 0.05 && c.start < (cutB - cutA))
-    .map(c => ({id:c.id, text:c.text, start: Math.max(0, c.start), end: c.end}));
+  // 자막·구간은 늘 원본(baseBlob) 기준이라 내보낸 뒤에도 그대로 둔다.
+  // 예전에는 결과물을 다시 원본 삼아 내보내서 자막이 두 겹으로 구워졌다.
   S.trimming = false; S.recording = false;
   try { trimVideo.pause(); } catch(e){}
   try { S.recorder.stop(); } catch(e){}
@@ -3574,6 +3588,7 @@ function startSubPreview(){
   const loop = () => {
     subPrevRaf = requestAnimationFrame(loop);
     if (S.step !== 4 || !v.videoWidth) return;
+    if (!S.editMode){ const g0 = cv.getContext('2d'); g0.clearRect(0, 0, cv.width, cv.height); return; }
     const r = v.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
@@ -3603,6 +3618,28 @@ function syncStyleInputs(){
   document.querySelectorAll('[data-lay]').forEach(c => c.classList.toggle('on', c.dataset.lay === S.subLayout));
 }
 
+/* --- 편집 모드 ↔ 완성본 모드 --- */
+function applyEditMode(){
+  const done = !S.editMode;
+  $('doneBar').hidden = !done;
+  $('editTabs').hidden = done;
+  ['tabCut','tabText','tabStyle'].forEach(id => { if (done) $(id).hidden = true; });
+  if (!done){
+    const on = document.querySelector('#editTabs button.on') || document.querySelector('#editTabs button');
+    if (on){ $('tabCut').hidden = on.dataset.tab !== 'cut'; $('tabText').hidden = on.dataset.tab !== 'text'; $('tabStyle').hidden = on.dataset.tab !== 'style'; }
+  }
+  $('trimBtn').hidden = done;
+  $('exportHint').hidden = done;
+  updateExportBtn();
+}
+function backToEdit(){
+  if (!S.baseBlob) return;
+  S.editMode = true;
+  $('resVideo').src = URL.createObjectURL(S.baseBlob);
+  applyEditMode();
+  $('resVideo').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
 /* --- 내보내기 버튼 상태 --- */
 function trimChanged(){
   const a = +$('trimStart').value, b = +$('trimEnd').value, d = +$('trimEnd').max;
@@ -3611,7 +3648,7 @@ function trimChanged(){
 function updateExportBtn(){
   const hasSub = S.subs.length > 0, cut = trimChanged();
   const len = +$('trimEnd').value - +$('trimStart').value;
-  $('trimBtn').disabled = S.trimming || !S.outBlob || len < 0.5 || (!hasSub && !cut);
+  $('trimBtn').disabled = S.trimming || !S.editMode || !S.baseBlob || len < 0.5 || (!hasSub && !cut);
   $('exportHint').textContent = S.trimming ? '인코딩 중 — 구간 길이만큼 걸립니다'
     : (!hasSub && !cut) ? '구간을 자르거나 자막을 넣으면 켜집니다'
     : (hasSub && cut) ? '자막 ' + S.subs.length + '개 + 구간 자르기를 한 번에 적용합니다'
