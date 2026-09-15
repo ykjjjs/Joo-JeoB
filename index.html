@@ -132,6 +132,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   border:1px solid var(--line)}
 .stage canvas#view{width:100%;height:100%;display:block;object-fit:cover}
 .stage .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--tx3);font-size:13px;padding:22px}
+.flipbtn{position:absolute;right:12px;bottom:14px;width:46px;height:46px;border-radius:50%;border:0;
+  background:rgba(10,16,32,.72);backdrop-filter:blur(8px);color:#fff;font-size:20px;cursor:pointer;
+  display:grid;place-items:center;z-index:3}
+.flipbtn:active{transform:scale(.92)}
 .rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;
   background:rgba(10,16,32,.78);backdrop-filter:blur(8px);font-family:var(--mono);font-size:12px;font-weight:600}
 .rec-badge.on{display:flex}
@@ -275,6 +279,12 @@ textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
   color:var(--cy);font-family:var(--mono);font-size:11px;text-align:center}
 .cue .del{flex:0 0 auto;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);
   color:var(--bad);font-family:inherit;font-size:12px;cursor:pointer}
+.stylefor{display:block;width:100%;text-align:left;margin:0 0 14px;padding:11px 12px;border-radius:12px;
+  border:1px solid var(--line);background:#08101f;cursor:pointer;font-family:inherit}
+.stylefor .k{display:block;font-size:10.5px;color:var(--tx3);font-weight:600;letter-spacing:.3px}
+.stylefor .v{display:block;margin-top:3px;font-size:14px;font-weight:700;color:var(--cy);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stylefor:hover{border-color:var(--cy)}
 .donebar{display:flex;align-items:center;gap:11px;margin-top:12px;padding:12px 13px;border-radius:13px;
   background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.4)}
 .donebar b{display:block;font-size:13px;color:var(--ok);margin-bottom:2px}
@@ -644,6 +654,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <div class="bgm-badge" id="bgmBadge" hidden>
         <span class="bars"><i></i><i></i><i></i><i></i></span><span id="bgmBadgeTx">BGM</span>
       </div>
+      <button type="button" class="flipbtn" id="flipBtn" hidden aria-label="카메라 전환">🔄</button>
       <div class="count" id="count"></div>
       <div class="prog"><i id="progBar"></i></div>
     </div>
@@ -658,6 +669,12 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="bar mic"><i id="micBar"></i></div>
       </div>
     </div>
+
+    <div class="row" style="border-bottom:0">
+      <div><div class="lb">좌우 반전 (거울)</div><div class="ds">셀카는 켜 두면 거울처럼 보입니다. 보이는 그대로 저장됩니다</div></div>
+      <div class="sw" id="mirrorSw" role="switch" aria-checked="false"></div>
+    </div>
+    <div class="row stack" id="camList" hidden style="border-bottom:0;padding-top:0"></div>
 
     <div class="btnrow">
       <button type="button" class="btn ghost" id="camBtn" style="flex:1">카메라 켜기</button>
@@ -768,6 +785,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
     <!-- 꾸미기 -->
     <div class="tabpane" id="tabStyle" hidden>
+      <button type="button" class="stylefor" id="styleFor">
+        <span class="k">지금 꾸미는 자막</span>
+        <span class="v" id="styleForTx">—</span>
+      </button>
+
       <div class="lb" style="margin-bottom:7px">글자체</div>
       <div class="fontgrid" id="fontGrid"></div>
 
@@ -1064,7 +1086,8 @@ const S = {
   mode:'shoot', srcGain:null, dubNode:null, dubReady:false, dubbing:false,
   useSrcAudio:false, srcVolume:0.7,
   user:null, step:1, saved:false, trackId:null,
-  baseBlob:null, editMode:true,
+  baseBlob:null, editMode:true, activeTab:'cut', styleIdx:0,
+  cams:[], camId:'', mirror:null,
   ytLoaded:false, jamResults:[], jamTrack:null, capSelfTab:false, monBeforeCap:null,
   bgmLive:null, bgmLiveNode:null, trimming:false, trimNode:null, trimGain:null
 };
@@ -1542,25 +1565,122 @@ videoEl.muted = true; videoEl.playsInline = true; videoEl.setAttribute('playsinl
 
 function outSize(){ return S.res === 1080 ? {w:1080, h:1920} : {w:720, h:1280}; }
 
-async function openCamera(){
+/* facingMode 만으로는 안드로이드에서 전면이 안 잡히는 기기가 많다.
+   exact → deviceId 직접 지정 → 느슨한 ideal 순으로 시도하고, 잡힌 카메라가
+   요청한 쪽이 맞는지 확인해 아니면 deviceId 로 바꿔 다시 연다. */
+const FRONT_RE = /front|user|selfie|전면|facing front/i;
+const BACK_RE  = /back|rear|environment|후면|facing back/i;
+
+function trackFacing(stream){
+  const t = stream && stream.getVideoTracks()[0];
+  if (!t) return null;
+  try { const f = t.getSettings().facingMode; if (f) return f; } catch(e){}
+  const l = t.label || '';
+  if (FRONT_RE.test(l)) return 'user';
+  if (BACK_RE.test(l)) return 'environment';
+  return null;
+}
+function gum(videoC){
+  const size = outSize();
+  return navigator.mediaDevices.getUserMedia({
+    video: Object.assign({width:{ideal:size.h}, height:{ideal:size.w}, frameRate:{ideal:30}}, videoC),
+    audio: false
+  });
+}
+async function listCams(){
+  try {
+    const all = await navigator.mediaDevices.enumerateDevices();
+    S.cams = all.filter(d => d.kind === 'videoinput');
+  } catch(e){ S.cams = []; }
+  renderCamPicker();
+  return S.cams;
+}
+function pickCamId(facing){
+  const want = facing === 'user' ? FRONT_RE : BACK_RE;
+  const other = facing === 'user' ? BACK_RE : FRONT_RE;
+  const hit = S.cams.find(d => want.test(d.label || ''));
+  if (hit) return hit.deviceId;
+  const labelled = S.cams.filter(d => d.label);
+  if (labelled.length && labelled.every(d => !want.test(d.label) && !other.test(d.label))) return null;
+  if (S.cams.length > 1)  // 라벨이 없으면 보통 0번이 후면, 마지막이 전면
+    return facing === 'user' ? S.cams[S.cams.length-1].deviceId : S.cams[0].deviceId;
+  return null;
+}
+
+async function openCamera(forceId){
   showErr('');
   try {
     if (S.camStream) S.camStream.getTracks().forEach(t => t.stop());
-    const size = outSize();
-    S.camStream = await navigator.mediaDevices.getUserMedia({
-      video: {facingMode: {ideal: S.facing}, width: {ideal: size.h}, height: {ideal: size.w}, frameRate: {ideal: 30}},
-      audio: false
-    });
-    videoEl.srcObject = S.camStream;
+    S.camStream = null;
+    let stream = null;
+
+    if (forceId){
+      stream = await gum({deviceId: {exact: forceId}});
+    } else {
+      try { stream = await gum({facingMode: {exact: S.facing}}); } catch(e){}
+      if (!stream){
+        const id = pickCamId(S.facing);
+        if (id){ try { stream = await gum({deviceId: {exact: id}}); } catch(e){} }
+      }
+      if (!stream) stream = await gum({facingMode: {ideal: S.facing}});  // 권한 확보 겸 최후 수단
+
+      // 엉뚱한 카메라가 잡혔으면 목록을 다시 읽어 정확히 지정해 다시 연다
+      if (trackFacing(stream) && trackFacing(stream) !== S.facing){
+        await listCams();
+        const id2 = pickCamId(S.facing);
+        if (id2){
+          try {
+            const s2 = await gum({deviceId: {exact: id2}});
+            stream.getTracks().forEach(t => t.stop());
+            stream = s2;
+          } catch(e){}
+        }
+      }
+    }
+
+    S.camStream = stream;
+    S.camId = (stream.getVideoTracks()[0].getSettings() || {}).deviceId || forceId || '';
+    const got = trackFacing(stream);
+    if (got) S.facing = got;                      // 실제로 잡힌 쪽으로 상태를 맞춘다
+    setChip('camChips', S.facing);
+    if (S.mirror === null) S.mirror = (S.facing === 'user');   // 셀카는 기본 거울
+
+    videoEl.srcObject = stream;
     await videoEl.play();
     $('stagePh').hidden = true;
+    $('flipBtn').hidden = false;
     startDraw();
-    $('camBtn').textContent = '카메라 전환';
+    $('camBtn').textContent = '카메라 다시 열기';
+    syncMirrorUI();
     refreshRecBtn();
     updateStep();
+    await listCams();
+    if (!forceId && got && got !== (S._wanted || S.facing)){
+      showErr('요청한 카메라가 없어 다른 카메라로 열렸습니다. 아래 목록에서 직접 골라 보세요.');
+    }
   } catch (e){
     showErr('카메라를 열 수 없습니다 (' + e.name + '). 브라우저의 카메라 권한을 허용했는지 확인해 주세요.');
   }
+}
+
+function renderCamPicker(){
+  const box = $('camList');
+  if (!box) return;
+  if (S.cams.length < 2){ box.innerHTML = ''; box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = '<div class="ds" style="margin-bottom:7px">이 기기의 카메라 — 전면이 안 잡히면 직접 고르세요</div>' +
+    '<div class="chips">' + S.cams.map((d, i) => {
+      const l = d.label || ('카메라 ' + (i+1));
+      const nm = FRONT_RE.test(l) ? '🤳 전면' : BACK_RE.test(l) ? '📷 후면' : ('카메라 ' + (i+1));
+      return '<button type="button" class="chip' + (d.deviceId === S.camId ? ' on' : '') +
+             '" data-camid="' + escapeAttr(d.deviceId) + '" title="' + escapeAttr(l) + '">' + nm +
+             (S.cams.filter(x => FRONT_RE.test(x.label||'') === FRONT_RE.test(l)).length > 1 ? ' ' + (i+1) : '') + '</button>';
+    }).join('') + '</div>';
+}
+function syncMirrorUI(){
+  const sw = $('mirrorSw'); if (!sw) return;
+  sw.classList.toggle('on', !!S.mirror);
+  sw.setAttribute('aria-checked', String(!!S.mirror));
 }
 
 function startDraw(){
@@ -1580,7 +1700,7 @@ function startDraw(){
     const dw = vw * scale, dh = vh * scale;
     const dx = (cw - dw) / 2, dy = (chh - dh) / 2;
     g.save();
-    if (S.facing === 'user'){ g.translate(cw, 0); g.scale(-1, 1); }
+    if (S.mirror){ g.translate(cw, 0); g.scale(-1, 1); }
     g.drawImage(videoEl, dx, dy, dw, dh);
     g.restore();
   };
@@ -1859,7 +1979,8 @@ function stopDub(){
    5) 결과 검증
    ============================================================ */
 async function onRecStop(){
-  const blob = new Blob(S.chunks, {type: S.outMime.split(';')[0]});
+  let blob = new Blob(S.chunks, {type: S.outMime.split(';')[0]});
+  blob = await repairDuration(blob);     // 헤더에 전체 길이를 써 넣는다 (카톡 3초 잘림 방지)
   const isExport = S.lastWasTrim;      // 자막·자르기 내보내기 결과인가
   S.outBlob = blob;
   if (!isExport) S.baseBlob = blob;    // 새 촬영본만 편집 원본이 된다
@@ -1886,7 +2007,7 @@ async function onRecStop(){
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
   if (!isExport) setupTrim(dur);       // 완성본을 볼 때는 편집 구간을 그대로 둔다
-  renderStyleControls(); renderTimeline(); syncStyleInputs();
+  renderStyleControls(); renderTimeline(); syncStyleInputs(); updateStyleFor();
   startSubPreview(); ensureFont(S.subStyle.font);
   applyEditMode();
 }
@@ -2139,7 +2260,7 @@ function showErr(msg){
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
   if (ev.target === $('helpSheet')){ $('helpSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek],#reEditBtn');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek],#reEditBtn,#styleFor,#flipBtn,#mirrorSw,[data-camid]');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -2179,9 +2300,27 @@ document.addEventListener('click', async (ev) => {
   /* --- 자막 편집 --- */
   if (t.dataset.tab){
     document.querySelectorAll('#editTabs button').forEach(x => x.classList.toggle('on', x === t));
-    $('tabCut').hidden   = t.dataset.tab !== 'cut';
-    $('tabText').hidden  = t.dataset.tab !== 'text';
-    $('tabStyle').hidden = t.dataset.tab !== 'style';
+    S.activeTab = t.dataset.tab;
+    $('tabCut').hidden   = S.activeTab !== 'cut';
+    $('tabText').hidden  = S.activeTab !== 'text';
+    $('tabStyle').hidden = S.activeTab !== 'style';
+    if (S.activeTab === 'style' && S.subs.length){
+      const v = $('resVideo');
+      const at = S.subs.find(c => v.currentTime >= c.start && v.currentTime < c.end);
+      if (!at){
+        const c = S.subs[Math.min(S.styleIdx, S.subs.length - 1)];
+        try { v.pause(); v.currentTime = c.start + (c.end - c.start) * 0.5; } catch(e){}
+      }
+      updateStyleFor();
+    }
+    return;
+  }
+  if (t.id === 'styleFor'){
+    if (!S.subs.length) return;
+    S.styleIdx = (S.styleIdx + 1) % S.subs.length;
+    const c = S.subs[S.styleIdx], v = $('resVideo');
+    try { v.pause(); v.currentTime = c.start + (c.end - c.start) * 0.5; } catch(e){}
+    updateStyleFor();
     return;
   }
   if (t.id === 'reEditBtn'){ backToEdit(); return; }
@@ -2229,6 +2368,13 @@ document.addEventListener('click', async (ev) => {
     renderTimeline(); updateExportBtn(); return;
   }
 
+  // 카메라 목록 칩도 일반 설정 칩보다 먼저 (같은 .chip 클래스)
+  if (t.dataset.camid){
+    if (S.recording) return;
+    S._wanted = null;
+    await openCamera(t.dataset.camid);
+    return;
+  }
   // 검색 태그 칩은 일반 설정 칩보다 먼저 처리 (같은 .chip 클래스)
   if (t.dataset.jamtag){ $('jamQ').value = t.dataset.jamtag; await jamSearch(t.dataset.jamtag); return; }
   if (t.classList.contains('chip')){
@@ -2238,7 +2384,7 @@ document.addEventListener('click', async (ev) => {
     savePrefs();
     if (group.id === 'durChips') S.duration = +v;
     if (group.id === 'resChips'){ S.res = +v; if (S.camStream) await openCamera(); }
-    if (group.id === 'camChips'){ S.facing = v; if (S.camStream) await openCamera(); }
+    if (group.id === 'camChips'){ S.facing = v; S._wanted = v; S.mirror = (v === 'user'); if (S.camStream) await openCamera(); }
     return;
   }
   if (t.id === 'micSw'){
@@ -2259,6 +2405,16 @@ document.addEventListener('click', async (ev) => {
     return;
   }
   if (t.id === 'camBtn'){ await openCamera(); return; }
+  if (t.id === 'flipBtn'){
+    if (S.recording) return;
+    S.facing = S.facing === 'user' ? 'environment' : 'user';
+    S._wanted = S.facing; S.mirror = (S.facing === 'user');
+    setChip('camChips', S.facing);
+    await openCamera(); return;
+  }
+  if (t.id === 'mirrorSw'){
+    S.mirror = !S.mirror; syncMirrorUI(); savePrefs(); return;
+  }
   if (t.id === 'recBtn'){ S.recording ? stopRecording() : await startRecording(); return; }
   if (t.id === 'dubBtn'){ S.dubbing ? stopDub() : await startDub(); return; }
   if (t.id === 'dlBtn'){ download(); return; }
@@ -2589,7 +2745,7 @@ function collectPrefs(){
   return {user:S.user, mode:S.mode, trackId:S.trackId || null, jam:S.jamTrack || null,
     ytUrl: ($('ytUrl') && $('ytUrl').value.trim()) || '', bgmVolume:S.bgmVolume,
     micVolume:S.micVolume, srcVolume:S.srcVolume, offset:S.offset, duration:S.duration,
-    res:S.res, facing:S.facing, monitor:S.monitor, useSrcAudio:S.useSrcAudio, updatedAt:Date.now()};
+    res:S.res, facing:S.facing, mirror:S.mirror, monitor:S.monitor, useSrcAudio:S.useSrcAudio, updatedAt:Date.now()};
 }
 async function savePrefs(){
   if (!S.user) return;
@@ -2606,6 +2762,8 @@ async function applyPrefs(p){
   S.duration = p.duration || 30; setChip('durChips', S.duration);
   S.res = p.res || 720;          setChip('resChips', S.res);
   S.facing = p.facing || 'user'; setChip('camChips', S.facing);
+  S.mirror = (p.mirror === undefined || p.mirror === null) ? (S.facing === 'user') : !!p.mirror;
+  syncMirrorUI();
   $('bgmVol').value = Math.round((p.bgmVolume ?? 0.9) * 100); $('bgmVol').dispatchEvent(new Event('input'));
   $('micVol').value = Math.round((p.micVolume ?? 0.7) * 100); $('micVol').dispatchEvent(new Event('input'));
   $('srcVol').value = Math.round((p.srcVolume ?? 0.7) * 100); $('srcVol').dispatchEvent(new Event('input'));
@@ -3378,10 +3536,10 @@ function currentDur(){
 /* 텍스트 칸 → 자막. 입력할 때마다 자동 호출된다. */
 function applySubs(){
   const raw = $('subText').value.split('\n').map(x => x.trim()).filter(Boolean);
-  if (!raw.length){ S.subs = []; renderTimeline(); updateExportBtn(); return; }
+  if (!raw.length){ S.subs = []; renderTimeline(); updateExportBtn(); updateStyleFor(); return; }
   const times = autoPlace(raw, currentDur());
   S.subs = raw.map((text, i) => ({id:'c' + i, text, start:times[i].start, end:times[i].end}));
-  renderTimeline(); updateExportBtn();
+  renderTimeline(); updateExportBtn(); updateStyleFor();
 }
 let subTypeTimer = 0;
 function applySubsSoon(){ clearTimeout(subTypeTimer); subTypeTimer = setTimeout(applySubs, 220); }
@@ -3596,9 +3754,35 @@ function startSubPreview(){
     if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
     const g = cv.getContext('2d');
     g.clearRect(0, 0, w, h);
-    drawSubs(g, w, h, v.currentTime);
+    // 꾸미기 탭에서 영상이 멈춰 있으면, 재생 위치와 상관없이 실제 자막을 띄워
+    // 글자체·색·크기를 바꾸는 즉시 눈에 보이게 한다
+    const c = (S.activeTab === 'style' && v.paused) ? anchorCue() : null;
+    if (c && S._labelIdx !== S.styleIdx){ S._labelIdx = S.styleIdx; updateStyleFor(); }
+    if (c){
+      const d = Math.max(0.3, c.end - c.start);
+      drawCue(g, w, h, c, Math.min(d * 0.62, d - 0.2), d);
+    } else {
+      drawSubs(g, w, h, v.currentTime);
+    }
   };
   loop();
+}
+
+/* 꾸미기 미리보기에 쓸 자막 한 줄 — 재생 위치의 자막, 없으면 선택된 줄 */
+function anchorCue(){
+  if (!S.subs.length) return null;
+  const t = $('resVideo').currentTime;
+  const at = S.subs.find(c => t >= c.start && t < c.end);
+  if (at){ S.styleIdx = S.subs.indexOf(at); return at; }
+  S.styleIdx = Math.min(S.styleIdx, S.subs.length - 1);
+  return S.subs[S.styleIdx];
+}
+function updateStyleFor(){
+  S._labelIdx = S.styleIdx;
+  const c = S.subs.length ? S.subs[Math.min(S.styleIdx, S.subs.length - 1)] : null;
+  $('styleForTx').textContent = c ? '「' + c.text + '」' + (S.subs.length > 1 ? '  (눌러서 다음 줄)' : '')
+                                  : '자막 탭에서 문구를 먼저 적어 주세요';
+  $('styleFor').disabled = !c;
 }
 
 /* --- 컨트롤 ↔ 상태 동기화 --- */
@@ -3656,9 +3840,129 @@ function updateExportBtn(){
     : '선택한 구간만 남깁니다';
 }
 
+/* ============================================================
+   13) MP4 길이 헤더 복구
+   MediaRecorder 가 만드는 조각 MP4(fMP4)는 moov 헤더에 전체 길이를 적지 않는다.
+   mvhd=0, tkhd/mdhd=첫 조각 길이만 들어 있어서, 조각을 훑는 플레이어(크롬·갤러리)는
+   제대로 재생하지만 헤더만 읽는 앱(카카오톡 등)은 3초짜리로 잘라 보낸다.
+   조각들의 샘플 길이를 모두 더해 실제 길이를 헤더에 써 넣는다. 재인코딩 없음.
+   ============================================================ */
+// fMP4 헤더의 duration 이 0/첫 조각 길이로만 적혀 있는 것을 실제 전체 길이로 고친다.
+function fixMp4Duration(buf){
+  const d = new DataView(buf), u8 = new Uint8Array(buf);
+  const T = (o) => String.fromCharCode(u8[o+4],u8[o+5],u8[o+6],u8[o+7]);
+  function boxes(start, end){
+    const r = []; let i = start;
+    while (i + 8 <= end){
+      let sz = d.getUint32(i), hdr = 8;
+      if (sz === 1){ sz = Number(d.getBigUint64(i+8)); hdr = 16; }
+      else if (sz === 0) sz = end - i;
+      if (sz < hdr || i + sz > end) break;
+      r.push({type:T(i), off:i, size:sz, body:i+hdr, end:i+sz});
+      i += sz;
+    }
+    return r;
+  }
+  const find = (list, t) => list.filter(b => b.type === t);
+  const top = boxes(0, u8.length);
+  const moov = find(top, 'moov')[0];
+  if (!moov) return null;
+
+  // 트랙별 timescale · mdhd/tkhd 위치
+  const traks = find(boxes(moov.body, moov.end), 'trak');
+  const tracks = {};
+  let movieTs = 1000, mvhd = null;
+  const mv = find(boxes(moov.body, moov.end), 'mvhd')[0];
+  if (mv){ const v = u8[mv.body]; movieTs = v === 0 ? d.getUint32(mv.body+12) : d.getUint32(mv.body+20); mvhd = mv; }
+
+  for (const tr of traks){
+    const kids = boxes(tr.body, tr.end);
+    const tkhd = find(kids, 'tkhd')[0];
+    const mdia = find(kids, 'mdia')[0];
+    if (!tkhd || !mdia) continue;
+    const mdhd = find(boxes(mdia.body, mdia.end), 'mdhd')[0];
+    if (!mdhd) continue;
+    const tv = u8[tkhd.body];
+    const id = tv === 0 ? d.getUint32(tkhd.body+12) : d.getUint32(tkhd.body+20);
+    const mv2 = u8[mdhd.body];
+    const ts = mv2 === 0 ? d.getUint32(mdhd.body+12) : d.getUint32(mdhd.body+20);
+    tracks[id] = {tkhd, mdhd, ts, total:0};
+  }
+
+  // trex 기본 sample duration
+  const mvex = find(boxes(moov.body, moov.end), 'mvex')[0];
+  const trexDef = {};
+  if (mvex) for (const tx of find(boxes(mvex.body, mvex.end), 'trex')){
+    trexDef[d.getUint32(tx.body+4)] = d.getUint32(tx.body+12);
+  }
+
+  // 모든 moof 조각의 샘플 길이를 더한다
+  for (const mf of find(top, 'moof')){
+    for (const traf of find(boxes(mf.body, mf.end), 'traf')){
+      const kids = boxes(traf.body, traf.end);
+      const tfhd = find(kids, 'tfhd')[0];
+      if (!tfhd) continue;
+      const tfl = d.getUint32(tfhd.body) & 0xffffff;
+      const tid = d.getUint32(tfhd.body+4);
+      let p = tfhd.body + 8;
+      if (tfl & 0x01) p += 8;
+      if (tfl & 0x02) p += 4;
+      let defDur = (tfl & 0x08) ? d.getUint32(p) : (trexDef[tid] || 0);
+      if (tfl & 0x08) p += 4;
+      const t = tracks[tid];
+      if (!t) continue;
+      for (const trun of find(kids, 'trun')){
+        const fl = d.getUint32(trun.body) & 0xffffff;
+        const cnt = d.getUint32(trun.body+4);
+        let q = trun.body + 8;
+        if (fl & 0x0001) q += 4;
+        if (fl & 0x0004) q += 4;
+        const hasDur = !!(fl & 0x0100);
+        const per = (hasDur?4:0) + ((fl & 0x0200)?4:0) + ((fl & 0x0400)?4:0) + ((fl & 0x0800)?4:0);
+        if (!hasDur){ t.total += cnt * defDur; continue; }
+        for (let s = 0; s < cnt; s++) t.total += d.getUint32(q + s*per);
+      }
+    }
+  }
+
+  // 헤더에 실제 길이를 써 넣는다 (크기 변화 없음 → 조각 오프셋 그대로)
+  let movieDur = 0, secs = 0;
+  for (const id in tracks){
+    const t = tracks[id];
+    if (!t.total || !t.ts) continue;
+    const sec = t.total / t.ts;
+    secs = Math.max(secs, sec);
+    movieDur = Math.max(movieDur, Math.round(sec * movieTs));
+    const mv2 = u8[t.mdhd.body];
+    if (mv2 === 0) d.setUint32(t.mdhd.body+16, t.total);
+    else d.setBigUint64(t.mdhd.body+24, BigInt(t.total));
+    const tv = u8[t.tkhd.body];
+    const tdur = Math.round(sec * movieTs);
+    if (tv === 0) d.setUint32(t.tkhd.body+20, tdur);
+    else d.setBigUint64(t.tkhd.body+28, BigInt(tdur));
+  }
+  if (mvhd && movieDur > 0){
+    const v = u8[mvhd.body];
+    if (v === 0) d.setUint32(mvhd.body+16, movieDur);
+    else d.setBigUint64(mvhd.body+24, BigInt(movieDur));
+  }
+  return {seconds: secs, movieTimescale: movieTs, movieDuration: movieDur};
+}
+
+async function repairDuration(blob){
+  if (!/mp4/i.test(blob.type) || blob.size > 400 * 1024 * 1024) return blob;
+  try {
+    const ab = await blob.arrayBuffer();
+    const r = fixMp4Duration(ab);
+    if (!r || !r.seconds) return blob;
+    return new Blob([ab], {type: blob.type});
+  } catch (e){ return blob; }
+}
+
 /* 테스트 훅 (헤드리스 검증용) */
 window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
-  applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont};
+  applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont,
+  fixMp4Duration, repairDuration};
 </script>
 </body>
 </html>
