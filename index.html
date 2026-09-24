@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Joo-JeoB</title>
+<meta name="description" content="음악을 고르고 촬영하거나 기존 영상에 입혀서, BGM이 지워지지 않는 세로 영상 파일로 저장합니다.">
+<meta name="theme-color" content="#070b16">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Joo-JeoB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -209,6 +219,53 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
   color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;max-width:44%}
 .userchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hdr{position:relative}
+.instchip{display:inline-flex;align-items:center;gap:7px;margin:10px auto 0;padding:10px 16px;
+  border:1px solid var(--cy);border-radius:999px;background:var(--cydim);color:var(--cy);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+  box-shadow:0 0 0 0 rgba(34,211,238,.45);animation:instPulse 2.6s ease-out infinite}
+.instchip:hover{background:rgba(34,211,238,.22)}
+@keyframes instPulse{0%{box-shadow:0 0 0 0 rgba(34,211,238,.38)}70%{box-shadow:0 0 0 12px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
+@media (prefers-reduced-motion:reduce){.instchip{animation:none}}
+.instrow{display:flex;justify-content:center}
+/* ── 내 목소리 살리기/빼기 ── */
+.voicebox{margin:13px 0 0;padding:13px;border:1px solid var(--line);border-radius:14px;background:#0a1224;transition:.18s}
+.voicebox.live{border-color:#c084fc;background:rgba(192,132,252,.07)}
+.voicebox .vh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.voicebox .vt{font-size:13.5px;font-weight:700;color:var(--tx)}
+.voicebox .vstate{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--tx3);white-space:nowrap}
+.voicebox.live .vstate{background:rgba(192,132,252,.2);color:#d8b4fe}
+.vchips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vchips .chip{padding:13px 8px;font-family:inherit;font-size:13.5px;font-weight:700;text-align:center}
+.voicebox.live .vchips .chip.on{border-color:#c084fc;background:rgba(192,132,252,.16);color:#d8b4fe}
+.vrow{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+/* ── 인트로 · 아웃트로 ── */
+.ioblock{border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:11px;background:#0a1224}
+.ioblock.live{border-color:var(--cy)}
+.ioh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ioh .t{font-size:13.5px;font-weight:700;color:var(--tx)}
+.ioh .d{font-size:11.5px;color:var(--tx3);margin-top:3px}
+.introgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:11px}
+.icard{padding:10px 9px;border:1px solid var(--line);border-radius:11px;background:#08101f;color:var(--tx2);
+  font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;text-align:left;line-height:1.35}
+.icard .e{font-size:16px;display:block;margin-bottom:3px}
+.icard.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:11px;padding:4px;margin-top:12px}
+.seg2 button{padding:9px;border:0;border-radius:8px;background:transparent;color:var(--tx2);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.seg2 button.on{background:var(--cy);color:#04121a}
+.autoline{display:flex;align-items:stretch;gap:8px;margin-top:10px}
+.autoline .txt{flex:1;padding:11px 12px;border:1px dashed var(--line);border-radius:11px;background:#08101f;
+  color:var(--tx);font-size:13.5px;font-weight:700;line-height:1.45;display:flex;align-items:center}
+.dice{flex:0 0 48px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);
+  color:var(--tx);font-size:19px;cursor:pointer}
+.dice:hover{border-color:var(--cy)}
+.ioprev{width:172px;aspect-ratio:9/16;display:block;margin:12px auto 0;border-radius:12px;
+  border:1px solid var(--line);background:#04070e}
+.iopl{display:block;text-align:center;font-size:11px;color:var(--tx3);margin-top:7px}
+.instdone{display:flex;justify-content:center;margin-top:10px}
+.instdone span{padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);
+  color:var(--tx3);font-size:11.5px;font-weight:600}
 .field{margin-top:11px}
 .field label{display:block;font-size:11.5px;color:var(--tx3);font-weight:600;margin-bottom:5px}
 .field input{width:100%;padding:13px 12px;border:1px solid var(--line);border-radius:11px;
@@ -362,6 +419,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     <h1>Joo-<span>JeoB</span></h1>
     <p class="sub">음악을 고르고 → 촬영하거나 기존 영상에 입히고 → 받는 분께 바로 보내세요.</p>
     <div class="pill">BGM이 영상 파일 안에 합쳐집니다 — 어디로 보내도 지워지지 않음</div>
+    <div class="instrow"><button type="button" class="instchip" id="installBtn" hidden>📲 홈 화면에 앱으로 설치</button></div>
+    <div class="instdone" id="installedMsg" hidden><span>✓ 앱으로 실행 중</span></div>
     <button type="button" class="helpchip" id="helpChip">❓ 사용법</button>
     <button type="button" class="userchip" id="userChip" hidden>👤 <span id="userName"></span></button>
   </header>
@@ -614,25 +673,10 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       </div>
     </div>
 
-    <div class="row">
-      <div><div class="lb">마이크 함께 녹음</div><div class="ds">끄면 BGM만 깔끔하게 들어갑니다 (권장)</div></div>
-      <div class="sw" id="micSw" role="switch" aria-checked="false"></div>
-    </div>
-
-    <div class="row">
-      <div><div class="lb">스피커로 모니터링</div><div class="ds">마이크를 켰다면 이어폰 사용을 권장합니다</div></div>
-      <div class="sw on" id="monSw" role="switch" aria-checked="true"></div>
-    </div>
-
     <div class="row" style="display:block">
       <div class="slabel"><span>BGM 볼륨</span><span class="v" id="bgmVolV">90%</span></div>
       <input type="range" id="bgmVol" min="15" max="100" value="90">
       <div class="ds" style="margin-top:5px">0%로는 내릴 수 없습니다 — 배경음악이 사라지는 것을 막기 위한 하한선입니다.</div>
-    </div>
-
-    <div class="row" style="display:block" id="micVolRow" hidden>
-      <div class="slabel"><span>마이크 볼륨</span><span class="v" id="micVolV">70%</span></div>
-      <input type="range" id="micVol" min="0" max="100" value="70">
     </div>
 
     <div class="row" style="display:block">
@@ -665,8 +709,26 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="bar bgm"><i id="bgmBar"></i></div>
       </div>
       <div class="meter">
-        <div class="mh"><span style="color:#c084fc">마이크 레벨</span><span id="micDb">off</span></div>
+        <div class="mh"><span style="color:#c084fc">내 목소리</span><span id="micDb">off</span></div>
         <div class="bar mic"><i id="micBar"></i></div>
+      </div>
+    </div>
+
+    <div class="voicebox" id="voiceBox">
+      <div class="vh"><span class="vt">🎙 내 목소리</span><span class="vstate" id="voiceState">빼는 중</span></div>
+      <div class="chips vchips" id="voiceChips">
+        <button type="button" class="chip" data-voice="1">🔊 살리기</button>
+        <button type="button" class="chip on" data-voice="0">🔇 빼기</button>
+      </div>
+      <div class="ds" id="voiceDs" style="margin-top:9px"></div>
+      <div class="sw" id="micSw" role="switch" aria-checked="false" hidden></div>
+      <div class="vrow" id="micVolRow" hidden>
+        <div class="slabel"><span>목소리 크기</span><span class="v" id="micVolV">70%</span></div>
+        <input type="range" id="micVol" min="0" max="100" value="70">
+        <div class="row" style="border-bottom:0;padding:11px 0 0">
+          <div><div class="lb">스피커로 같이 듣기</div><div class="ds">이어폰 없이 켜 두면 소리가 울릴 수 있습니다</div></div>
+          <div class="sw on" id="monSw" role="switch" aria-checked="true"></div>
+        </div>
       </div>
     </div>
 
@@ -739,6 +801,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <button type="button" data-tab="cut" class="on">✂️ 구간</button>
       <button type="button" data-tab="text">💬 자막</button>
       <button type="button" data-tab="style">🎨 꾸미기</button>
+      <button type="button" data-tab="intro">🎬 인트로</button>
     </div>
 
     <!-- 구간 -->
@@ -835,6 +898,53 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       </div>
     </div>
 
+    <!-- 인트로 · 아웃트로 -->
+    <div class="tabpane" id="tabIntro" hidden>
+      <p class="why" style="margin:0 0 4px">영상 <b style="color:var(--cy)">앞뒤로 3초씩</b> 붙습니다. 배경음악은 끊기지 않고 그대로 이어집니다.</p>
+
+      <div class="ioblock" id="introBlock">
+        <div class="ioh">
+          <div><div class="t">▶︎ 시작 인트로</div><div class="d">영상 맨 앞 3초</div></div>
+          <div class="sw" id="introSw" role="switch" aria-checked="false"></div>
+        </div>
+        <div id="introBody" hidden>
+          <div class="introgrid" id="introGrid"></div>
+          <div class="seg2" id="introMode">
+            <button type="button" data-iomode="intro:auto" class="on">🎲 자동 멘트</button>
+            <button type="button" data-iomode="intro:manual">✍️ 직접 쓰기</button>
+          </div>
+          <div class="autoline" id="introAutoRow">
+            <div class="txt" id="introAutoTx">—</div>
+            <button type="button" class="dice" id="introDice" aria-label="다른 멘트 뽑기">🎲</button>
+          </div>
+          <textarea class="sub" id="introText" rows="2" hidden placeholder="첫 줄이 큰 글씨&#10;둘째 줄은 작은 글씨 (생략 가능)"></textarea>
+          <canvas class="ioprev" id="introPrev"></canvas>
+          <span class="iopl">미리보기 — 3초 반복</span>
+        </div>
+      </div>
+
+      <div class="ioblock" id="outroBlock">
+        <div class="ioh">
+          <div><div class="t">■ 마무리 아웃트로</div><div class="d">영상 맨 뒤 3초</div></div>
+          <div class="sw" id="outroSw" role="switch" aria-checked="false"></div>
+        </div>
+        <div id="outroBody" hidden>
+          <div class="introgrid" id="outroGrid"></div>
+          <div class="seg2" id="outroMode">
+            <button type="button" data-iomode="outro:auto" class="on">🎲 자동 멘트</button>
+            <button type="button" data-iomode="outro:manual">✍️ 직접 쓰기</button>
+          </div>
+          <div class="autoline" id="outroAutoRow">
+            <div class="txt" id="outroAutoTx">—</div>
+            <button type="button" class="dice" id="outroDice" aria-label="다른 멘트 뽑기">🎲</button>
+          </div>
+          <textarea class="sub" id="outroText" rows="2" hidden placeholder="첫 줄이 큰 글씨&#10;둘째 줄은 작은 글씨 (생략 가능)"></textarea>
+          <canvas class="ioprev" id="outroPrev"></canvas>
+          <span class="iopl">미리보기 — 3초 반복</span>
+        </div>
+      </div>
+    </div>
+
     <div class="prog" style="position:relative;margin-top:12px;border-radius:2px;overflow:hidden"><i id="trimProg"></i></div>
     <button type="button" class="btn primary" id="trimBtn" disabled>✨ 편집 적용해서 내보내기</button>
     <div class="ds" id="exportHint" style="margin-top:6px;text-align:center">구간을 자르거나 자막을 넣으면 켜집니다</div>
@@ -881,7 +991,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <h4><i>1</i> 시작하기</h4>
           <p><b>크롬</b>으로 <span class="hl">https://</span> 주소를 열어 주세요. 다운로드 폴더의 HTML 파일을 직접 열면
             브라우저가 카메라를 막습니다.</p>
-          <p>크롬 <b>⋮ → 홈 화면에 추가</b>를 해 두면 앱처럼 바로 열립니다.</p>
+          <p><b>홈 화면에 앱으로 깔기</b> — 화면 위쪽 <span class="hl">📲 홈 화면에 앱으로 설치</span> 버튼을 누르고
+            <b>설치</b>를 선택하세요. 주소창 없는 전체 화면으로 열려 촬영 화면이 더 넓어집니다.</p>
+          <div class="trouble"><b>버튼이 안 보이거나 설치가 안 될 때</b><br>
+            ① <b>카카오톡·인스타 안에서 열린 화면이면 설치가 안 됩니다.</b> 오른쪽 위 <b>⋮ → 다른 브라우저로 열기 → Chrome</b> 으로 먼저 옮기세요.<br>
+            ② 크롬에서 <b>⋮ → 설치 및 바로가기 만들기</b> → <b>설치</b>(바로가기 말고)를 고릅니다.<br>
+            ③ 그래도 홈 화면에 안 생기면 삼성 런처가 막은 것입니다. <b>홈 화면 길게 누르기 → 설정 → "홈 화면에 앱 추가"(새 앱 자동 추가)</b>를 켜고 다시 설치하거나,
+            <b>앱스 화면(모든 앱)</b>에서 Joo-JeoB 아이콘을 찾아 홈 화면으로 끌어다 놓으세요.</div>
         </div>
 
         <div class="guide-sec">
@@ -914,7 +1030,14 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>4</i> 촬영</h4>
           <p><b>카메라 켜기</b> → 권한 허용. 화면이 <span class="hl">9:16 세로</span>로 잘려 녹화됩니다.</p>
-          <p>마이크는 <b>기본 꺼짐</b>입니다. 목소리도 넣으려면 켜고 이어폰을 끼세요 — 안 그러면 스피커의 BGM이 마이크로 다시 들어가 겹칩니다.</p>
+          <p><b>🎙 내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>라 배경음악만 깔끔하게 들어갑니다.</p>
+          <ul>
+            <li><b>살리기</b> — 말소리·웃음소리가 배경음악과 함께 파일에 들어갑니다. <b>이어폰을 끼세요.</b>
+              안 끼면 스피커의 BGM이 마이크로 다시 들어가 겹칩니다 (또는 <b>스피커로 같이 듣기</b>를 끄세요)</li>
+            <li><b>빼기</b> — 주변 소음·말소리가 하나도 안 들어갑니다</li>
+          </ul>
+          <div class="trouble"><b>한 번 찍으면 바꿀 수 없습니다.</b> 목소리는 촬영하는 순간 영상에 합쳐지기 때문에,
+            나중에 빼려면 다시 찍어야 합니다. 누르기 전에 확인하세요.</div>
           <p>후렴부터 시작하고 싶으면 <b>BGM 시작 지점</b>을 옮기세요. 녹화 중에는 <b>이전·다음</b>과 뒤로가기가 잠깁니다.</p>
         </div>
 
@@ -955,6 +1078,19 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         </div>
 
         <div class="guide-sec">
+          <h4><i>5.7</i> 인트로 · 아웃트로</h4>
+          <p>결과 화면의 <b>🎬 인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
+          <ul>
+            <li><b>디자인 10종</b> — 타자기 · 필름 카운트 · 네온사인 · 컬러 스와이프 · 폴라로이드 ·
+              예능 자막 · 글리치 · 미니멀 라인 · 스포트라이트 · 폭죽</li>
+            <li><b>🎲 자동 멘트</b> — 앱이 재미있는 문구를 하나 뽑아 줍니다. 주사위를 누르면 다른 문구로 바뀝니다</li>
+            <li><b>✍️ 직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
+          </ul>
+          <p>아래 세로 미리보기에서 3초가 반복 재생되니, 고른 그대로 나오는지 보고 정하면 됩니다.
+            <b>배경음악은 인트로부터 끊기지 않고 그대로 이어집니다.</b></p>
+        </div>
+
+        <div class="guide-sec">
           <h4><i>6</i> 보내기</h4>
           <p><b>공유해서 보내기</b>를 누르면 카카오톡·메시지가 뜹니다.
             <b>다운로드</b>를 고르면 <span class="hl">내 파일 &gt; Download</span> 폴더에 저장됩니다.</p>
@@ -978,7 +1114,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <h4><i>1</i> 시작하기</h4>
           <p><b>사파리</b>로 <span class="hl">https://</span> 주소를 열어 주세요. 사파리가 MP4로 저장해 주기 때문에
             결과 영상이 어디서든 바로 재생됩니다.</p>
-          <p>공유 버튼 <b>⬆︎ → 홈 화면에 추가</b>를 해 두면 앱처럼 열립니다.</p>
+          <p><b>홈 화면에 앱으로 깔기</b> — 사파리 아래쪽 공유 버튼 <b>⬆︎</b> → 목록을 내려 <b>홈 화면에 추가</b> → <b>추가</b>.
+            아이콘이 생기고, 주소창 없는 전체 화면으로 열립니다.</p>
+          <div class="trouble"><b>"홈 화면에 추가"가 안 보일 때</b><br>
+            크롬·카카오톡 안의 브라우저에는 그 메뉴가 없습니다. 반드시 <b>사파리</b>로 여세요.
+            (카톡에서 열렸다면 오른쪽 아래 <b>⋯ → Safari로 열기</b>)</div>
         </div>
 
         <div class="guide-sec">
@@ -1009,7 +1149,9 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>4</i> 촬영</h4>
           <p><b>카메라 켜기</b> → 권한 허용. 화면이 <span class="hl">9:16 세로</span>로 잘려 녹화됩니다.</p>
-          <p>마이크는 <b>기본 꺼짐</b>입니다. 목소리도 넣으려면 켜고 이어폰을 끼세요.</p>
+          <p><b>🎙 내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>(배경음악만)입니다.
+            살릴 때는 이어폰을 끼거나 <b>스피커로 같이 듣기</b>를 꺼야 소리가 겹치지 않습니다.</p>
+          <div class="trouble"><b>한 번 찍으면 바꿀 수 없습니다.</b> 목소리는 촬영하는 순간 영상에 합쳐집니다. 누르기 전에 확인하세요.</div>
           <p><b>무음 스위치가 켜져 있으면</b> 스피커로 BGM이 안 들릴 수 있습니다. 그래도 파일에는 들어가니,
             들어갔는지는 결과 화면의 <b>🎵 배경음악 포함</b> 줄로 판단하세요.</p>
           <p>촬영 중 화면이 잠기면 녹화가 끊깁니다. <b>설정 → 디스플레이 및 밝기 → 자동 잠금</b>을 길게 두거나
@@ -1024,6 +1166,19 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
             <li><b>📦 MP4 · H.264 + AAC</b> — 사파리에서는 보통 이렇게 나옵니다</li>
           </ul>
           <p>앞뒤를 다듬으려면 <b>구간 자르기</b>를 쓰세요. 자른 뒤에도 BGM은 그대로 남습니다.</p>
+        </div>
+
+        <div class="guide-sec">
+          <h4><i>5.7</i> 인트로 · 아웃트로</h4>
+          <p>결과 화면의 <b>🎬 인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
+          <ul>
+            <li><b>디자인 10종</b> — 타자기 · 필름 카운트 · 네온사인 · 컬러 스와이프 · 폴라로이드 ·
+              예능 자막 · 글리치 · 미니멀 라인 · 스포트라이트 · 폭죽</li>
+            <li><b>🎲 자동 멘트</b> — 앱이 재미있는 문구를 하나 뽑아 줍니다. 주사위를 누르면 다른 문구로 바뀝니다</li>
+            <li><b>✍️ 직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
+          </ul>
+          <p>아래 세로 미리보기에서 3초가 반복 재생되니, 고른 그대로 나오는지 보고 정하면 됩니다.
+            <b>배경음악은 인트로부터 끊기지 않고 그대로 이어집니다.</b></p>
         </div>
 
         <div class="guide-sec">
@@ -1089,7 +1244,9 @@ const S = {
   baseBlob:null, editMode:true, activeTab:'cut', styleIdx:0,
   cams:[], camId:'', mirror:null,
   ytLoaded:false, jamResults:[], jamTrack:null, capSelfTab:false, monBeforeCap:null,
-  bgmLive:null, bgmLiveNode:null, trimming:false, trimNode:null, trimGain:null
+  bgmLive:null, bgmLiveNode:null, trimming:false, trimNode:null, trimGain:null,
+  intro:{on:false, design:'typing',   auto:true, auto1:'', text:''},
+  outro:{on:false, design:'confetti', auto:true, auto1:'', text:''}
 };
 
 /* ============================================================
@@ -1747,6 +1904,21 @@ async function enableMic(on){
   }
 }
 
+/* 목소리 살리기/빼기 — 촬영 화면의 표시를 상태와 맞춘다 */
+function syncVoiceUI(){
+  const on = !!S.mic;
+  document.querySelectorAll('#voiceChips .chip').forEach(b =>
+    b.classList.toggle('on', (b.dataset.voice === '1') === on));
+  $('voiceBox').classList.toggle('live', on);
+  $('voiceState').textContent = on ? '살리는 중' : '빼는 중';
+  $('voiceDs').innerHTML = on
+    ? '말소리·웃음소리가 <b>배경음악과 함께</b> 파일에 들어갑니다. 조용한 곳일수록 깔끔합니다.'
+    : '<b>배경음악만</b> 들어갑니다. 주변 소음과 말소리가 섞이지 않습니다.';
+  $('micSw').classList.toggle('on', on);
+  $('micSw').setAttribute('aria-checked', String(on));
+  $('micVolRow').hidden = !on;
+}
+
 function refreshRecBtn(){
   $('recBtn').disabled = !(hasBgm() && S.camStream) || S.recording;
 }
@@ -2260,7 +2432,7 @@ function showErr(msg){
 document.addEventListener('click', async (ev) => {
   if (ev.target === $('userSheet')){ $('userSheet').hidden = true; return; }
   if (ev.target === $('helpSheet')){ $('helpSheet').hidden = true; return; }
-  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek],#reEditBtn,#styleFor,#flipBtn,#mirrorSw,[data-camid]');
+  const t = ev.target.closest('[data-src],[data-mode],[data-auth],[data-hist],[data-track],.chip,#micSw,#monSw,#srcSw,#camBtn,#recBtn,#dubBtn,#dlBtn,#shareBtn,#againBtn,.previewBtn,#prevBtn,#nextBtn,#authBtn,#guestBtn,#userChip,#sheetClose,#logoutBtn,#userSheet,#helpSheet,#helpChip,#helpClose,[data-help],#capBtn,#trimBtn,#ytLoadBtn,#jamKeySave,#jamGo,#jamInst,[data-jamtag],[data-jamplay],[data-jampick],#adminLink,#adminBack,#adminAuthBtn,#newUserBtn,#admChangeBtn,#adminLogout,[data-adm],[data-tab],[data-font],[data-subcolor],[data-pos],[data-anim],[data-lay],#cueClear,#subBoxSw,[data-seek],#reEditBtn,#styleFor,#flipBtn,#mirrorSw,[data-camid],[data-voice],#introSw,#outroSw,#introDice,#outroDice,[data-iodesign],[data-iomode]');
   if (!t) return;
 
   if (t.dataset.mode){
@@ -2304,6 +2476,8 @@ document.addEventListener('click', async (ev) => {
     $('tabCut').hidden   = S.activeTab !== 'cut';
     $('tabText').hidden  = S.activeTab !== 'text';
     $('tabStyle').hidden = S.activeTab !== 'style';
+    $('tabIntro').hidden = S.activeTab !== 'intro';
+    if (S.activeTab === 'intro'){ syncIo('intro'); syncIo('outro'); startIoPreview(); }
     if (S.activeTab === 'style' && S.subs.length){
       const v = $('resVideo');
       const at = S.subs.find(c => v.currentTime >= c.start && v.currentTime < c.end);
@@ -2375,6 +2549,13 @@ document.addEventListener('click', async (ev) => {
     await openCamera(t.dataset.camid);
     return;
   }
+  // 목소리 칩도 .chip 이라서 일반 칩 분기보다 먼저 처리해야 한다
+  if (t.dataset.voice !== undefined){
+    if (S.recording) return;
+    const want = t.dataset.voice === '1';
+    if (want !== S.mic) await enableMic(want);
+    syncVoiceUI(); savePrefs(); return;
+  }
   // 검색 태그 칩은 일반 설정 칩보다 먼저 처리 (같은 .chip 클래스)
   if (t.dataset.jamtag){ $('jamQ').value = t.dataset.jamtag; await jamSearch(t.dataset.jamtag); return; }
   if (t.classList.contains('chip')){
@@ -2388,9 +2569,30 @@ document.addEventListener('click', async (ev) => {
     return;
   }
   if (t.id === 'micSw'){
-    const on = !t.classList.contains('on');
-    t.classList.toggle('on', on); t.setAttribute('aria-checked', String(on));
-    await enableMic(on); return;
+    if (S.recording) return;
+    await enableMic(!S.mic); syncVoiceUI(); savePrefs(); return;
+  }
+  if (t.id === 'introSw' || t.id === 'outroSw'){
+    const kind = t.id === 'introSw' ? 'intro' : 'outro';
+    S[kind].on = !S[kind].on;
+    if (S[kind].on && !S[kind].auto1) S[kind].auto1 = ioPick(kind);
+    syncIo(kind); savePrefs();
+    if (S[kind].on) startIoPreview();
+    return;
+  }
+  if (t.dataset.iodesign){
+    const [kind, id] = t.dataset.iodesign.split(':');
+    S[kind].design = id; syncIo(kind); savePrefs(); startIoPreview(); return;
+  }
+  if (t.dataset.iomode){
+    const [kind, m] = t.dataset.iomode.split(':');
+    S[kind].auto = (m === 'auto');
+    if (S[kind].auto && !S[kind].auto1) S[kind].auto1 = ioPick(kind);
+    syncIo(kind); savePrefs(); return;
+  }
+  if (t.id === 'introDice' || t.id === 'outroDice'){
+    const kind = t.id === 'introDice' ? 'intro' : 'outro';
+    S[kind].auto1 = ioPick(kind); syncIo(kind); savePrefs(); return;
   }
   if (t.id === 'monSw'){
     const on = !t.classList.contains('on');
@@ -2745,7 +2947,8 @@ function collectPrefs(){
   return {user:S.user, mode:S.mode, trackId:S.trackId || null, jam:S.jamTrack || null,
     ytUrl: ($('ytUrl') && $('ytUrl').value.trim()) || '', bgmVolume:S.bgmVolume,
     micVolume:S.micVolume, srcVolume:S.srcVolume, offset:S.offset, duration:S.duration,
-    res:S.res, facing:S.facing, mirror:S.mirror, monitor:S.monitor, useSrcAudio:S.useSrcAudio, updatedAt:Date.now()};
+    res:S.res, facing:S.facing, mirror:S.mirror, monitor:S.monitor, useSrcAudio:S.useSrcAudio,
+    intro:{...S.intro}, outro:{...S.outro}, updatedAt:Date.now()};
 }
 async function savePrefs(){
   if (!S.user) return;
@@ -2780,6 +2983,11 @@ async function applyPrefs(p){
     $('jamKeyRow').hidden = !!JAMENDO_CLIENT_ID; if (!JAMENDO_CLIENT_ID) $('jamKey').value = jamKey();
     await selectJamendo(p.jam, true);
   }
+  if (p.intro) Object.assign(S.intro, p.intro);
+  if (p.outro) Object.assign(S.outro, p.outro);
+  if (!S.intro.auto1) S.intro.auto1 = ioPick('intro');
+  if (!S.outro.auto1) S.outro.auto1 = ioPick('outro');
+  syncIo('intro'); syncIo('outro'); syncVoiceUI();
   if (p.ytUrl) $('ytUrl').value = p.ytUrl;
   if (p.offset && S.bgmBuffer){ $('bgmOff').value = p.offset; $('bgmOff').dispatchEvent(new Event('input')); }
   renderStep();
@@ -2993,6 +3201,17 @@ const trimVideo = document.createElement('video');
 trimVideo.playsInline = true; trimVideo.setAttribute('playsinline', '');
 trimVideo.muted = false;
 
+/* 구간이 바뀔 때 소리를 툭 끊지 않고 짧게 넘긴다 */
+function ioRamp(gn, v, dur){
+  if (!gn) return;
+  try {
+    const now = ac().currentTime;
+    gn.gain.cancelScheduledValues(now);
+    gn.gain.setValueAtTime(gn.gain.value, now);
+    gn.gain.linearRampToValueAtTime(v, now + (dur || 0.12));
+  } catch(e){ gn.gain.value = v; }
+}
+
 function trimErr(msg){ const b = $('trimErr'); b.hidden = !msg; b.textContent = msg || ''; }
 
 function setupTrim(duration){
@@ -3022,6 +3241,11 @@ async function startTrim(){
   if (b - a < 0.5){ trimErr('구간이 너무 짧습니다.'); return; }
   if (S.subs.length) await ensureFont(S.subStyle.font);
 
+  const ID = S.intro.on ? IO_DUR : 0;           // 앞에 붙는 인트로 길이
+  const OD = S.outro.on ? IO_DUR : 0;           // 뒤에 붙는 아웃트로 길이
+  if (S.intro.on) await ensureFont(ioDesign('intro').font);
+  if (S.outro.on) await ensureFont(ioDesign('outro').font);
+
   const c = ac();
   if (c.state !== 'running') await c.resume();
 
@@ -3038,10 +3262,30 @@ async function startTrim(){
   }
   if (!trimVideo.videoWidth){ trimErr('영상을 열 수 없어 자를 수 없습니다.'); return; }
 
-  // 다른 입력은 잠시 끊는다 (마이크·BGM 이 섞이면 안 된다)
+  // 다른 입력은 잠시 끊는다 (마이크·원본소리가 섞이면 안 된다)
   const savedMic = S.micGain.gain.value, savedBgm = S.bgmGain.gain.value, savedSrc = S.srcGain.gain.value;
-  S.micGain.gain.value = 0; S.bgmGain.gain.value = 0; S.srcGain.gain.value = 0;
+  S.micGain.gain.value = 0; S.srcGain.gain.value = 0;
+
+  /* 소리 배분
+     · 본편 구간에는 이미 BGM 이 파일 안에 들어 있으므로 영상 소리만 쓴다.
+     · 인트로·아웃트로 구간에는 영상이 없으니 BGM 버퍼를 직접 들려준다.
+     · BGM 은 처음부터 끝까지 끊지 않고 계속 흐르게 두고 볼륨만 넘긴다.
+       시작점을 (본편 시작 - 인트로 길이)로 잡아 두면, 인트로가 끝나는 순간
+       영상 안의 BGM 과 같은 지점이 되어 음악이 자연스럽게 이어진다. */
+  const useIo = (ID > 0 || OD > 0);
   stopBgm();
+  if (useIo && S.bgmBuffer){
+    const dur = S.bgmBuffer.duration;
+    let off = (S.offset || 0) + a - ID;
+    off = ((off % dur) + dur) % dur;            // 앞으로 감기면 끝에서 이어받는다
+    S.bgmGain.gain.value = ID > 0 ? S.bgmVolume : 0;
+    startBgm(c.currentTime + 0.03, off);
+  } else if (useIo && S.bgmLive){
+    S.bgmGain.gain.value = ID > 0 ? S.bgmVolume : 0;
+  } else {
+    S.bgmGain.gain.value = 0;
+  }
+  S.trimGain.gain.value = ID > 0 ? 0 : 1;
 
   const cv = document.createElement('canvas');
   cv.width = trimVideo.videoWidth; cv.height = trimVideo.videoHeight;
@@ -3060,35 +3304,72 @@ async function startTrim(){
   S.outMime = S.recorder.mimeType || mime || 'video/webm';
   S.recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) S.chunks.push(ev.data); };
   S.recorder.onstop = () => {
+    stopBgm();
     S.micGain.gain.value = savedMic; S.bgmGain.gain.value = savedBgm; S.srcGain.gain.value = savedSrc;
+    if (S.trimGain) S.trimGain.gain.value = 1;
     onRecStop();
   };
 
   S.trimming = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = true;
-  $('trimBtn').textContent = S.subs.length ? '자막 입히는 중…' : '자르는 중…';
+  $('trimBtn').textContent = useIo ? '인트로까지 굽는 중…' : (S.subs.length ? '자막 입히는 중…' : '자르는 중…');
   $('trimBtn').disabled = true;
   $('exportHint').textContent = '인코딩 중 — 구간 길이만큼 걸립니다. 화면을 끄지 마세요';
   updateNav();
 
+  try { trimVideo.pause(); } catch(e){}
   trimVideo.currentTime = a;
   await new Promise((res) => { trimVideo.onseeked = res; setTimeout(res, 1500); });
-  g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
-  drawSubs(g, cv.width, cv.height, a);
-  await trimVideo.play();
-  S.recorder.start(200);
+  trimVideo.onended = null;
 
-  const total = b - a;
-  const draw = () => {
+  if (ID > 0) ioDrawAt(g, cv.width, cv.height, 'intro', 0, trimVideo);
+  else { g.drawImage(trimVideo, 0, 0, cv.width, cv.height); drawSubs(g, cv.width, cv.height, a); }
+
+  S.recorder.start(200);
+  const t0 = performance.now();
+  const total = ID + (b - a) + OD;
+  let phase = ID > 0 ? 'intro' : 'main';
+  let outroT0 = 0;
+  if (phase === 'main'){ try { await trimVideo.play(); } catch(e){} }
+
+  const prog = (done) => { $('trimProg').style.width = (ioClamp(done / total, 0, 1) * 100) + '%'; };
+
+  const loop = async () => {
     if (!S.trimming) return;
-    g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
-    drawSubs(g, cv.width, cv.height, trimVideo.currentTime);
-    const p = Math.min(1, (trimVideo.currentTime - a) / total);
-    $('trimProg').style.width = (p * 100) + '%';
-    if (trimVideo.currentTime >= b - 0.04 || trimVideo.ended){ finishTrim(); return; }
-    requestAnimationFrame(draw);
+
+    if (phase === 'intro'){
+      const t = (performance.now() - t0) / 1000;
+      ioDrawAt(g, cv.width, cv.height, 'intro', t, trimVideo);
+      prog(t);
+      if (t >= ID){
+        phase = 'main';
+        ioRamp(S.bgmGain, 0, 0.1);
+        ioRamp(S.trimGain, 1, 0.1);
+        try { await trimVideo.play(); } catch(e){}
+      }
+      requestAnimationFrame(loop); return;
+    }
+
+    if (phase === 'main'){
+      g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
+      drawSubs(g, cv.width, cv.height, trimVideo.currentTime);
+      prog(ID + (trimVideo.currentTime - a));
+      if (trimVideo.currentTime >= b - 0.04 || trimVideo.ended){
+        try { trimVideo.pause(); } catch(e){}
+        if (OD <= 0){ finishTrim(); return; }
+        phase = 'outro'; outroT0 = performance.now();
+        ioRamp(S.trimGain, 0, 0.1);
+        ioRamp(S.bgmGain, (S.bgmBuffer || S.bgmLive) ? S.bgmVolume : 0, 0.1);
+      }
+      requestAnimationFrame(loop); return;
+    }
+
+    const t = (performance.now() - outroT0) / 1000;
+    ioDrawAt(g, cv.width, cv.height, 'outro', t, trimVideo);
+    prog(ID + (b - a) + t);
+    if (t >= OD){ finishTrim(); return; }
+    requestAnimationFrame(loop);
   };
-  draw();
-  trimVideo.onended = finishTrim;
+  loop();
 }
 
 function finishTrim(){
@@ -3807,10 +4088,15 @@ function applyEditMode(){
   const done = !S.editMode;
   $('doneBar').hidden = !done;
   $('editTabs').hidden = done;
-  ['tabCut','tabText','tabStyle'].forEach(id => { if (done) $(id).hidden = true; });
+  ['tabCut','tabText','tabStyle','tabIntro'].forEach(id => { if (done) $(id).hidden = true; });
   if (!done){
     const on = document.querySelector('#editTabs button.on') || document.querySelector('#editTabs button');
-    if (on){ $('tabCut').hidden = on.dataset.tab !== 'cut'; $('tabText').hidden = on.dataset.tab !== 'text'; $('tabStyle').hidden = on.dataset.tab !== 'style'; }
+    if (on){
+      $('tabCut').hidden   = on.dataset.tab !== 'cut';
+      $('tabText').hidden  = on.dataset.tab !== 'text';
+      $('tabStyle').hidden = on.dataset.tab !== 'style';
+      $('tabIntro').hidden = on.dataset.tab !== 'intro';
+    }
   }
   $('trimBtn').hidden = done;
   $('exportHint').hidden = done;
@@ -3831,13 +4117,18 @@ function trimChanged(){
 }
 function updateExportBtn(){
   const hasSub = S.subs.length > 0, cut = trimChanged();
+  const io = !!(S.intro.on || S.outro.on);
   const len = +$('trimEnd').value - +$('trimStart').value;
-  $('trimBtn').disabled = S.trimming || !S.editMode || !S.baseBlob || len < 0.5 || (!hasSub && !cut);
+  $('trimBtn').disabled = S.trimming || !S.editMode || !S.baseBlob || len < 0.5 || (!hasSub && !cut && !io);
+  const parts = [];
+  if (S.intro.on && S.outro.on) parts.push('인트로+아웃트로');
+  else if (S.intro.on) parts.push('인트로');
+  else if (S.outro.on) parts.push('아웃트로');
+  if (hasSub) parts.push('자막 ' + S.subs.length + '개');
+  if (cut) parts.push('구간 자르기');
   $('exportHint').textContent = S.trimming ? '인코딩 중 — 구간 길이만큼 걸립니다'
-    : (!hasSub && !cut) ? '구간을 자르거나 자막을 넣으면 켜집니다'
-    : (hasSub && cut) ? '자막 ' + S.subs.length + '개 + 구간 자르기를 한 번에 적용합니다'
-    : hasSub ? '자막 ' + S.subs.length + '개를 영상에 입힙니다'
-    : '선택한 구간만 남깁니다';
+    : parts.length ? parts.join(' + ') + ' 적용해서 새 파일로 만듭니다'
+    : '구간을 자르거나 자막·인트로를 넣으면 켜집니다';
 }
 
 /* ============================================================
@@ -3959,10 +4250,521 @@ async function repairDuration(blob){
   } catch (e){ return blob; }
 }
 
+/* ============================================================
+   14) 인트로 · 아웃트로 (앞뒤 3초)
+   캔버스에만 그리므로 UI 요소가 파일에 섞이지 않는다.
+   배경음악은 끊지 않고 그대로 흐르게 하고, 구간에 따라 소리를
+   "영상 쪽 / BGM 쪽"으로 넘겨받기만 한다.
+   ============================================================ */
+const IO_DUR = 3;
+
+/* 미리보기와 실제 인코딩이 똑같이 나오도록 난수는 씨앗 고정 */
+function ioRand(seed){
+  let x = seed >>> 0 || 1;
+  return () => { x ^= x << 13; x ^= x >>> 17; x ^= x << 5; x >>>= 0; return x / 4294967296; };
+}
+const ioEase = (x) => 1 - Math.pow(1 - x, 3);
+const ioBack = (x) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const ioClamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+function ioGrad(g, W, H, c1, c2){
+  const gr = g.createLinearGradient(0, 0, W * 0.4, H);
+  gr.addColorStop(0, c1); gr.addColorStop(1, c2);
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}
+/* 영상 프레임을 배경으로 (꽉 채우고 어둡게) */
+function ioFrame(g, W, H, frame, dim){
+  let ok = false;
+  try {
+    if (frame && frame.videoWidth){
+      const s = Math.max(W / frame.videoWidth, H / frame.videoHeight);
+      const dw = frame.videoWidth * s, dh = frame.videoHeight * s;
+      g.drawImage(frame, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      ok = true;
+    }
+  } catch(e){}
+  if (!ok) ioGrad(g, W, H, '#132038', '#04070e');
+  g.fillStyle = 'rgba(4,7,14,' + dim + ')';
+  g.fillRect(0, 0, W, H);
+}
+/* 한 줄이 폭 안에 들어오도록 글자 크기를 줄인다 */
+function ioFit(g, text, maxW, px, fam, weight){
+  let s = px;
+  g.font = weight + ' ' + s + 'px "' + fam + '", "Noto Sans KR", sans-serif';
+  let guard = 60;
+  while (g.measureText(text).width > maxW && s > 11 && guard--){
+    s *= Math.max(0.86, maxW / Math.max(1, g.measureText(text).width));
+    g.font = weight + ' ' + s + 'px "' + fam + '", "Noto Sans KR", sans-serif';
+  }
+  return s;
+}
+function ioSub(g, W, H, L2, y, alpha, color, fam){
+  if (!L2) return;
+  g.save(); g.globalAlpha = alpha;
+  const px = ioFit(g, L2, W * 0.76, H * 0.030, fam || 'Noto Sans KR', '700');
+  g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(L2, W / 2, y);
+  g.restore();
+}
+
+const IO_DESIGNS = [
+  { id:'typing', e:'⌨️', name:'타자기', font:'JetBrains Mono',
+    draw(g, W, H, t, D, L1, L2){
+      ioGrad(g, W, H, '#05070c', '#01030a');
+      g.save();
+      g.globalAlpha = 0.5; g.strokeStyle = '#123b32'; g.lineWidth = Math.max(1, H * 0.0012);
+      for (let y = 0; y < H; y += H * 0.02){ g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+      g.restore();
+      const chars = [...L1];
+      const n = Math.floor(chars.length * ioClamp(t / (D * 0.6), 0, 1));
+      const shown = chars.slice(0, n).join('');
+      const px = ioFit(g, L1 + '_', W * 0.8, H * 0.052, 'JetBrains Mono', '600');
+      g.font = '600 ' + px + 'px "JetBrains Mono", monospace';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.shadowColor = '#22e88a'; g.shadowBlur = px * 0.4;
+      g.fillStyle = '#5bffb0';
+      const blink = (Math.floor(t * 2.6) % 2) === 0 ? '_' : ' ';
+      g.fillText(shown + blink, W / 2, H * 0.46);
+      g.shadowBlur = 0;
+      ioSub(g, W, H, L2, H * 0.54, ioClamp((t - D * 0.55) / 0.5, 0, 1), '#3f8f70', 'JetBrains Mono');
+    } },
+
+  { id:'countdown', e:'🎬', name:'필름 카운트', font:'Black Han Sans',
+    draw(g, W, H, t, D, L1, L2){
+      ioGrad(g, W, H, '#0e0e12', '#050508');
+      const cx = W / 2, cy = H * 0.44, R = Math.min(W, H) * 0.22;
+      g.save();
+      g.strokeStyle = 'rgba(255,255,255,.16)'; g.lineWidth = Math.max(1, W * 0.004);
+      g.beginPath(); g.moveTo(0, cy); g.lineTo(W, cy); g.moveTo(cx, 0); g.lineTo(cx, H); g.stroke();
+      g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke();
+      g.beginPath(); g.arc(cx, cy, R * 1.45, 0, Math.PI * 2); g.stroke();
+      g.restore();
+      const cut = D - 1.05;
+      if (t < cut){
+        const step = cut / 3, num = 3 - Math.floor(t / step);
+        const frac = (t % step) / step;
+        g.save();
+        g.fillStyle = 'rgba(255,255,255,.1)';
+        g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R * 1.45, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); g.closePath(); g.fill();
+        g.font = '400 ' + (H * 0.2) + 'px "Black Han Sans", sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#f4f4f5';
+        g.globalAlpha = 0.35 + 0.65 * (1 - frac);
+        g.fillText(String(Math.max(1, num)), cx, cy);
+        g.restore();
+      } else {
+        const p = ioClamp((t - cut) / 0.55, 0, 1);
+        g.save(); g.translate(cx, cy); g.scale(0.7 + 0.3 * ioBack(p), 0.7 + 0.3 * ioBack(p));
+        const px = ioFit(g, L1, W * 0.78, H * 0.068, 'Black Han Sans', '400');
+        g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.globalAlpha = Math.min(1, p * 1.6); g.fillStyle = '#fff';
+        g.fillText(L1, 0, 0); g.restore();
+        ioSub(g, W, H, L2, cy + H * 0.075, p, '#a1a1aa');
+      }
+    } },
+
+  { id:'neon', e:'💡', name:'네온사인', font:'Do Hyeon',
+    draw(g, W, H, t, D, L1, L2){
+      ioGrad(g, W, H, '#150a24', '#05030c');
+      const r = ioRand(7);
+      let fl = 1;
+      for (let i = 0; i < 40; i++){ const v = r(); if (i / 40 * D < t) fl = v > 0.94 ? 0.35 : 1; }
+      const on = ioClamp(t / 0.45, 0, 1) * fl;
+      const pad = W * 0.08, top = H * 0.32, bh = H * 0.20;
+      g.save();
+      g.globalAlpha = on; g.strokeStyle = '#ff5cc8'; g.lineWidth = Math.max(2, W * 0.006);
+      g.shadowColor = '#ff5cc8'; g.shadowBlur = W * 0.05;
+      roundRect(g, pad, top, W - pad * 2, bh, W * 0.035); g.stroke();
+      g.restore();
+      const px = ioFit(g, L1, W - pad * 2.6, H * 0.055, 'Do Hyeon', '400');
+      g.save();
+      g.globalAlpha = on; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
+      g.shadowColor = '#5ce1ff'; g.shadowBlur = px * 0.75;
+      g.fillStyle = '#eaffff'; g.fillText(L1, W / 2, top + bh / 2);
+      g.shadowBlur = px * 0.35; g.fillText(L1, W / 2, top + bh / 2);
+      g.restore();
+      ioSub(g, W, H, L2, top + bh + H * 0.055, on, '#ff9ad8', 'Do Hyeon');
+    } },
+
+  { id:'swipe', e:'🎞', name:'컬러 스와이프', font:'Black Han Sans',
+    draw(g, W, H, t, D, L1, L2){
+      g.fillStyle = '#07080d'; g.fillRect(0, 0, W, H);
+      const cols = ['#22d3ee', '#f472b6', '#facc15'];
+      cols.forEach((c, i) => {
+        const st = i * 0.16, p = ioEase(ioClamp((t - st) / 0.62, 0, 1));
+        const q = ioEase(ioClamp((t - st - 0.5) / 0.62, 0, 1));
+        const y = H * (0.30 + i * 0.11), h = H * 0.10;
+        g.fillStyle = c;
+        g.fillRect(W * q, y, W * (p - q), h);
+      });
+      const p = ioClamp((t - 1.0) / 0.5, 0, 1);
+      if (p > 0){
+        const px = ioFit(g, L1, W * 0.82, H * 0.070, 'Black Han Sans', '400');
+        const bw = Math.min(W * 0.82, g.measureText(L1).width) * ioEase(p);
+        g.fillStyle = '#22d3ee';
+        g.fillRect(W / 2 - bw / 2, H * 0.535, bw, Math.max(2, H * 0.0035));
+        g.save();
+        g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
+        g.translate(0, (1 - ioEase(p)) * H * 0.03);
+        g.fillStyle = '#fff'; g.fillText(L1, W / 2, H * 0.47);
+        g.restore();
+        ioSub(g, W, H, L2, H * 0.585, p, '#94a3b8');
+      }
+    } },
+
+  { id:'polaroid', e:'📸', name:'폴라로이드', font:'Nanum Pen Script', useFrame:true,
+    draw(g, W, H, t, D, L1, L2, frame){
+      ioGrad(g, W, H, '#1c1917', '#0a0908');
+      const p = ioEase(ioClamp(t / 0.7, 0, 1));
+      const cw = W * 0.74, ch = cw * 1.22;
+      const cx = W / 2, cy = H * 0.44 - (1 - p) * H * 0.35;
+      g.save();
+      g.translate(cx, cy); g.rotate((1 - p) * -0.22 + 0.025);
+      g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = W * 0.06; g.shadowOffsetY = H * 0.012;
+      g.fillStyle = '#f8f7f2'; roundRect(g, -cw / 2, -ch / 2, cw, ch, W * 0.012); g.fill();
+      g.shadowBlur = 0; g.shadowOffsetY = 0;
+      const iw = cw * 0.88, ih = ch * 0.72, ix = -iw / 2, iy = -ch / 2 + cw * 0.06;
+      g.save(); g.beginPath(); g.rect(ix, iy, iw, ih); g.clip();
+      g.translate(ix + iw / 2, iy + ih / 2);
+      let ok = false;
+      try {
+        if (frame && frame.videoWidth){
+          const s = Math.max(iw / frame.videoWidth, ih / frame.videoHeight);
+          g.drawImage(frame, -frame.videoWidth * s / 2, -frame.videoHeight * s / 2, frame.videoWidth * s, frame.videoHeight * s);
+          ok = true;
+        }
+      } catch(e){}
+      if (!ok){ g.fillStyle = '#20293a'; g.fillRect(-iw / 2, -ih / 2, iw, ih); }
+      g.restore();
+      const tp = ioClamp((t - 0.6) / 0.6, 0, 1);
+      g.globalAlpha = tp;
+      const px = ioFit(g, L1, iw, ch * 0.16, 'Nanum Pen Script', '400');
+      g.font = '400 ' + px + 'px "Nanum Pen Script", sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#26221d';
+      g.fillText(L1, 0, iy + ih + (ch / 2 - iy - ih) * 0.52);
+      g.restore();
+      ioSub(g, W, H, L2, cy + ch / 2 + H * 0.05, tp, '#d6d3d1', 'Nanum Pen Script');
+    } },
+
+  { id:'variety', e:'📺', name:'예능 자막', font:'Jua', useFrame:true,
+    draw(g, W, H, t, D, L1, L2, frame){
+      ioFrame(g, W, H, frame, 0.42);
+      const chars = [...L1];
+      const px = ioFit(g, L1, W * 0.84, H * 0.075, 'Jua', '400');
+      g.font = '400 ' + px + 'px "Jua", sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      const total = g.measureText(L1).width;
+      let x = W / 2 - total / 2;
+      const base = H * 0.45;
+      for (let i = 0; i < chars.length; i++){
+        const w = g.measureText(chars[i]).width;
+        const st = i * 0.045, p = ioClamp((t - st) / 0.34, 0, 1);
+        if (p <= 0){ x += w; continue; }
+        const s = 0.4 + 0.6 * ioBack(p);
+        const dy = -Math.abs(Math.sin((t - st) * 5.5)) * H * 0.012 * (1 - ioClamp((t - st) / 1.4, 0, 1));
+        g.save();
+        g.translate(x + w / 2, base + dy); g.scale(s, s);
+        g.lineWidth = px * 0.22; g.lineJoin = 'round'; g.miterLimit = 2;
+        g.strokeStyle = '#1a1207'; g.strokeText(chars[i], 0, 0);
+        g.fillStyle = i % 2 ? '#fff27a' : '#ffffff'; g.fillText(chars[i], 0, 0);
+        g.restore();
+        x += w;
+      }
+      const r = ioRand(21);
+      for (let i = 0; i < 16; i++){
+        const sx = r() * W, sy = H * (0.28 + r() * 0.3), ph = r();
+        const a = Math.max(0, Math.sin((t * 3.2 + ph * 6)) ) * ioClamp(t / 0.5, 0, 1);
+        if (a <= 0.05) continue;
+        const rr = W * 0.012 * a;
+        g.save(); g.globalAlpha = a; g.fillStyle = '#fff27a';
+        g.beginPath();
+        for (let k = 0; k < 4; k++){
+          const ang = k * Math.PI / 2;
+          g.lineTo(sx + Math.cos(ang) * rr, sy + Math.sin(ang) * rr);
+          g.lineTo(sx + Math.cos(ang + Math.PI / 4) * rr * 0.28, sy + Math.sin(ang + Math.PI / 4) * rr * 0.28);
+        }
+        g.closePath(); g.fill(); g.restore();
+      }
+      ioSub(g, W, H, L2, base + px * 0.95, ioClamp((t - 0.5) / 0.5, 0, 1), '#ffffff', 'Jua');
+    } },
+
+  { id:'glitch', e:'⚡', name:'글리치', font:'Black Han Sans', useFrame:true,
+    draw(g, W, H, t, D, L1, L2, frame){
+      ioFrame(g, W, H, frame, 0.62);
+      const px = ioFit(g, L1, W * 0.8, H * 0.068, 'Black Han Sans', '400');
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
+      const r = ioRand(Math.floor(t * 18) + 3);
+      const j = (Math.sin(t * 41) > 0.6 ? 1 : 0.25) * px * 0.14;
+      const y = H * 0.45;
+      g.save();
+      g.globalCompositeOperation = 'lighter';
+      g.fillStyle = '#ff2d55'; g.fillText(L1, W / 2 - j, y);
+      g.fillStyle = '#00e5ff'; g.fillText(L1, W / 2 + j, y);
+      g.restore();
+      g.fillStyle = '#ffffff'; g.fillText(L1, W / 2, y);
+      for (let i = 0; i < 5; i++){
+        if (r() > 0.55) continue;
+        const sy = y - px * 0.6 + r() * px * 1.2, sh = px * 0.10;
+        const off = (r() - 0.5) * W * 0.09;
+        g.save(); g.beginPath(); g.rect(0, sy, W, sh); g.clip();
+        g.fillStyle = '#0b0f18'; g.fillRect(0, sy, W, sh);
+        g.fillStyle = '#ffffff'; g.fillText(L1, W / 2 + off, y);
+        g.restore();
+      }
+      g.save(); g.globalAlpha = 0.18; g.fillStyle = '#000';
+      for (let sy = 0; sy < H; sy += Math.max(2, H * 0.004)) g.fillRect(0, sy, W, Math.max(1, H * 0.0016));
+      g.restore();
+      ioSub(g, W, H, L2, y + px * 0.85, ioClamp((t - 0.4) / 0.5, 0, 1), '#8ef6ff');
+    } },
+
+  { id:'minimal', e:'▫️', name:'미니멀 라인', font:'Song Myung',
+    draw(g, W, H, t, D, L1, L2){
+      g.fillStyle = '#06080e'; g.fillRect(0, 0, W, H);
+      const p = ioEase(ioClamp(t / 0.85, 0, 1));
+      const y1 = H * 0.40, y2 = H * 0.53, half = W * 0.38 * p;
+      g.strokeStyle = 'rgba(180,200,225,.55)'; g.lineWidth = Math.max(1, H * 0.0014);
+      g.beginPath(); g.moveTo(W / 2 - half, y1); g.lineTo(W / 2 + half, y1);
+      g.moveTo(W / 2 - half, y2); g.lineTo(W / 2 + half, y2); g.stroke();
+      const tp = ioClamp((t - 0.5) / 0.7, 0, 1);
+      const px = ioFit(g, L1, W * 0.7, H * 0.047, 'Song Myung', '400');
+      g.save(); g.globalAlpha = tp;
+      g.font = '400 ' + px + 'px "Song Myung", serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = '#eef3fa';
+      g.translate(0, (1 - ioEase(tp)) * H * 0.012);
+      g.fillText(L1, W / 2, (y1 + y2) / 2);
+      g.restore();
+      ioSub(g, W, H, L2, y2 + H * 0.05, tp, '#64748b', 'Song Myung');
+    } },
+
+  { id:'spotlight', e:'🔦', name:'스포트라이트', font:'Do Hyeon',
+    draw(g, W, H, t, D, L1, L2){
+      g.fillStyle = '#04040a'; g.fillRect(0, 0, W, H);
+      const p = ioEase(ioClamp(t / 0.9, 0, 1));
+      const cx = W / 2, cy = H * 0.45, R = Math.min(W, H) * (0.08 + 0.52 * p);
+      const gr = g.createRadialGradient(cx, cy * 0.96, R * 0.05, cx, cy, R);
+      gr.addColorStop(0, 'rgba(255,246,214,.95)');
+      gr.addColorStop(0.45, 'rgba(255,225,150,.22)');
+      gr.addColorStop(1, 'rgba(255,220,140,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill();
+      const tp = ioClamp((t - 0.55) / 0.6, 0, 1);
+      const px = ioFit(g, L1, W * 0.74, H * 0.062, 'Do Hyeon', '400');
+      g.save(); g.globalAlpha = tp;
+      g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = '#2b1d05';
+      g.fillText(L1, cx, cy);
+      g.restore();
+      ioSub(g, W, H, L2, cy + px * 0.9, tp, '#7c6a3c', 'Do Hyeon');
+    } },
+
+  { id:'confetti', e:'🎉', name:'폭죽', font:'Jua',
+    draw(g, W, H, t, D, L1, L2){
+      ioGrad(g, W, H, '#1b1140', '#07061a');
+      const r = ioRand(99);
+      const cols = ['#ff5c8a', '#ffd93d', '#4ade80', '#38bdf8', '#c084fc', '#fb923c'];
+      for (let i = 0; i < 70; i++){
+        const x0 = r() * W, sp = 0.55 + r() * 0.95, del = r() * 0.8;
+        const sw = (r() - 0.5) * W * 0.22, rot = r() * 7, c = cols[Math.floor(r() * cols.length)];
+        const tt = t - del; if (tt < 0) continue;
+        const y = -H * 0.08 + tt * sp * H * 0.55;
+        if (y > H * 1.05) continue;
+        const x = x0 + Math.sin(tt * 2.2 + i) * sw;
+        const s = W * 0.016;
+        g.save(); g.translate(x, y); g.rotate(rot + tt * 4.2);
+        g.fillStyle = c; g.fillRect(-s / 2, -s / 4, s, s / 2);
+        g.restore();
+      }
+      const p = ioClamp(t / 0.55, 0, 1);
+      const px = ioFit(g, L1, W * 0.82, H * 0.072, 'Jua', '400');
+      g.save();
+      g.translate(W / 2, H * 0.45);
+      const sc = 0.5 + 0.5 * ioBack(p); g.scale(sc, sc);
+      g.font = '400 ' + px + 'px "Jua", sans-serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.globalAlpha = Math.min(1, p * 1.5);
+      g.lineWidth = px * 0.2; g.lineJoin = 'round'; g.miterLimit = 2;
+      g.strokeStyle = '#1a0f33'; g.strokeText(L1, 0, 0);
+      g.fillStyle = '#ffffff'; g.fillText(L1, 0, 0);
+      g.restore();
+      ioSub(g, W, H, L2, H * 0.45 + px * 0.9, ioClamp((t - 0.4) / 0.5, 0, 1), '#ffd93d', 'Jua');
+    } }
+];
+
+/* --- 자동 멘트 --- */
+const IO_LINES = {
+  intro: ['지금부터 주접 시작', '오늘의 주인공 등장', '이거 보고 안 웃으면 반칙',
+          '무편집 원본 나갑니다', '대충 찍었는데 잘 나옴', '3초 뒤에 대단한 일이',
+          '준비 안 됐는데 이미 녹화 중', '이 구역의 분위기 메이커', '웃음 참기 챌린지 시작',
+          '자, 다들 집중하세요'],
+  outro: ['오늘도 성공적', '끝. 다시보기 필수', '여기까지 봤으면 책임지세요',
+          '다음 편은 기약 없음', '박수 부탁드립니다', '출연 우리 · 감독 우리',
+          '저장하고 자랑하기', '이상 주접이었습니다', '수고했다 오늘도',
+          '진짜 끝 (더 없음)']
+};
+function ioPick(kind){
+  const pool = IO_LINES[kind], cur = S[kind].auto1;
+  let v = pool[Math.floor(Math.random() * pool.length)];
+  for (let i = 0; i < 6 && v === cur; i++) v = pool[Math.floor(Math.random() * pool.length)];
+  return v;
+}
+function ioDesign(kind){
+  return IO_DESIGNS.find(d => d.id === S[kind].design) || IO_DESIGNS[0];
+}
+/* 실제로 그릴 문구 — 자동이면 뽑아둔 멘트, 직접이면 입력값(1줄=큰글씨, 2줄=작은글씨) */
+function ioText(kind){
+  const st = S[kind];
+  if (st.auto) return {L1: st.auto1 || IO_LINES[kind][0], L2: ''};
+  const ls = String(st.text || '').split('\n').map(x => x.trim()).filter(Boolean);
+  return {L1: ls[0] || IO_LINES[kind][0], L2: ls[1] || ''};
+}
+function ioDrawAt(g, W, H, kind, t, frame){
+  const d = ioDesign(kind), tx = ioText(kind);
+  g.save();
+  try { d.draw(g, W, H, ioClamp(t, 0, IO_DUR), IO_DUR, tx.L1, tx.L2, d.useFrame ? frame : null); }
+  catch(e){ g.fillStyle = '#05070c'; g.fillRect(0, 0, W, H); }
+  g.restore();
+}
+
+/* --- UI --- */
+function ioGridHtml(kind){
+  return IO_DESIGNS.map(d =>
+    '<button type="button" class="icard' + (S[kind].design === d.id ? ' on' : '') +
+    '" data-iodesign="' + kind + ':' + d.id + '"><span class="e">' + d.e + '</span>' + d.name + '</button>'
+  ).join('');
+}
+function syncIo(kind){
+  const st = S[kind];
+  const Cap = kind === 'intro' ? 'intro' : 'outro';
+  $(Cap + 'Sw').classList.toggle('on', st.on);
+  $(Cap + 'Sw').setAttribute('aria-checked', String(st.on));
+  $(Cap + 'Block').classList.toggle('live', st.on);
+  $(Cap + 'Body').hidden = !st.on;
+  $(Cap + 'Grid').innerHTML = ioGridHtml(kind);
+  document.querySelectorAll('#' + Cap + 'Mode button').forEach(b =>
+    b.classList.toggle('on', b.dataset.iomode === kind + ':' + (st.auto ? 'auto' : 'manual')));
+  $(Cap + 'AutoRow').hidden = !st.auto;
+  $(Cap + 'Text').hidden = st.auto;
+  $(Cap + 'AutoTx').textContent = st.auto1 || '—';
+  if ($(Cap + 'Text').value !== st.text) $(Cap + 'Text').value = st.text || '';
+  ensureFont(ioDesign(kind).font);
+  updateExportBtn();
+}
+let ioPrevRaf = 0, ioPrevT0 = 0;
+function startIoPreview(){
+  cancelAnimationFrame(ioPrevRaf);
+  ioPrevT0 = performance.now();
+  const loop = () => {
+    ioPrevRaf = requestAnimationFrame(loop);
+    if (S.step !== 4 || S.activeTab !== 'intro' || !S.editMode) return;
+    const t = ((performance.now() - ioPrevT0) / 1000) % (IO_DUR + 0.45);
+    for (const kind of ['intro', 'outro']){
+      const st = S[kind]; if (!st.on) continue;
+      const cv = $(kind + 'Prev'); if (!cv || cv.hidden) continue;
+      const w = 198, h = 352;
+      if (cv.width !== w){ cv.width = w; cv.height = h; }
+      ioDrawAt(cv.getContext('2d'), w, h, kind, Math.min(t, IO_DUR), $('resVideo'));
+    }
+  };
+  loop();
+}
+
+/* ========================================================================
+   홈 화면 설치(PWA)
+   - 서비스워커 + manifest 가 있어야 크롬이 "바로가기"가 아닌 "앱 설치"를 제안한다.
+   - 설치되면 주소창 없는 전체 화면으로 열린다(촬영 화면이 넓어짐).
+   ====================================================================== */
+const PWA = { prompt: null, state: 'unknown' };
+
+function isStandalone(){
+  try {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: fullscreen)').matches
+        || window.matchMedia('(display-mode: minimal-ui)').matches
+        || navigator.standalone === true;
+  } catch(e){ return false; }
+}
+function isIosDevice(){
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function inAppBrowser(){
+  const u = navigator.userAgent || '';
+  return /KAKAOTALK|Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp|DaumApps|Line\/|everytimeApp|whale/i.test(u);
+}
+
+function setInstallUI(state, label){
+  PWA.state = state;
+  const btn = $('installBtn'), done = $('installedMsg');
+  if (!btn) return;
+  if (state === 'installed'){ btn.hidden = true; if (done) done.hidden = false; return; }
+  if (done) done.hidden = true;
+  if (state === 'hidden'){ btn.hidden = true; return; }
+  btn.textContent = label;
+  btn.hidden = false;
+}
+
+async function doInstall(){
+  if (PWA.prompt){
+    const p = PWA.prompt; PWA.prompt = null;
+    try {
+      p.prompt();
+      const res = await p.userChoice;
+      if (res && res.outcome === 'accepted'){ setInstallUI('installed'); return; }
+      setInstallUI('ready', '📲 홈 화면에 앱으로 설치');   // 취소 → 다시 누를 수 있게
+    } catch(e){ setInstallUI('manual', '📲 홈 화면에 추가하는 법'); }
+    return;
+  }
+  openHelp();   // 프롬프트를 쓸 수 없는 브라우저 → 기기별 설치 안내를 펼친다
+}
+
+function initPwa(){
+  const btn = $('installBtn');
+  if (btn) btn.addEventListener('click', doInstall);
+
+  if (isStandalone()){ setInstallUI('installed'); }
+  else if (isIosDevice() || inAppBrowser()){ setInstallUI('manual', '📲 홈 화면에 추가하는 법'); }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    PWA.prompt = e;
+    if (!isStandalone()) setInstallUI('ready', '📲 홈 화면에 앱으로 설치');
+  });
+  window.addEventListener('appinstalled', () => { PWA.prompt = null; setInstallUI('installed'); });
+
+  // 안드로이드인데 프롬프트가 안 오는 경우(이미 설치됨/조건 미충족) → 수동 안내라도 띄운다
+  setTimeout(() => {
+    if (PWA.state === 'unknown' && !isStandalone()) setInstallUI('manual', '📲 홈 화면에 추가하는 법');
+  }, 4000);
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:'){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js', {scope: './'}).catch(() => {});
+    });
+  } else if ('serviceWorker' in navigator && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js', {scope: './'}).catch(() => {});
+    });
+  }
+}
+initPwa();
+
+/* 인트로·아웃트로 초기 상태 */
+S.intro.auto1 = ioPick('intro');
+S.outro.auto1 = ioPick('outro');
+['intro','outro'].forEach(kind => {
+  const el = $(kind + 'Text');
+  el.addEventListener('input', () => { S[kind].text = el.value; updateExportBtn(); });
+});
+syncIo('intro'); syncIo('outro'); syncVoiceUI();
+
 /* 테스트 훅 (헤드리스 검증용) */
 window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
   applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont,
-  fixMp4Duration, repairDuration};
+  fixMp4Duration, repairDuration, IO_DESIGNS, IO_LINES, IO_DUR, ioText, ioDesign, ioPick, ioDrawAt, syncIo, syncVoiceUI, PWA, isStandalone, isIosDevice, inAppBrowser, setInstallUI, doInstall};
 </script>
 </body>
 </html>
