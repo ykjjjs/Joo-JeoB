@@ -4,7 +4,7 @@
    2) 껍데기(HTML·아이콘·글꼴)를 캐시해서 네트워크가 느리거나 끊겨도 앱이 열리게 함
    ※ 음원 검색(Jamendo) 같은 API 응답과 미디어는 캐시하지 않습니다. */
 
-const VERSION = 'joojeob-v4';
+const VERSION = 'joojeob-v5';
 const SHELL   = VERSION + '-shell';
 const ASSET   = VERSION + '-asset';
 

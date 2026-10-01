@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Joo-JeoB</title>
 <meta name="description" content="음악을 고르고 촬영하거나 기존 영상에 입혀서, BGM이 지워지지 않는 세로 영상 파일로 저장합니다.">
-<meta name="theme-color" content="#070b16">
+<meta name="theme-color" content="#0B0D12">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -20,19 +20,17 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Black+Han+Sans&family=Do+Hyeon&family=Jua&family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Gamja+Flower&family=Song+Myung&family=Noto+Sans+KR:wght@400;700;900&display=swap">
 <style>
 :root{
-  --bg:#070b16; --bg2:#0a1020; --panel:#0e1728; --panel2:#131f36; --line:#1e2d4a;
-  --cy:#22d3ee; --cy2:#06b6d4; --cydim:rgba(34,211,238,.14);
-  --tx:#e6edf7; --tx2:#93a4bf; --tx3:#5f708c;
-  --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
+  --bg:#0B0D12; --bg2:#0E1117; --panel:#13161D; --panel2:#1A1E28; --line:#262C38;
+  --cy:#8AB0FF; --cy2:#7299F2; --cydim:rgba(138,176,255,.12); --ink:#0B1020;
+  --tx:#ECEFF4; --tx2:#A7AEBC; --tx3:#707888;
+  --ok:#3DD68C; --warn:#F2B84B; --bad:#FF6B6B;
+  --voice:#B79CFF; --voicedim:rgba(183,156,255,.13);
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  background:
-    radial-gradient(1100px 620px at 50% -12%,rgba(34,211,238,.13),transparent 62%),
-    radial-gradient(700px 500px at 100% 100%,rgba(99,102,241,.10),transparent 60%),
-    var(--bg);
+  background:radial-gradient(900px 480px at 50% -14%,rgba(138,176,255,.07),transparent 62%),var(--bg);
   color:var(--tx);
   font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',system-ui,sans-serif;
   font-size:15px; line-height:1.6;
@@ -43,79 +41,77 @@ body{
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* header */
-.hdr{padding:30px 0 18px;text-align:center}
-.hdr h1{margin:0;font-size:27px;font-weight:800;letter-spacing:-.6px}
-.hdr h1 span{color:var(--cy);text-shadow:0 0 22px rgba(34,211,238,.5)}
-.hdr .sub{margin:9px 0 0;color:var(--tx2);font-size:13px;line-height:1.55}
-.pill{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:5px 12px;border:1px solid var(--line);
-  border-radius:999px;background:var(--cydim);color:var(--cy);font-size:11.5px;font-weight:600}
-.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cy);box-shadow:0 0 8px var(--cy)}
+.hdr{padding:14px 0 18px;text-align:center}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:34px;margin-bottom:14px}
+.hdr h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.5px}
+.hdr h1 span{color:var(--cy)}
+.hdr .sub{margin:8px 0 0;color:var(--tx2);font-size:13px;line-height:1.55}
+.pill{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:5px 12px;border:1px solid var(--line);
+  border-radius:999px;background:var(--panel);color:var(--tx2);font-size:11.5px;font-weight:600}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* steps */
 .steps{display:flex;gap:6px;margin:18px 0 14px}
 .steps div{flex:1;height:3px;border-radius:2px;background:var(--line);transition:.3s}
-.steps div.on{background:linear-gradient(90deg,var(--cy2),var(--cy));box-shadow:0 0 10px rgba(34,211,238,.5)}
+.steps div.on{background:var(--cy)}
 
 /* card */
-.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
-  border-radius:18px;padding:18px 16px;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:14px}
 .card > h2{margin:0 0 4px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-.card > h2 .n{width:22px;height:22px;flex:0 0 22px;border-radius:7px;background:var(--cydim);color:var(--cy);
-  display:grid;place-items:center;font-size:12px;font-family:var(--mono);font-weight:600}
+.card > h2 .n{width:22px;height:22px;flex:0 0 22px;border-radius:7px;border:1px solid var(--line);color:var(--tx2);
+  display:grid;place-items:center;font-size:11.5px;font-family:var(--mono);font-weight:600}
 .card > .hint{margin:0 0 14px 30px;color:var(--tx3);font-size:12px}
 
 /* segmented */
-.seg{display:flex;gap:6px;background:#0a1224;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px}
+.seg{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:14px}
 .seg button{flex:1;padding:9px 4px;border:0;border-radius:9px;background:transparent;color:var(--tx2);white-space:nowrap;
   font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}
-.seg button.on{background:var(--cy);color:#04121a;box-shadow:0 3px 14px rgba(34,211,238,.28)}
+.seg button.on{background:#272D3A;color:var(--tx);box-shadow:inset 0 0 0 1px #363D4D}
 
 /* track cards */
 .trackgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .tcard{position:relative;text-align:left;padding:13px 12px;border:1px solid var(--line);border-radius:14px;
   background:var(--panel2);color:var(--tx);cursor:pointer;font-family:inherit;transition:.18s;overflow:hidden}
-.tcard:hover{border-color:#2c4370}
-.tcard.on{border-color:var(--cy);background:linear-gradient(180deg,rgba(34,211,238,.14),rgba(34,211,238,.04));
-  box-shadow:0 0 0 1px rgba(34,211,238,.35),0 8px 24px -12px rgba(34,211,238,.5)}
-.tcard .emo{font-size:19px;line-height:1}
-.tcard .tn{margin-top:7px;font-size:13.5px;font-weight:700}
+.tcard:hover{border-color:#39414F}
+.tcard.on{border-color:var(--cy);background:var(--cydim)}
+.tcard .tn{margin-top:1px;font-size:13.5px;font-weight:700}
 .tcard .tm{margin-top:2px;font-size:11px;color:var(--tx2)}
 .tcard .tb{margin-top:7px;font-family:var(--mono);font-size:10px;color:var(--cy);opacity:.85}
-.tcard .chev{position:absolute;right:10px;top:11px;font-size:10px;color:var(--tx3)}
-.tcard.on .chev{color:var(--cy)}
 
 /* detail panel */
-.detail{margin-top:11px;border:1px solid var(--line);border-radius:14px;background:#0a1224;padding:14px 13px}
+.detail{margin-top:11px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:14px 13px}
 .detail h3{margin:0 0 3px;font-size:13.5px;font-weight:700}
 .detail .why{margin:0 0 11px;font-size:12.5px;color:var(--tx2);line-height:1.6}
-.wave{width:100%;height:62px;display:block;border-radius:9px;background:#070d1a;border:1px solid var(--line)}
+.wave{width:100%;height:62px;display:block;border-radius:9px;background:var(--bg);border:1px solid var(--line)}
 .wavelabel{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--tx3);margin-top:5px}
 .specs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
 .specs div{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
 .specs b{display:block;font-size:10px;color:var(--tx3);font-weight:600;letter-spacing:.3px}
 .specs span{font-family:var(--mono);font-size:12px;color:var(--tx)}
-.filerow{display:block;margin-top:8px;padding:9px 10px;border:1px dashed var(--line);
-  border-radius:10px;background:#08101f;font-size:11.5px;color:var(--tx2);line-height:1.6}
-.filerow b{color:var(--cy);font-family:var(--mono);font-size:11px;font-weight:600}
+.filerow{display:block;margin-top:8px;padding:9px 10px;border:1px solid var(--line);
+  border-radius:10px;background:var(--bg);font-size:11.5px;color:var(--tx2);line-height:1.6}
+.filerow b{color:var(--tx);font-weight:600}
 
 /* upload */
-.drop{display:block;padding:22px 14px;border:1.5px dashed #24365a;border-radius:14px;background:#0a1224;
+.drop{display:block;padding:22px 14px;border:1.5px dashed #343B49;border-radius:14px;background:var(--bg2);
   text-align:center;cursor:pointer;transition:.18s}
-.drop:hover{border-color:var(--cy);background:rgba(34,211,238,.05)}
-.drop .big{font-size:24px}
+.drop:hover{border-color:var(--cy);background:var(--cydim)}
+.drop .big{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);color:var(--tx2)}
+.drop .big .ic{width:20px;height:20px}
 .drop .t{margin-top:7px;font-size:13.5px;font-weight:700}
 .drop .s{margin-top:3px;font-size:11.5px;color:var(--tx3)}
 
 /* status strip */
 .status{display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 12px;border-radius:12px;
-  border:1px solid var(--line);background:#0a1224;font-size:12.5px}
-.status .dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--bad);box-shadow:0 0 9px currentColor}
+  border:1px solid var(--line);background:var(--bg2);font-size:12.5px}
+.status .dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--bad)}
 .status.ok .dot{background:var(--ok)}
-.status.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.07)}
+.status.ok{border-color:rgba(61,214,140,.35);background:rgba(61,214,140,.06)}
 .status b{color:var(--tx)}
 
 /* controls */
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(30,45,74,.6)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
 .row .lb{font-size:13px;font-weight:600}
 .row .ds{font-size:11px;color:var(--tx3);margin-top:1px}
@@ -126,160 +122,163 @@ body{
 .chip{padding:7px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--tx2);
   font-family:var(--mono);font-size:12px;cursor:pointer;transition:.16s}
 .chip.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
-.sw{position:relative;width:46px;height:26px;flex:0 0 46px;border-radius:999px;background:#1b2942;border:1px solid var(--line);cursor:pointer;transition:.2s}
-.sw::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#66809f;transition:.2s}
-.sw.on{background:var(--cydim);border-color:var(--cy)}
-.sw.on::after{left:22px;background:var(--cy);box-shadow:0 0 10px var(--cy)}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:#1b2942;outline:0}
+.sw{position:relative;width:46px;height:26px;flex:0 0 46px;border-radius:999px;background:#2A303C;border:1px solid #333A48;cursor:pointer;transition:.2s}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#C9CED8;transition:.2s}
+.sw.on{background:var(--cy);border-color:var(--cy)}
+.sw.on::after{left:22px;background:#fff}
+.sw:focus-visible,.tcard:focus-visible,.chip:focus-visible,.btn:focus-visible,.nav:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:#2A303C;outline:0}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
-  background:var(--cy);box-shadow:0 0 10px rgba(34,211,238,.6);cursor:pointer}
+  background:var(--cy);border:3px solid var(--bg);cursor:pointer}
 input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--cy);cursor:pointer}
 .slabel{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--tx3);margin-bottom:6px}
 .slabel .v{color:var(--cy)}
 
 /* stage */
-.stage{position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#04070e;
+.stage{position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#050608;
   border:1px solid var(--line)}
 .stage canvas#view{width:100%;height:100%;display:block;object-fit:cover}
 .stage .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--tx3);font-size:13px;padding:22px}
-.flipbtn{position:absolute;right:12px;bottom:14px;width:46px;height:46px;border-radius:50%;border:0;
-  background:rgba(10,16,32,.72);backdrop-filter:blur(8px);color:#fff;font-size:20px;cursor:pointer;
+.flipbtn{position:absolute;right:12px;bottom:14px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+  background:rgba(11,13,18,.62);backdrop-filter:blur(8px);color:#fff;cursor:pointer;
   display:grid;place-items:center;z-index:3}
+.flipbtn .ic{width:22px;height:22px}
 .flipbtn:active{transform:scale(.92)}
 .rec-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;
-  background:rgba(10,16,32,.78);backdrop-filter:blur(8px);font-family:var(--mono);font-size:12px;font-weight:600}
+  background:rgba(11,13,18,.72);backdrop-filter:blur(8px);font-family:var(--mono);font-size:12px;font-weight:600}
 .rec-badge.on{display:flex}
-.rec-badge i{width:8px;height:8px;border-radius:50%;background:#f43f5e;animation:blink 1s infinite}
+.rec-badge i{width:8px;height:8px;border-radius:50%;background:#FF4D5E;animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.15}}
 .bgm-badge{position:absolute;top:12px;right:12px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
-  background:rgba(10,16,32,.78);backdrop-filter:blur(8px);font-size:11px;font-weight:600;color:var(--ok);max-width:62%}
+  background:rgba(11,13,18,.72);backdrop-filter:blur(8px);font-size:11px;font-weight:600;color:var(--ok);max-width:62%}
 .bgm-badge.mute{color:var(--bad)}
 .bgm-badge .bars{display:flex;align-items:flex-end;gap:2px;height:12px}
 .bgm-badge .bars i{width:2.5px;background:currentColor;border-radius:1px;height:3px;transition:height .08s linear}
-.count{position:absolute;inset:0;display:none;place-items:center;background:rgba(4,7,14,.55);backdrop-filter:blur(3px);
-  font-family:var(--mono);font-size:76px;font-weight:600;color:var(--cy);text-shadow:0 0 30px rgba(34,211,238,.6)}
+.count{position:absolute;inset:0;display:none;place-items:center;background:rgba(5,6,8,.5);backdrop-filter:blur(3px);
+  font-family:var(--mono);font-size:76px;font-weight:600;color:#fff}
 .count.on{display:grid}
 .prog{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.1)}
-.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cy2),var(--cy));box-shadow:0 0 12px var(--cy)}
+.prog i{display:block;height:100%;width:0;background:var(--cy)}
 
 /* meters */
 .meters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
-.meter{background:#0a1224;border:1px solid var(--line);border-radius:11px;padding:9px 10px}
+.meter{background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:9px 10px}
 .meter .mh{display:flex;justify-content:space-between;font-size:10.5px;color:var(--tx3);font-weight:600;margin-bottom:6px}
 .meter .mh span{font-family:var(--mono);color:var(--tx2)}
-.bar{height:6px;border-radius:3px;background:#141f36;overflow:hidden}
+.bar{height:6px;border-radius:3px;background:#222733;overflow:hidden}
 .bar i{display:block;height:100%;width:0;border-radius:3px;transition:width .07s linear}
-.bar.bgm i{background:linear-gradient(90deg,var(--cy2),var(--cy))}
-.bar.mic i{background:linear-gradient(90deg,#818cf8,#c084fc)}
+.bar.bgm i{background:var(--cy)}
+.bar.mic i{background:var(--voice)}
 
 /* buttons */
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border:0;border-radius:14px;
   font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:.18s;margin-top:12px}
-.btn.primary{background:linear-gradient(135deg,var(--cy),var(--cy2));color:#04121a;box-shadow:0 8px 26px -10px rgba(34,211,238,.8)}
-.btn.primary:disabled{background:#17233c;color:#4d5f7d;box-shadow:none;cursor:not-allowed}
-.btn.stop{background:linear-gradient(135deg,#fb7185,#f43f5e);color:#fff}
+.btn.primary{background:var(--cy);color:var(--ink)}
+.btn.primary:hover{background:#9DBDFF}
+.btn.primary:disabled{background:#20252F;color:#5A6272;cursor:not-allowed}
+.btn.stop{background:#E5484D;color:#fff}
 .btn.ghost{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
 .btn.ghost:disabled{opacity:.4;cursor:not-allowed}
 .btnrow{display:flex;gap:9px}
 .btnrow .btn{margin-top:12px}
 
 /* report */
-.rep{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;margin-bottom:9px;font-size:12.5px;line-height:1.55}
-.rep.ok{background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.35)}
-.rep.warn{background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.35)}
-.rep.bad{background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.35)}
-.rep .ic{font-size:15px;line-height:1.2}
+.rep{display:block;padding:11px 12px 11px 14px;border-radius:12px;margin-bottom:9px;font-size:12.5px;line-height:1.55;
+  background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--tx3)}
+.rep.ok{border-left-color:var(--ok)}
+.rep.warn{border-left-color:var(--warn)}
+.rep.bad{border-left-color:var(--bad);background:rgba(255,107,107,.06)}
 .rep b{display:block;margin-bottom:2px;font-size:13px}
 .rep span{color:var(--tx2)}
 video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;border:1px solid var(--line);display:block}
-.guide{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:12px;background:#0a1224}
-.guide h4{margin:0 0 8px;font-size:12.5px;color:var(--cy)}
+.guide{margin-top:14px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--bg2)}
+.guide h4{margin:0 0 8px;font-size:12.5px;color:var(--tx)}
 .guide ol{margin:0;padding-left:18px;color:var(--tx2);font-size:12px;line-height:1.75}
 .foot{text-align:center;color:var(--tx3);font-size:11px;margin-top:22px;line-height:1.7}
 .foot code{font-family:var(--mono);color:var(--tx2)}
 /* ── 프로필 / 로그인 ── */
-.helpchip{position:absolute;top:26px;left:0;display:inline-flex;align-items:center;gap:5px;
-  padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);
-  color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
-.helpchip:hover{border-color:var(--cy);color:var(--cy)}
+.helpchip{display:inline-flex;align-items:center;gap:5px;
+  padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  color:var(--tx2);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.helpchip:hover{border-color:#3A4252;color:var(--tx)}
 .guide-sec{margin-bottom:16px}
 .guide-sec > h4{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:13.5px;font-weight:700;color:var(--tx)}
-.guide-sec > h4 i{width:22px;height:22px;flex:0 0 22px;border-radius:7px;background:var(--cydim);color:var(--cy);
+.guide-sec > h4 i{min-width:22px;height:22px;flex:0 0 auto;padding:0 5px;border-radius:7px;border:1px solid var(--line);color:var(--tx2);
   display:grid;place-items:center;font-size:11px;font-family:var(--mono);font-weight:600;font-style:normal}
 .guide-sec p{margin:0 0 8px 30px;font-size:12.5px;color:var(--tx2);line-height:1.7}
 .guide-sec p b{color:var(--tx)}
-.guide-sec p .hl{color:var(--cy);font-weight:600}
+.guide-sec p .hl{color:var(--tx);font-weight:700}
 .guide-sec ul{margin:0 0 8px 30px;padding-left:15px;font-size:12.5px;color:var(--tx2);line-height:1.75}
 .guide-sec ul b{color:var(--tx)}
-.trouble{margin-left:30px;padding:10px 11px;border:1px dashed var(--line);border-radius:10px;background:#08101f;
+.trouble{margin-left:30px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);
   font-size:11.5px;color:var(--tx2);line-height:1.7}
 .trouble b{color:var(--warn)}
-.userchip{position:absolute;top:26px;right:0;display:inline-flex;align-items:center;gap:6px;
-  padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);
-  color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;max-width:44%}
+.userchip{margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;max-width:55%}
+.userchip .ic{width:15px;height:15px;color:var(--tx2)}
 .userchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hdr{position:relative}
-.instchip{display:inline-flex;align-items:center;gap:7px;margin:10px auto 0;padding:10px 16px;
-  border:1px solid var(--cy);border-radius:999px;background:var(--cydim);color:var(--cy);
-  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
-  box-shadow:0 0 0 0 rgba(34,211,238,.45);animation:instPulse 2.6s ease-out infinite}
-.instchip:hover{background:rgba(34,211,238,.22)}
-@keyframes instPulse{0%{box-shadow:0 0 0 0 rgba(34,211,238,.38)}70%{box-shadow:0 0 0 12px rgba(34,211,238,0)}100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}}
-@media (prefers-reduced-motion:reduce){.instchip{animation:none}}
+.instchip{display:inline-flex;align-items:center;gap:7px;margin:10px auto 0;padding:9px 16px;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--tx);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.instchip:hover{border-color:var(--cy)}
 .instrow{display:flex;justify-content:center}
 /* ── 내 목소리 살리기/빼기 ── */
-.voicebox{margin:13px 0 0;padding:13px;border:1px solid var(--line);border-radius:14px;background:#0a1224;transition:.18s}
-.voicebox.live{border-color:#c084fc;background:rgba(192,132,252,.07)}
+.voicebox{margin:13px 0 0;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);transition:.18s}
+.voicebox.live{border-color:var(--voice);background:var(--voicedim)}
 .voicebox .vh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .voicebox .vt{font-size:13.5px;font-weight:700;color:var(--tx)}
 .voicebox .vstate{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--tx3);white-space:nowrap}
-.voicebox.live .vstate{background:rgba(192,132,252,.2);color:#d8b4fe}
+.voicebox.live .vstate{background:rgba(183,156,255,.18);color:#D9CCFF}
 .vchips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .vchips .chip{padding:13px 8px;font-family:inherit;font-size:13.5px;font-weight:700;text-align:center}
-.voicebox.live .vchips .chip.on{border-color:#c084fc;background:rgba(192,132,252,.16);color:#d8b4fe}
+.voicebox.live .vchips .chip.on{border-color:var(--voice);background:rgba(183,156,255,.16);color:#E4DAFF}
 .vrow{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
 /* ── 인트로 · 아웃트로 ── */
-.ioblock{border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:11px;background:#0a1224}
+.ioblock{border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:11px;background:var(--bg2)}
 .ioblock.live{border-color:var(--cy)}
 .ioh{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ioh .t{font-size:13.5px;font-weight:700;color:var(--tx)}
 .ioh .d{font-size:11.5px;color:var(--tx3);margin-top:3px}
-.introgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:11px}
-.icard{padding:10px 9px;border:1px solid var(--line);border-radius:11px;background:#08101f;color:var(--tx2);
-  font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;text-align:left;line-height:1.35}
-.icard .e{font-size:16px;display:block;margin-bottom:3px}
-.icard.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
-.seg2{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--panel2);border:1px solid var(--line);
+.introgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:11px}
+.icard{padding:5px 5px 7px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--tx2);
+  font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;text-align:center;line-height:1.25}
+.icard canvas{display:block;width:100%;height:auto;aspect-ratio:9/16;border-radius:7px;margin-bottom:6px;background:#050608}
+.icard span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icard.on{border-color:var(--cy);background:var(--cydim);color:var(--tx)}
+.seg2{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg);border:1px solid var(--line);
   border-radius:11px;padding:4px;margin-top:12px}
 .seg2 button{padding:9px;border:0;border-radius:8px;background:transparent;color:var(--tx2);
   font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
-.seg2 button.on{background:var(--cy);color:#04121a}
+.seg2 button.on{background:#272D3A;color:var(--tx);box-shadow:inset 0 0 0 1px #363D4D}
 .autoline{display:flex;align-items:stretch;gap:8px;margin-top:10px}
-.autoline .txt{flex:1;padding:11px 12px;border:1px dashed var(--line);border-radius:11px;background:#08101f;
+.autoline .txt{flex:1;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);
   color:var(--tx);font-size:13.5px;font-weight:700;line-height:1.45;display:flex;align-items:center}
-.dice{flex:0 0 48px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);
-  color:var(--tx);font-size:19px;cursor:pointer}
+.dice{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:0 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);
+  color:var(--tx);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.dice .ic{width:16px;height:16px}
 .dice:hover{border-color:var(--cy)}
 .ioprev{width:172px;aspect-ratio:9/16;display:block;margin:12px auto 0;border-radius:12px;
-  border:1px solid var(--line);background:#04070e}
+  border:1px solid var(--line);background:#050608}
 .iopl{display:block;text-align:center;font-size:11px;color:var(--tx3);margin-top:7px}
+.iopl b{color:var(--tx2);font-weight:700}
 .instdone{display:flex;justify-content:center;margin-top:10px}
 .instdone span{padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);
   color:var(--tx3);font-size:11.5px;font-weight:600}
 .field{margin-top:11px}
 .field label{display:block;font-size:11.5px;color:var(--tx3);font-weight:600;margin-bottom:5px}
 .field input{width:100%;padding:13px 12px;border:1px solid var(--line);border-radius:11px;
-  background:#0a1224;color:var(--tx);font-family:inherit;font-size:15px}
+  background:var(--bg2);color:var(--tx);font-family:inherit;font-size:15px}
 .field input:focus{outline:2px solid var(--cy);outline-offset:1px;border-color:var(--cy)}
 .authtabs{margin-bottom:4px}
-.note{margin-top:12px;padding:11px 12px;border:1px dashed var(--line);border-radius:11px;
-  background:#08101f;color:var(--tx2);font-size:11.5px;line-height:1.6}
+.note{margin-top:12px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;
+  background:var(--bg2);color:var(--tx2);font-size:11.5px;line-height:1.6}
 .note b{color:var(--warn)}
 
 /* ── 이력 ── */
 .hist{display:flex;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;
-  background:#0a1224;margin-bottom:8px;align-items:center}
-.hist img{width:44px;height:78px;object-fit:cover;border-radius:7px;border:1px solid var(--line);flex:0 0 44px;background:#04070e}
+  background:var(--bg2);margin-bottom:8px;align-items:center}
+.hist img{width:44px;height:78px;object-fit:cover;border-radius:7px;border:1px solid var(--line);flex:0 0 44px;background:#050608}
 .hist .hb{flex:1;min-width:0}
 .hist .ht{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hist .hs{font-family:var(--mono);font-size:10.5px;color:var(--tx3);margin-top:3px}
@@ -289,7 +288,7 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
 
 /* ── 모달 ── */
 .sheet{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;
-  background:rgba(4,7,14,.72);backdrop-filter:blur(4px)}
+  background:rgba(5,6,8,.7);backdrop-filter:blur(4px)}
 .sheet .inner{width:100%;max-width:520px;max-height:86vh;overflow-y:auto;background:var(--panel);
   border:1px solid var(--line);border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
 .sheet h3{margin:0 0 12px;font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
@@ -303,14 +302,13 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
    4) 녹화·인코딩 중에는 둘 다 잠금 */
 .navbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:10px;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));
-  background:linear-gradient(180deg,rgba(7,11,22,.75),var(--bg) 45%);
+  background:rgba(11,13,18,.9);
   border-top:1px solid var(--line);backdrop-filter:blur(10px)}
 .navbar .inner{display:flex;align-items:center;gap:10px;width:100%;max-width:520px;margin:0 auto}
 .nav{min-height:52px;border-radius:14px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;
   border:1px solid var(--line);background:var(--panel2);color:var(--tx);transition:.16s}
 .nav.prev{flex:0 0 96px;font-size:13.5px;color:var(--tx2)}
-.nav.next{flex:1;border:0;background:linear-gradient(135deg,var(--cy),var(--cy2));color:#04121a;
-  box-shadow:0 8px 24px -12px rgba(34,211,238,.9)}
+.nav.next{flex:1;border:0;background:var(--cy);color:var(--ink)}
 .nav:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
 .navhint{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--tx3);text-align:center;
   min-width:52px;line-height:1.3}
@@ -319,43 +317,43 @@ body.hasnav{padding-bottom:104px}
 /* ── 자막 편집 ── */
 .vidwrap{position:relative;margin-top:12px;line-height:0}
 .vidwrap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border-radius:16px}
-.tabs{display:flex;gap:6px;background:#0a1224;border:1px solid var(--line);border-radius:12px;padding:4px;margin:12px 0 0}
+.tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px;margin:12px 0 0}
 .tabs button{flex:1;padding:10px 6px;border:0;border-radius:9px;background:transparent;color:var(--tx2);
   font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.16s}
-.tabs button.on{background:var(--cy);color:#04121a;box-shadow:0 3px 14px rgba(34,211,238,.28)}
-.tabpane{border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;background:#0a1224;padding:14px 13px;margin-bottom:2px}
+.tabs button.on{background:#272D3A;color:var(--tx);box-shadow:inset 0 0 0 1px #363D4D}
+.tabpane{border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;background:var(--bg2);padding:14px 13px;margin-bottom:2px}
 textarea.sub{width:100%;min-height:96px;padding:12px;border:1px solid var(--line);border-radius:11px;
-  background:#08101f;color:var(--tx);font-family:inherit;font-size:14px;line-height:1.6;resize:vertical}
+  background:var(--bg);color:var(--tx);font-family:inherit;font-size:14px;line-height:1.6;resize:vertical}
 textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
 .cue{display:flex;gap:7px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px;
   background:var(--panel2);margin-bottom:6px}
 .cue input[type=text]{flex:1;min-width:0;padding:8px 9px;border:1px solid var(--line);border-radius:8px;
-  background:#08101f;color:var(--tx);font-family:inherit;font-size:13px}
+  background:var(--bg);color:var(--tx);font-family:inherit;font-size:13px}
 .cue .tm{display:flex;flex-direction:column;gap:3px;flex:0 0 66px}
-.cue .tm input{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:#08101f;
+.cue .tm input{width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:var(--bg);
   color:var(--cy);font-family:var(--mono);font-size:11px;text-align:center}
 .cue .del{flex:0 0 auto;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);
   color:var(--bad);font-family:inherit;font-size:12px;cursor:pointer}
 .stylefor{display:block;width:100%;text-align:left;margin:0 0 14px;padding:11px 12px;border-radius:12px;
-  border:1px solid var(--line);background:#08101f;cursor:pointer;font-family:inherit}
+  border:1px solid var(--line);background:var(--bg);cursor:pointer;font-family:inherit}
 .stylefor .k{display:block;font-size:10.5px;color:var(--tx3);font-weight:600;letter-spacing:.3px}
-.stylefor .v{display:block;margin-top:3px;font-size:14px;font-weight:700;color:var(--cy);
+.stylefor .v{display:block;margin-top:3px;font-size:14px;font-weight:700;color:var(--tx);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stylefor:hover{border-color:var(--cy)}
 .donebar{display:flex;align-items:center;gap:11px;margin-top:12px;padding:12px 13px;border-radius:13px;
-  background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.4)}
+  background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.35)}
 .donebar b{display:block;font-size:13px;color:var(--ok);margin-bottom:2px}
 .donebar span{display:block;font-size:11.5px;color:var(--tx2);line-height:1.5}
 .donebar button{flex:0 0 auto;align-self:stretch;padding:0 13px;border:1px solid var(--line);border-radius:10px;
   background:var(--panel2);color:var(--cy);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
-.tl{position:relative;height:34px;border-radius:9px;background:#08101f;border:1px solid var(--line);overflow:hidden}
-.tl i{position:absolute;top:6px;bottom:6px;border-radius:5px;background:linear-gradient(180deg,var(--cy),var(--cy2));
+.tl{position:relative;height:34px;border-radius:9px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.tl i{position:absolute;top:6px;bottom:6px;border-radius:5px;background:var(--cy);
   opacity:.85;cursor:pointer;min-width:3px}
 .tl i:hover{opacity:1}
 .tl .empty-tl{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;color:var(--tx3)}
 .swatches{display:flex;gap:7px;flex-wrap:wrap}
 .sw-c{width:34px;height:34px;border-radius:9px;border:2px solid var(--line);cursor:pointer;padding:0}
-.sw-c.on{border-color:var(--cy);box-shadow:0 0 0 2px rgba(34,211,238,.35)}
+.sw-c.on{border-color:var(--cy);box-shadow:0 0 0 2px rgba(138,176,255,.35)}
 .fontgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .fontgrid button{padding:11px 8px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);
   color:var(--tx);font-size:15px;cursor:pointer;line-height:1.3}
@@ -363,22 +361,24 @@ textarea.sub:focus{outline:2px solid var(--cy);outline-offset:1px}
 .fontgrid button small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--tx3);margin-top:3px}
 .posgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:170px}
 .posgrid button{aspect-ratio:1.1;border:1px solid var(--line);border-radius:9px;background:var(--panel2);
-  color:var(--tx3);font-size:14px;cursor:pointer;display:grid;place-items:center}
+  color:var(--tx3);cursor:pointer;display:grid;place-items:center}
+.posgrid button .ic{width:16px;height:16px}
 .posgrid button.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
 .animgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .animgrid button{padding:10px 4px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);
   color:var(--tx2);font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer;line-height:1.35}
 .animgrid button.on{border-color:var(--cy);background:var(--cydim);color:var(--cy)}
-.animgrid button b{display:block;font-size:15px;margin-bottom:2px}
-input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-radius:9px;background:#08101f;padding:2px;cursor:pointer}
+input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:2px;cursor:pointer}
 
 /* ── 음원 검색 / 유튜브 임베드 ── */
 .jamrow img{width:44px;height:44px;flex:0 0 44px;border-radius:8px}
 .jamrow .ht small{color:var(--tx3);font-weight:400}
-.jamrow button.play{width:38px;padding:8px 0;text-align:center}
-.jamrow button.pick{color:#04121a;background:var(--cy);border-color:var(--cy)}
+.jamrow button.play{width:38px;padding:8px 0;display:grid;place-items:center}
+.jamrow button.play .ic{width:15px;height:15px}
+.jamrow button.pick{color:var(--ink);background:var(--cy);border-color:var(--cy)}
+.noimg{width:44px;height:44px;flex:0 0 44px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--tx3)}
 .lic{display:inline-block;padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:9.5px;font-weight:600;
-  background:rgba(52,211,153,.12);color:var(--ok);border:1px solid rgba(52,211,153,.35);vertical-align:middle}
+  background:rgba(61,214,140,.1);color:var(--ok);border:1px solid rgba(61,214,140,.3);vertical-align:middle}
 .inline{display:flex;gap:8px;align-items:stretch}
 .inline input{flex:1;min-width:0}
 .inline .btn{width:auto;margin:0;padding:0 14px;font-size:13px}
@@ -390,14 +390,14 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
   font-family:inherit;font-size:12px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .linkbtn:hover{color:var(--cy)}
 .arow{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;
-  background:#0a1224;margin-bottom:8px}
+  background:var(--bg2);margin-bottom:8px}
 .arow .an{flex:1;min-width:0}
 .arow .an b{display:block;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .arow .an span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--tx3);margin-top:2px}
 .arow.blocked{opacity:.55;border-style:dashed}
 .badge{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.3px;
-  background:rgba(248,113,113,.15);color:var(--bad);border:1px solid rgba(248,113,113,.4);margin-left:6px;vertical-align:middle}
-.badge.admin{background:var(--cydim);color:var(--cy);border-color:rgba(34,211,238,.4)}
+  background:rgba(255,107,107,.12);color:var(--bad);border:1px solid rgba(255,107,107,.35);margin-left:6px;vertical-align:middle}
+.badge.admin{background:var(--cydim);color:var(--cy);border-color:rgba(138,176,255,.35)}
 .abtns{display:flex;gap:6px;flex:0 0 auto}
 .abtns button{padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);
   color:var(--tx2);font-family:inherit;font-size:11.5px;font-weight:600;cursor:pointer}
@@ -407,22 +407,77 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 .stats div{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:10px 11px}
 .stats b{display:block;font-size:10px;color:var(--tx3);font-weight:600}
 .stats span{font-family:var(--mono);font-size:18px;color:var(--cy);font-weight:600}
+/* ── 안내 로봇 (s2s 강의의 클래식 로봇과 같은 모습) ──
+   오른쪽 아래에 앉아 있다가, 누르면 지금 화면의 부품 옆으로 날아가
+   그 부품을 테두리로 짚고 말풍선으로 설명한다. 필요한 곳은 직접 눌러 보인다. */
+#bot{position:fixed;left:0;top:0;z-index:72;display:flex;align-items:flex-end;gap:6px;
+  transform:translate(var(--bx,-200px),var(--by,-200px));transition:transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+#bot.flip{flex-direction:row-reverse}
+#bot.away{opacity:0;visibility:hidden}
+#bot.snap,#botRing.snap{transition:none}
+.bot-fig{flex:none;width:58px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
+  filter:drop-shadow(0 8px 12px rgba(0,0,0,.45));-webkit-tap-highlight-color:transparent}
+.bot-fig:focus-visible{outline:2px solid var(--cy);outline-offset:4px;border-radius:12px}
+.bot-fig svg{display:block;width:100%;height:auto;overflow:visible}
+.bot-fig .bob{animation:botBob 3.4s ease-in-out infinite;transform-origin:50% 60%}
+@keyframes botBob{50%{transform:translateY(-4%) rotate(-2deg)}}
+.bot-fig .eyes{transform:translate(var(--ex,0px),var(--ey,0px));transition:transform .3s ease-out}
+.bot-fig .eye{transform-box:fill-box;transform-origin:center;animation:botEye 4.6s infinite}
+@keyframes botEye{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.bot-fig .jet{transform-origin:100px 226px;animation:botJet .9s ease-in-out infinite}
+@keyframes botJet{50%{opacity:.55;transform:scaleY(.7)}}
+.bot-fig .ant{transform-box:fill-box;transform-origin:center;animation:botAnt 1.4s ease-in-out infinite}
+@keyframes botAnt{50%{opacity:.4}}
+.bot-fig .arm-l{transform-origin:37px 130px;transform:rotate(var(--la,10deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.bot-fig .arm-r{transform-origin:150px 132px;transform:rotate(var(--ra,-10deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+#bot.bot-wave .arm-r{animation:botWave .7s ease-in-out 3}
+@keyframes botWave{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(-150deg)}}
+#bot.bot-hop .bob{animation:botHop .6s cubic-bezier(.3,.7,.4,1)}
+@keyframes botHop{35%{transform:translateY(-14%) rotate(-6deg)}70%{transform:translateY(-3%) rotate(3deg)}}
+.bot-bubble{position:relative;width:min(300px,calc(100vw - 94px));padding:12px 14px 10px;border-radius:16px;
+  background:#FFFFFF;color:#1A2233;box-shadow:0 14px 34px -8px rgba(0,0,0,.55);pointer-events:auto;margin-bottom:26px}
+.bot-bubble::after{content:'';position:absolute;left:-7px;bottom:16px;border:8px solid transparent;border-left:0;border-right-color:#FFFFFF}
+#bot.flip .bot-bubble::after{left:auto;right:-7px;border-right:0;border-left:8px solid #FFFFFF}
+.bot-step{font-family:var(--mono);font-size:10.5px;font-weight:600;color:#6B7486;letter-spacing:.02em;margin-bottom:4px}
+.bot-text{margin:0;font-size:14px;line-height:1.6;font-weight:600;word-break:keep-all}
+.bot-text .off{color:transparent}
+.bot-sr{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bot-btns{display:flex;gap:6px;justify-content:flex-end;margin-top:10px}
+.bot-b{min-height:34px;padding:0 12px;border-radius:9px;border:1px solid #D9DEE7;background:#fff;color:#3A4456;
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.bot-b.pri{border-color:#1A2233;background:#1A2233;color:#fff}
+.bot-b:disabled{opacity:.35;cursor:default}
+.bot-b:focus-visible{outline:2px solid var(--cy2);outline-offset:2px}
+#botRing{position:fixed;z-index:70;left:0;top:0;border-radius:14px;pointer-events:none;
+  box-shadow:0 0 0 2px var(--cy),0 0 0 100vmax rgba(5,6,8,.5);transition:all .45s cubic-bezier(.2,.8,.2,1)}
+#botRing::after{content:'';position:absolute;inset:-6px;border-radius:18px;border:2px solid var(--cy);opacity:0;animation:botRing 1.6s ease-out infinite}
+@keyframes botRing{0%{opacity:.7;transform:scale(.97)}100%{opacity:0;transform:scale(1.05)}}
+#botTap{position:fixed;z-index:73;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
+  border:2px solid #fff;background:rgba(138,176,255,.35);pointer-events:none;opacity:0}
+#botTap.go{animation:botTap .55s ease-out}
+@keyframes botTap{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
+@media (prefers-reduced-motion:reduce){
+  #bot,#botRing{transition:none}
+  .bot-fig .bob,.bot-fig .eye,.bot-fig .jet,.bot-fig .ant,#bot.bot-wave .arm-r,#bot.bot-hop .bob,#botRing::after{animation:none}
+}
 [hidden]{display:none!important}
-.err{margin-top:11px;padding:11px 12px;border-radius:11px;background:rgba(248,113,113,.1);
-  border:1px solid rgba(248,113,113,.4);color:#fecaca;font-size:12.5px}
+.err{margin-top:11px;padding:11px 12px;border-radius:11px;background:rgba(255,107,107,.08);
+  border:1px solid rgba(255,107,107,.35);color:#FFC9C9;font-size:12.5px}
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="hdr">
+    <div class="hdr-top">
+      <button type="button" class="helpchip" id="helpChip">사용법</button>
+      <button type="button" class="userchip" id="userChip" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span id="userName"></span></button>
+    </div>
     <h1>Joo-<span>JeoB</span></h1>
     <p class="sub">음악을 고르고 → 촬영하거나 기존 영상에 입히고 → 받는 분께 바로 보내세요.</p>
-    <div class="pill">BGM이 영상 파일 안에 합쳐집니다 — 어디로 보내도 지워지지 않음</div>
-    <div class="instrow"><button type="button" class="instchip" id="installBtn" hidden>📲 홈 화면에 앱으로 설치</button></div>
-    <div class="instdone" id="installedMsg" hidden><span>✓ 앱으로 실행 중</span></div>
-    <button type="button" class="helpchip" id="helpChip">❓ 사용법</button>
-    <button type="button" class="userchip" id="userChip" hidden>👤 <span id="userName"></span></button>
+    <div class="pill">배경음악이 영상 파일 안에 합쳐집니다 · 어디로 보내도 지워지지 않음</div>
+    <div class="instrow"><button type="button" class="instchip" id="installBtn" hidden>홈 화면에 앱으로 설치</button></div>
+    <div class="instdone" id="installedMsg" hidden><span>앱으로 실행 중</span></div>
   </header>
 
   <!-- ===== 로그인 / 회원가입 ===== -->
@@ -486,7 +541,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </div>
 
     <div class="card">
-      <h2><span class="n">🔑</span> 관리자 비밀번호 변경</h2>
+      <h2><span class="n">*</span> 관리자 비밀번호 변경</h2>
       <div class="field"><label for="admNewPw">새 비밀번호</label><input id="admNewPw" type="password" placeholder="6자 이상"></div>
       <button type="button" class="btn ghost" id="admChangeBtn">변경</button>
       <div class="err" id="admChangeErr" hidden></div>
@@ -499,8 +554,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
   <div class="steps"><div id="s1" class="on"></div><div id="s2"></div><div id="s3"></div><div id="s4"></div></div>
 
   <div class="seg" id="modeSeg" style="margin-bottom:14px">
-    <button type="button" data-mode="shoot" class="on">📹 카메라로 촬영</button>
-    <button type="button" data-mode="dub">🎬 기존 영상에 입히기</button>
+    <button type="button" data-mode="shoot" class="on">카메라로 촬영</button>
+    <button type="button" data-mode="dub">기존 영상에 입히기</button>
   </div>
 
   <!-- 1. 음악 -->
@@ -511,8 +566,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     <div class="seg" id="srcSeg">
       <button type="button" data-src="builtin" class="on">내장 트랙</button>
       <button type="button" data-src="upload">내 음악</button>
-      <button type="button" data-src="capture">🔴 탭 소리</button>
-      <button type="button" data-src="search">🔎 음원 검색</button>
+      <button type="button" data-src="capture">탭 소리</button>
+      <button type="button" data-src="search">음원 검색</button>
     </div>
 
     <div id="paneBuiltin">
@@ -522,7 +577,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
     <div id="paneUpload" hidden>
       <label class="drop" for="fileInput">
-        <div class="big">🎵</div>
+        <div class="big"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5"/><path d="M7 10l5-5 5 5"/><path d="M5 20h14"/></svg></div>
         <div class="t">음악 파일 선택</div>
         <div class="s">MP3 · M4A · WAV · AAC · 영상(MP4/MOV)의 소리만 추출도 가능<br>
           <b style="color:var(--cy)">가요는 여기로</b> — 갖고 계신 음원 파일을 그대로 올리면 됩니다. 기기에서만 처리됩니다</div>
@@ -531,19 +586,19 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <div class="note" style="margin-top:10px"><b style="color:var(--cy)">가요를 쓰시려면</b> —
         멜론·지니·벅스의 <b>다운로드(소장) 상품</b>으로 산 MP3를 올리세요. 원본 음질 그대로 들어갑니다.<br>
         <b>스트리밍 이용권으로 저장한 곡은 안 됩니다</b> — DRM이 걸려 있어 다른 앱이 열 수 없습니다.
-        구매가 번거로우면 <b>🔴 탭 소리</b>의 화면 녹화 방법을 쓰세요.</div>
+        구매가 번거로우면 <b>탭 소리</b>의 화면 녹화 방법을 쓰세요.</div>
       <div id="uploadDetail" hidden></div>
     </div>
 
     <div id="paneSearch" hidden>
       <div class="detail">
-        <h3>🔎 무료 음원 검색 <span class="lic">Jamendo · CC 라이선스</span></h3>
+        <h3>무료 음원 검색 <span class="lic">Jamendo · CC 라이선스</span></h3>
         <p class="why">저작권 프리 음원 수십만 곡을 검색해 <b style="color:var(--cy)">바로 BGM으로</b> 씁니다.
           폰에서도 되고, 화면 녹화를 거칠 필요가 없습니다.</p>
         <div class="note" style="margin:0 0 12px"><b>가요·팝 같은 상업 음원은 여기 없습니다.</b>
           인디 뮤지션이 직접 올린 CC 라이선스 곡들이라 음원사가 권리를 가진 곡은 들어갈 수 없습니다.
           특정 가요를 쓰시려면 <b style="color:var(--cy)">내 음악</b>(갖고 계신 파일) 또는
-          <b style="color:var(--cy)">🔴 탭 소리</b>(유튜브 화면 녹화)를 쓰세요.</div>
+          <b style="color:var(--cy)">탭 소리</b>(유튜브 화면 녹화)를 쓰세요.</div>
 
         <div class="field" id="jamKeyRow" style="margin-top:0">
           <label for="jamKey">Jamendo Client ID <span class="mono" style="color:var(--tx3);font-weight:400">— devportal.jamendo.com 에서 무료 발급, 한 번만 저장</span></label>
@@ -577,9 +632,9 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     <div id="paneCapture" hidden>
       <!-- 휴대폰: 브라우저가 다른 앱 소리를 못 잡으므로 OS 화면 녹화 → 그 파일에서 소리만 추출 -->
       <div class="detail" id="capMobile" hidden>
-        <h3>📱 유튜브 소리를 화면 녹화로 담아오기</h3>
-        <div class="note" style="margin:0 0 12px;border-color:rgba(34,211,238,.4)"><b style="color:var(--cy)">더 간단한 길:</b>
-          위 <b>🔎 음원 검색</b> 탭에서 저작권 프리 곡을 골라 바로 쓰면 화면 녹화가 필요 없습니다. 꼭 유튜브의 특정 곡이어야 할 때만 아래 방법을 쓰세요.</div>
+        <h3>유튜브 소리를 화면 녹화로 담아오기</h3>
+        <div class="note" style="margin:0 0 12px"><b style="color:var(--cy)">더 간단한 길:</b>
+          위 <b>음원 검색</b> 탭에서 저작권 프리 곡을 골라 바로 쓰면 화면 녹화가 필요 없습니다. 꼭 유튜브의 특정 곡이어야 할 때만 아래 방법을 쓰세요.</div>
         <p class="why">휴대폰 브라우저는 다른 앱의 소리를 직접 받을 수 없습니다. 대신 <b style="color:var(--cy)">폰의 화면 녹화 기능</b>으로
           유튜브를 재생하며 녹화하면 소리가 담긴 영상 파일이 생깁니다. 그 파일을 아래에 올리면 <b style="color:var(--cy)">소리만 뽑아</b> BGM으로 씁니다.
           화면은 버리고 소리만 쓰므로 어떤 화면을 녹화했는지는 상관없습니다.</p>
@@ -587,10 +642,10 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="filerow" id="capStepsAndroid">
           <b style="display:block;margin-bottom:4px">안드로이드 (갤럭시 기준)</b>
           ① 화면 위에서 아래로 <b>두 번</b> 내려 빠른 설정을 엽니다<br>
-          ② <b>화면 녹화</b> 타일이 안 보이면 → 오른쪽 위 <b>연필 ✏️</b> 탭 →
+          ② <b>화면 녹화</b> 타일이 안 보이면 → 오른쪽 위 <b>연필 모양</b> 버튼 탭 →
              아래 &lsquo;사용 가능한 버튼&rsquo;에서 <b>화면 녹화</b>를 위로 끌어다 놓고 <b>완료</b><br>
           ③ <b>화면 녹화</b> 탭 → 소리 선택창에서 <b>미디어 소리</b> (마이크 아님) → <b>녹화 시작</b> → 3초 뒤 시작<br>
-          ④ 유튜브 앱에서 곡 재생 → 다 흐르면 화면의 <b>■ 정지</b> 버튼 탭<br>
+          ④ 유튜브 앱에서 곡 재생 → 다 흐르면 화면의 <b>정지</b> 버튼 탭<br>
           ⑤ 갤러리에 저장된 녹화 영상을 아래 버튼으로 선택<br>
           <b style="color:var(--cy)">깨끗하게 담는 요령</b> — 녹화 전에 <b>방해 금지</b>를 켜세요(알림음이 섞입니다).
           광고가 있으면 광고가 끝나고 곡이 시작된 뒤에 녹화를 시작하고, 유튜브 <b>자동재생은 꺼</b> 두세요.
@@ -598,14 +653,14 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="filerow" id="capStepsIos">
           <b style="display:block;margin-bottom:4px">아이폰</b>
           ① 설정 → 제어 센터 → <b>화면 기록</b> 추가 (한 번만)<br>
-          ② 제어 센터를 열고 <b>◉ 화면 기록</b> 탭 → 3초 후 시작<br>
+          ② 제어 센터를 열고 <b>화면 기록</b>(동그라미) 버튼 탭 → 3초 후 시작<br>
           ③ 유튜브 앱에서 곡 재생 → 끝나면 상단 빨간 표시 탭 → 중단<br>
           ④ 사진 앱에 저장된 영상을 아래 버튼으로 선택<br>
           <b style="color:var(--cy)">요령</b> — 녹화 전에 <b>방해 금지</b>를 켜고, 광고가 끝난 뒤 녹화를 시작하세요.
         </div>
 
         <label class="drop" for="capFileInput" style="margin-top:12px">
-          <div class="big">🎬</div>
+          <div class="big"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5"/><path d="M7 10l5-5 5 5"/><path d="M5 20h14"/></svg></div>
           <div class="t">화면 녹화 영상 선택 → 소리만 추출</div>
           <div class="s">MP4 · MOV — 영상은 버리고 오디오 트랙만 BGM으로 씁니다</div>
         </label>
@@ -615,7 +670,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       </div>
 
       <div class="detail" id="capPc">
-        <h3>🔴 유튜브 소리를 BGM으로 (PC)</h3>
+        <h3>유튜브 소리를 BGM으로 (PC)</h3>
         <p class="why">유튜브 링크를 붙이면 <b style="color:var(--cy)">이 화면 안에서 재생</b>되고, 캡처를 시작하면 그 소리가 그대로 녹화 오디오로 들어갑니다.
           마이크로 주워담는 게 아니라 브라우저 내부에서 직접 가져오므로 잡음이 없습니다.</p>
 
@@ -627,7 +682,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="err" id="ytErr" hidden></div>
 
         <ol id="capStepsPc" style="margin:0 0 12px;padding-left:18px;color:var(--tx2);font-size:12.5px;line-height:1.75">
-          <li>위에 링크를 붙여 <b>불러오기</b> → 플레이어에서 ▶ 재생</li>
+          <li>위에 링크를 붙여 <b>불러오기</b> → 플레이어에서 재생</li>
           <li>아래 <b>캡처 시작</b> → 뜨는 창에서 <b>이 탭</b>(현재 탭)을 선택</li>
           <li>창 하단의 <b>"탭 오디오도 공유"</b>가 켜져 있는지 꼭 확인</li>
           <li>촬영하는 동안 재생을 멈추지 마세요. 다른 탭의 소리를 쓰려면 링크 없이 바로 캡처 시작 → 그 탭 선택</li>
@@ -698,7 +753,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <div class="bgm-badge" id="bgmBadge" hidden>
         <span class="bars"><i></i><i></i><i></i><i></i></span><span id="bgmBadgeTx">BGM</span>
       </div>
-      <button type="button" class="flipbtn" id="flipBtn" hidden aria-label="카메라 전환">🔄</button>
+      <button type="button" class="flipbtn" id="flipBtn" hidden aria-label="카메라 전환"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/></svg></button>
       <div class="count" id="count"></div>
       <div class="prog"><i id="progBar"></i></div>
     </div>
@@ -709,16 +764,16 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="bar bgm"><i id="bgmBar"></i></div>
       </div>
       <div class="meter">
-        <div class="mh"><span style="color:#c084fc">내 목소리</span><span id="micDb">off</span></div>
+        <div class="mh"><span style="color:var(--voice)">내 목소리</span><span id="micDb">off</span></div>
         <div class="bar mic"><i id="micBar"></i></div>
       </div>
     </div>
 
     <div class="voicebox" id="voiceBox">
-      <div class="vh"><span class="vt">🎙 내 목소리</span><span class="vstate" id="voiceState">빼는 중</span></div>
+      <div class="vh"><span class="vt">내 목소리</span><span class="vstate" id="voiceState">빼는 중</span></div>
       <div class="chips vchips" id="voiceChips">
-        <button type="button" class="chip" data-voice="1">🔊 살리기</button>
-        <button type="button" class="chip on" data-voice="0">🔇 빼기</button>
+        <button type="button" class="chip" data-voice="1">살리기</button>
+        <button type="button" class="chip on" data-voice="0">빼기</button>
       </div>
       <div class="ds" id="voiceDs" style="margin-top:9px"></div>
       <div class="sw" id="micSw" role="switch" aria-checked="false" hidden></div>
@@ -726,7 +781,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="slabel"><span>목소리 크기</span><span class="v" id="micVolV">70%</span></div>
         <input type="range" id="micVol" min="0" max="100" value="70">
         <div class="row" style="border-bottom:0;padding:11px 0 0">
-          <div><div class="lb">스피커로 같이 듣기</div><div class="ds">이어폰 없이 켜 두면 소리가 울릴 수 있습니다</div></div>
+          <div><div class="lb">배경음악을 스피커로 듣기</div><div class="ds">내 목소리는 스피커로 나가지 않아 하울링이 생기지 않습니다. 이어폰을 끼면 가장 깨끗합니다</div></div>
           <div class="sw on" id="monSw" role="switch" aria-checked="true"></div>
         </div>
       </div>
@@ -751,7 +806,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     <p class="hint">음원이 지워진 영상에 배경음악을 다시 입혀 새 파일로 저장합니다.</p>
 
     <label class="drop" for="vidInput">
-      <div class="big">🎬</div>
+      <div class="big"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V5"/><path d="M7 10l5-5 5 5"/><path d="M5 20h14"/></svg></div>
       <div class="t">영상 파일 선택</div>
       <div class="s">MP4 · MOV · WebM — 기기에서만 처리되고 업로드되지 않습니다</div>
     </label>
@@ -773,7 +828,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
   <section class="card step" data-step="3" data-mode="dub">
     <h2><span class="n">3</span> 음악 입히기</h2>
     <p class="hint">원본 영상을 재생하면서 BGM을 함께 인코딩합니다. 화면을 끄지 마세요.</p>
-    <canvas id="dubCanvas" style="width:100%;height:auto;border-radius:14px;background:#04070e;border:1px solid var(--line);display:none"></canvas>
+    <canvas id="dubCanvas" style="width:100%;height:auto;border-radius:14px;background:#050608;border:1px solid var(--line);display:none"></canvas>
     <div class="prog" style="position:relative;margin-top:10px;border-radius:2px;overflow:hidden"><i id="dubProg"></i></div>
     <div class="slabel" style="margin-top:6px"><span id="dubMsg">영상을 선택하면 길이와 해상도가 표시됩니다</span><span class="v" id="dubTime"></span></div>
     <button type="button" class="btn primary" id="dubBtn" disabled>음악 입혀서 내보내기</button>
@@ -793,15 +848,15 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </div>
 
     <div class="donebar" id="doneBar" hidden>
-      <div><b>✅ 자막이 입혀진 완성본입니다</b><span>아래에서 저장하거나, 자막을 더 손보려면 편집으로 돌아가세요.</span></div>
+      <div><b>자막이 입혀진 완성본입니다</b><span>아래에서 저장하거나, 자막을 더 손보려면 편집으로 돌아가세요.</span></div>
       <button type="button" id="reEditBtn">자막 다시 편집</button>
     </div>
 
     <div class="tabs" id="editTabs">
-      <button type="button" data-tab="cut" class="on">✂️ 구간</button>
-      <button type="button" data-tab="text">💬 자막</button>
-      <button type="button" data-tab="style">🎨 꾸미기</button>
-      <button type="button" data-tab="intro">🎬 인트로</button>
+      <button type="button" data-tab="cut" class="on">구간</button>
+      <button type="button" data-tab="text">자막</button>
+      <button type="button" data-tab="style">꾸미기</button>
+      <button type="button" data-tab="intro">인트로</button>
     </div>
 
     <!-- 구간 -->
@@ -900,53 +955,53 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
     <!-- 인트로 · 아웃트로 -->
     <div class="tabpane" id="tabIntro" hidden>
-      <p class="why" style="margin:0 0 4px">영상 <b style="color:var(--cy)">앞뒤로 3초씩</b> 붙습니다. 배경음악은 끊기지 않고 그대로 이어집니다.</p>
+      <p class="why" style="margin:0 0 4px">영상 <b style="color:var(--cy)">앞뒤로 3초씩</b> 그림 카드가 붙고, 끝 장면에 글자가 남습니다. 다섯 가지 중에서 고르세요. 배경음악은 끊기지 않고 이어집니다.</p>
 
       <div class="ioblock" id="introBlock">
         <div class="ioh">
-          <div><div class="t">▶︎ 시작 인트로</div><div class="d">영상 맨 앞 3초</div></div>
+          <div><div class="t">시작 인트로</div><div class="d">영상 맨 앞 3초</div></div>
           <div class="sw" id="introSw" role="switch" aria-checked="false"></div>
         </div>
         <div id="introBody" hidden>
           <div class="introgrid" id="introGrid"></div>
           <div class="seg2" id="introMode">
-            <button type="button" data-iomode="intro:auto" class="on">🎲 자동 멘트</button>
-            <button type="button" data-iomode="intro:manual">✍️ 직접 쓰기</button>
+            <button type="button" data-iomode="intro:auto" class="on">자동 문구</button>
+            <button type="button" data-iomode="intro:manual">직접 쓰기</button>
           </div>
           <div class="autoline" id="introAutoRow">
             <div class="txt" id="introAutoTx">—</div>
-            <button type="button" class="dice" id="introDice" aria-label="다른 멘트 뽑기">🎲</button>
+            <button type="button" class="dice" id="introDice" aria-label="다른 문구 뽑기"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v5h-5"/></svg><span>다른 문구</span></button>
           </div>
           <textarea class="sub" id="introText" rows="2" hidden placeholder="첫 줄이 큰 글씨&#10;둘째 줄은 작은 글씨 (생략 가능)"></textarea>
           <canvas class="ioprev" id="introPrev"></canvas>
-          <span class="iopl">미리보기 — 3초 반복</span>
+          <span class="iopl"><b id="introName"></b> · 3초 미리보기(반복)</span>
         </div>
       </div>
 
       <div class="ioblock" id="outroBlock">
         <div class="ioh">
-          <div><div class="t">■ 마무리 아웃트로</div><div class="d">영상 맨 뒤 3초</div></div>
+          <div><div class="t">마무리 아웃트로</div><div class="d">영상 맨 뒤 3초</div></div>
           <div class="sw" id="outroSw" role="switch" aria-checked="false"></div>
         </div>
         <div id="outroBody" hidden>
           <div class="introgrid" id="outroGrid"></div>
           <div class="seg2" id="outroMode">
-            <button type="button" data-iomode="outro:auto" class="on">🎲 자동 멘트</button>
-            <button type="button" data-iomode="outro:manual">✍️ 직접 쓰기</button>
+            <button type="button" data-iomode="outro:auto" class="on">자동 문구</button>
+            <button type="button" data-iomode="outro:manual">직접 쓰기</button>
           </div>
           <div class="autoline" id="outroAutoRow">
             <div class="txt" id="outroAutoTx">—</div>
-            <button type="button" class="dice" id="outroDice" aria-label="다른 멘트 뽑기">🎲</button>
+            <button type="button" class="dice" id="outroDice" aria-label="다른 문구 뽑기"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.35-5.65"/><path d="M20 4v5h-5"/></svg><span>다른 문구</span></button>
           </div>
           <textarea class="sub" id="outroText" rows="2" hidden placeholder="첫 줄이 큰 글씨&#10;둘째 줄은 작은 글씨 (생략 가능)"></textarea>
           <canvas class="ioprev" id="outroPrev"></canvas>
-          <span class="iopl">미리보기 — 3초 반복</span>
+          <span class="iopl"><b id="outroName"></b> · 3초 미리보기(반복)</span>
         </div>
       </div>
     </div>
 
     <div class="prog" style="position:relative;margin-top:12px;border-radius:2px;overflow:hidden"><i id="trimProg"></i></div>
-    <button type="button" class="btn primary" id="trimBtn" disabled>✨ 편집 적용해서 내보내기</button>
+    <button type="button" class="btn primary" id="trimBtn" disabled>편집 적용해서 내보내기</button>
     <div class="ds" id="exportHint" style="margin-top:6px;text-align:center">구간을 자르거나 자막을 넣으면 켜집니다</div>
     <div class="err" id="trimErr" hidden></div>
 
@@ -981,8 +1036,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     <div class="inner">
       <h3><span>사용 방법</span><button type="button" id="helpClose" aria-label="닫기">×</button></h3>
       <div class="seg" id="helpSeg">
-        <button type="button" data-help="and" class="on">🤖 안드로이드</button>
-        <button type="button" data-help="ios">🍎 아이폰</button>
+        <button type="button" data-help="and" class="on">안드로이드</button>
+        <button type="button" data-help="ios">아이폰</button>
       </div>
 
       <!-- ───── 안드로이드 ───── -->
@@ -991,13 +1046,14 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <h4><i>1</i> 시작하기</h4>
           <p><b>크롬</b>으로 <span class="hl">https://</span> 주소를 열어 주세요. 다운로드 폴더의 HTML 파일을 직접 열면
             브라우저가 카메라를 막습니다.</p>
-          <p><b>홈 화면에 앱으로 깔기</b> — 화면 위쪽 <span class="hl">📲 홈 화면에 앱으로 설치</span> 버튼을 누르고
+          <p><b>홈 화면에 앱으로 깔기</b> — 화면 위쪽 <span class="hl">홈 화면에 앱으로 설치</span> 버튼을 누르고
             <b>설치</b>를 선택하세요. 주소창 없는 전체 화면으로 열려 촬영 화면이 더 넓어집니다.</p>
           <div class="trouble"><b>버튼이 안 보이거나 설치가 안 될 때</b><br>
             ① <b>카카오톡·인스타 안에서 열린 화면이면 설치가 안 됩니다.</b> 오른쪽 위 <b>⋮ → 다른 브라우저로 열기 → Chrome</b> 으로 먼저 옮기세요.<br>
             ② 크롬에서 <b>⋮ → 설치 및 바로가기 만들기</b> → <b>설치</b>(바로가기 말고)를 고릅니다.<br>
             ③ 그래도 홈 화면에 안 생기면 삼성 런처가 막은 것입니다. <b>홈 화면 길게 누르기 → 설정 → "홈 화면에 앱 추가"(새 앱 자동 추가)</b>를 켜고 다시 설치하거나,
             <b>앱스 화면(모든 앱)</b>에서 Joo-JeoB 아이콘을 찾아 홈 화면으로 끌어다 놓으세요.</div>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
         </div>
 
         <div class="guide-sec">
@@ -1012,16 +1068,16 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <ul>
             <li><b>내장 트랙</b> — 4개 중 하나 선택. 앱이 직접 만든 소리라 저작권 걱정이 없습니다</li>
             <li><b>내 음악</b> — 파일 앱의 MP3·M4A, 또는 영상 파일을 넣으면 소리만 뽑아 씁니다</li>
-            <li><b>🔎 음원 검색</b> — 저작권 프리 곡을 검색해 바로 선택. <span class="hl">가장 간단합니다</span> (처음 한 번 Jamendo Client ID 저장)</li>
-            <li><b>🔴 탭 소리</b> — 꼭 유튜브의 특정 곡이어야 할 때 (아래 순서)</li>
+            <li><b>음원 검색</b> — 저작권 프리 곡을 검색해 바로 선택. <span class="hl">가장 간단합니다</span> (처음 한 번 Jamendo Client ID 저장)</li>
+            <li><b>탭 소리</b> — 꼭 유튜브의 특정 곡이어야 할 때 (아래 순서)</li>
           </ul>
           <div class="trouble" style="border-style:solid;border-color:var(--line)">
             <b style="color:var(--cy)">유튜브 음악 담아오기</b><br>
             ① 화면 위에서 아래로 <b>두 번</b> 내려 빠른 설정 열기<br>
-            ② <b>화면 녹화</b> 타일이 없으면 → 오른쪽 위 <b>연필 ✏️</b> → 아래 &lsquo;사용 가능한 버튼&rsquo;에서
+            ② <b>화면 녹화</b> 타일이 없으면 → 오른쪽 위 <b>연필 모양</b> 버튼 → 아래 &lsquo;사용 가능한 버튼&rsquo;에서
                <b>화면 녹화</b>를 위로 끌어 놓고 <b>완료</b><br>
             ③ <b>화면 녹화</b> 탭 → 소리 선택창에서 반드시 <b style="color:var(--warn)">미디어 소리</b> (마이크 아님) → 녹화 시작<br>
-            ④ 유튜브에서 곡 재생 → 다 흐르면 화면의 <b>■ 정지</b><br>
+            ④ 유튜브에서 곡 재생 → 다 흐르면 화면의 <b>정지</b> 버튼<br>
             ⑤ 앱의 <b>화면 녹화 영상 선택</b>으로 그 영상을 고르면 소리만 추출됩니다<br>            <b style="color:var(--cy)">요령</b> — 녹화 전 <b>방해 금지</b> 켜기, 광고 끝난 뒤 시작, 유튜브 <b>자동재생 끄기</b><br>
             <b style="color:var(--tx3);font-weight:400">※ 녹화는 2분 안쪽으로 짧게 — 길면 느리고 실패할 수 있습니다</b>
           </div>
@@ -1030,61 +1086,48 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>4</i> 촬영</h4>
           <p><b>카메라 켜기</b> → 권한 허용. 화면이 <span class="hl">9:16 세로</span>로 잘려 녹화됩니다.</p>
-          <p><b>🎙 내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>라 배경음악만 깔끔하게 들어갑니다.</p>
+          <p><b>내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>라 배경음악만 깔끔하게 들어갑니다.</p>
           <ul>
-            <li><b>살리기</b> — 말소리·웃음소리가 배경음악과 함께 파일에 들어갑니다. <b>이어폰을 끼세요.</b>
-              안 끼면 스피커의 BGM이 마이크로 다시 들어가 겹칩니다 (또는 <b>스피커로 같이 듣기</b>를 끄세요)</li>
-            <li><b>빼기</b> — 주변 소음·말소리가 하나도 안 들어갑니다</li>
+            <li><b>살리기</b> — 말소리·웃음소리가 배경음악과 함께 파일에 들어갑니다. 잡음 억제와 울림 제거가 켜지고,
+              내 목소리는 스피커로 나가지 않아 하울링이 생기지 않습니다. 가장 깨끗하게 하려면 이어폰을 끼거나 <b>배경음악을 스피커로 듣기</b>를 끄세요</li>
+            <li><b>빼기</b> — 주변 소음·말소리가 하나도 안 들어갑니다. <b>녹화 중에도</b> 누르면 그 순간부터 조용해집니다</li>
           </ul>
-          <div class="trouble"><b>한 번 찍으면 바꿀 수 없습니다.</b> 목소리는 촬영하는 순간 영상에 합쳐지기 때문에,
-            나중에 빼려면 다시 찍어야 합니다. 누르기 전에 확인하세요.</div>
+          <div class="trouble"><b>이미 찍힌 부분의 목소리는 나중에 뺄 수 없습니다.</b> 목소리는 촬영하는 순간 영상에 합쳐지기 때문입니다.
+            빼고 싶은 구간이 오기 전에 <b>빼기</b>를 누르세요.</div>
           <p>후렴부터 시작하고 싶으면 <b>BGM 시작 지점</b>을 옮기세요. 녹화 중에는 <b>이전·다음</b>과 뒤로가기가 잠깁니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>5</i> 결과 확인</h4>
           <ul>
-            <li><b>🎵 배경음악이 영상에 포함</b> — 저장된 파일을 실제로 열어 확인한 결과입니다</li>
-            <li><b>🖼️ 프레임 미리보기</b> — 버튼·글씨가 영상에 안 섞였다는 증거</li>
-            <li><b>📦 MP4 · H.264 + AAC</b> 로 나오면 어느 기기에서든 그대로 재생됩니다</li>
+            <li><b>배경음악이 영상에 포함</b> — 저장된 파일을 실제로 열어 확인한 결과입니다</li>
+            <li><b>저장된 파일의 프레임</b> — 버튼·글씨가 영상에 안 섞였다는 증거</li>
+            <li><b>MP4 · H.264 + AAC</b> 로 나오면 어느 기기에서든 그대로 재생됩니다</li>
           </ul>
           <p>앞뒤를 다듬으려면 <b>구간 자르기</b>를 쓰세요. 자른 뒤에도 BGM은 그대로 남습니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>5.5</i> 자막 넣기</h4>
-          <p>결과 화면의 <b>💬 자막</b> 탭, <b>한 칸에 한 줄씩</b> 적기만 하면 바로 영상에 올라갑니다.
+          <p>결과 화면의 <b>자막</b> 탭, <b>한 칸에 한 줄씩</b> 적기만 하면 바로 영상에 올라갑니다.
             버튼을 누를 필요도, 시간을 입력할 필요도 없습니다.</p>
           <p>배치는 <b>영상 전체에 고르게</b>(기본)와 <b>처음부터 이어서</b> 중에 고르고,
             넘어가는 속도만 슬라이더로 맞추면 됩니다. 아래 막대 그래프로 어디에 놓였는지 보이고,
             막대를 누르면 그 지점으로 미리보기가 이동합니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
-          <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
+          <p><b>꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
             움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
-          <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
-            <span class="hl">한 번에</span> 처리돼 화질 손실이 한 번뿐입니다.</p>
-        </div>
-
-        <div class="guide-sec">
-          <h4><i>5.5</i> 자막 넣기</h4>
-          <p>결과 화면의 <b>💬 자막</b> 탭, <b>한 칸에 한 줄씩</b> 적기만 하면 바로 영상에 올라갑니다.
-            버튼을 누를 필요도, 시간을 입력할 필요도 없습니다.</p>
-          <p>배치는 <b>영상 전체에 고르게</b>(기본)와 <b>처음부터 이어서</b> 중에 고르고,
-            넘어가는 속도만 슬라이더로 맞추면 됩니다. 아래 막대 그래프로 어디에 놓였는지 보이고,
-            막대를 누르면 그 지점으로 미리보기가 이동합니다. SRT·VTT 파일을 올리면 시간까지 그대로 들어옵니다.</p>
-          <p><b>🎨 꾸미기</b> 탭에서 글자체 8종, 크기·색·테두리, 위치, 그리고 <b>타자·팝·물결·노래방</b> 같은
-            움직임 10종을 고릅니다. 미리보기 영상 위에 바로 반영됩니다.</p>
-          <p>마지막에 <b>✨ 편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
+          <p>마지막에 <b>편집 적용해서 내보내기</b>를 누르면 자막과 구간 자르기가
             <span class="hl">한 번에</span> 처리돼 화질 손실이 한 번뿐입니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>5.7</i> 인트로 · 아웃트로</h4>
-          <p>결과 화면의 <b>🎬 인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
+          <p>결과 화면의 <b>인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
           <ul>
-            <li><b>디자인 10종</b> — 타자기 · 필름 카운트 · 네온사인 · 컬러 스와이프 · 폴라로이드 ·
-              예능 자막 · 글리치 · 미니멀 라인 · 스포트라이트 · 폭죽</li>
-            <li><b>🎲 자동 멘트</b> — 앱이 재미있는 문구를 하나 뽑아 줍니다. 주사위를 누르면 다른 문구로 바뀝니다</li>
-            <li><b>✍️ 직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
+            <li><b>디자인 5종</b> — 풍선 파티 · 축하 폭죽 · 폴라로이드(내 영상의 한 장면) · 촬영 슬레이트 · 로봇 팻말.
+              3초가 끝나도 글자는 화면에 남습니다</li>
+            <li><b>자동 문구</b> — 앱이 재미있는 문구를 하나 골라 줍니다. <b>다른 문구</b>를 누르면 바뀝니다</li>
+            <li><b>직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
           </ul>
           <p>아래 세로 미리보기에서 3초가 반복 재생되니, 고른 그대로 나오는지 보고 정하면 됩니다.
             <b>배경음악은 인트로부터 끊기지 않고 그대로 이어집니다.</b></p>
@@ -1114,11 +1157,12 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <h4><i>1</i> 시작하기</h4>
           <p><b>사파리</b>로 <span class="hl">https://</span> 주소를 열어 주세요. 사파리가 MP4로 저장해 주기 때문에
             결과 영상이 어디서든 바로 재생됩니다.</p>
-          <p><b>홈 화면에 앱으로 깔기</b> — 사파리 아래쪽 공유 버튼 <b>⬆︎</b> → 목록을 내려 <b>홈 화면에 추가</b> → <b>추가</b>.
+          <p><b>홈 화면에 앱으로 깔기</b> — 사파리 아래쪽 <b>공유</b> 버튼(네모에 위쪽 화살표) → 목록을 내려 <b>홈 화면에 추가</b> → <b>추가</b>.
             아이콘이 생기고, 주소창 없는 전체 화면으로 열립니다.</p>
           <div class="trouble"><b>"홈 화면에 추가"가 안 보일 때</b><br>
             크롬·카카오톡 안의 브라우저에는 그 메뉴가 없습니다. 반드시 <b>사파리</b>로 여세요.
             (카톡에서 열렸다면 오른쪽 아래 <b>⋯ → Safari로 열기</b>)</div>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
         </div>
 
         <div class="guide-sec">
@@ -1133,13 +1177,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <ul>
             <li><b>내장 트랙</b> — 4개 중 하나 선택. 앱이 직접 만든 소리라 저작권 걱정이 없습니다</li>
             <li><b>내 음악</b> — 파일 앱의 음악, 또는 사진 앱의 영상(소리만 추출)</li>
-            <li><b>🔎 음원 검색</b> — 저작권 프리 곡을 검색해 바로 선택. <span class="hl">가장 간단합니다</span> (처음 한 번 Jamendo Client ID 저장)</li>
-            <li><b>🔴 탭 소리</b> — 꼭 유튜브의 특정 곡이어야 할 때 (아래 순서)</li>
+            <li><b>음원 검색</b> — 저작권 프리 곡을 검색해 바로 선택. <span class="hl">가장 간단합니다</span> (처음 한 번 Jamendo Client ID 저장)</li>
+            <li><b>탭 소리</b> — 꼭 유튜브의 특정 곡이어야 할 때 (아래 순서)</li>
           </ul>
           <div class="trouble" style="border-style:solid;border-color:var(--line)">
             <b style="color:var(--cy)">유튜브 음악 담아오기</b><br>
             ① <b>설정 → 제어 센터</b>에서 <b>화면 기록</b>을 추가 (처음 한 번만)<br>
-            ② 오른쪽 위에서 아래로 쓸어 제어 센터를 열고 <b>◉ 화면 기록</b> 탭 → 3초 뒤 시작<br>
+            ② 오른쪽 위에서 아래로 쓸어 제어 센터를 열고 <b>화면 기록</b>(동그라미) 버튼 탭 → 3초 뒤 시작<br>
             ③ 유튜브에서 곡 재생 → 다 흐르면 화면 위 <b>빨간 시간 표시</b> 탭 → <b>중단</b><br>
             ④ 앱의 <b>화면 녹화 영상 선택</b>으로 사진 앱의 그 영상을 고르면 소리만 추출됩니다<br>            <b style="color:var(--cy)">요령</b> — 녹화 전 <b>방해 금지</b> 켜기, 광고 끝난 뒤 시작<br>
             <b style="color:var(--tx3);font-weight:400">※ 녹화는 2분 안쪽으로 짧게 — 길면 느리고 실패할 수 있습니다</b>
@@ -1149,11 +1193,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>4</i> 촬영</h4>
           <p><b>카메라 켜기</b> → 권한 허용. 화면이 <span class="hl">9:16 세로</span>로 잘려 녹화됩니다.</p>
-          <p><b>🎙 내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>(배경음악만)입니다.
-            살릴 때는 이어폰을 끼거나 <b>스피커로 같이 듣기</b>를 꺼야 소리가 겹치지 않습니다.</p>
-          <div class="trouble"><b>한 번 찍으면 바꿀 수 없습니다.</b> 목소리는 촬영하는 순간 영상에 합쳐집니다. 누르기 전에 확인하세요.</div>
+          <p><b>내 목소리</b>에서 <span class="hl">살리기 / 빼기</span>를 고릅니다. 기본은 <b>빼기</b>(배경음악만)입니다.
+            살리면 잡음 억제가 켜지고, 내 목소리는 스피커로 나가지 않아 울리지 않습니다. 녹화 중에도 <b>빼기</b>를 누르면 바로 조용해집니다.</p>
+          <div class="trouble"><b>이미 찍힌 부분의 목소리는 나중에 뺄 수 없습니다.</b> 빼고 싶은 구간이 오기 전에 누르세요.</div>
           <p><b>무음 스위치가 켜져 있으면</b> 스피커로 BGM이 안 들릴 수 있습니다. 그래도 파일에는 들어가니,
-            들어갔는지는 결과 화면의 <b>🎵 배경음악 포함</b> 줄로 판단하세요.</p>
+            들어갔는지는 결과 화면의 <b>배경음악 포함</b> 줄로 판단하세요.</p>
           <p>촬영 중 화면이 잠기면 녹화가 끊깁니다. <b>설정 → 디스플레이 및 밝기 → 자동 잠금</b>을 길게 두거나
             저전력 모드를 꺼 두면 안정적입니다.</p>
         </div>
@@ -1161,21 +1205,21 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>5</i> 결과 확인</h4>
           <ul>
-            <li><b>🎵 배경음악이 영상에 포함</b> — 저장된 파일을 실제로 열어 확인한 결과입니다</li>
-            <li><b>🖼️ 프레임 미리보기</b> — 버튼·글씨가 영상에 안 섞였다는 증거</li>
-            <li><b>📦 MP4 · H.264 + AAC</b> — 사파리에서는 보통 이렇게 나옵니다</li>
+            <li><b>배경음악이 영상에 포함</b> — 저장된 파일을 실제로 열어 확인한 결과입니다</li>
+            <li><b>저장된 파일의 프레임</b> — 버튼·글씨가 영상에 안 섞였다는 증거</li>
+            <li><b>MP4 · H.264 + AAC</b> — 사파리에서는 보통 이렇게 나옵니다</li>
           </ul>
           <p>앞뒤를 다듬으려면 <b>구간 자르기</b>를 쓰세요. 자른 뒤에도 BGM은 그대로 남습니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>5.7</i> 인트로 · 아웃트로</h4>
-          <p>결과 화면의 <b>🎬 인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
+          <p>결과 화면의 <b>인트로</b> 탭. 영상 <span class="hl">앞뒤로 3초씩</span> 붙습니다. 앞만, 뒤만, 둘 다 — 각각 켜고 끌 수 있습니다.</p>
           <ul>
-            <li><b>디자인 10종</b> — 타자기 · 필름 카운트 · 네온사인 · 컬러 스와이프 · 폴라로이드 ·
-              예능 자막 · 글리치 · 미니멀 라인 · 스포트라이트 · 폭죽</li>
-            <li><b>🎲 자동 멘트</b> — 앱이 재미있는 문구를 하나 뽑아 줍니다. 주사위를 누르면 다른 문구로 바뀝니다</li>
-            <li><b>✍️ 직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
+            <li><b>디자인 5종</b> — 풍선 파티 · 축하 폭죽 · 폴라로이드(내 영상의 한 장면) · 촬영 슬레이트 · 로봇 팻말.
+              3초가 끝나도 글자는 화면에 남습니다</li>
+            <li><b>자동 문구</b> — 앱이 재미있는 문구를 하나 골라 줍니다. <b>다른 문구</b>를 누르면 바뀝니다</li>
+            <li><b>직접 쓰기</b> — 첫 줄이 큰 글씨, 둘째 줄이 작은 글씨입니다</li>
           </ul>
           <p>아래 세로 미리보기에서 3초가 반복 재생되니, 고른 그대로 나오는지 보고 정하면 됩니다.
             <b>배경음악은 인트로부터 끊기지 않고 그대로 이어집니다.</b></p>
@@ -1213,6 +1257,52 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
   <p class="foot">모든 처리는 이 기기의 브라우저 안에서만 일어납니다. 서버 업로드 없음.</p>
 </div>
 
+<!-- ===== 안내 로봇 ===== -->
+<div id="botRing" hidden></div>
+<div id="botTap" aria-hidden="true"></div>
+<div id="bot" class="away">
+  <button type="button" class="bot-fig" id="botFig" aria-label="안내 로봇 — 누르면 지금 화면의 순서를 알려 줍니다" title="안내 로봇">
+    <svg viewBox="0 0 200 260" aria-hidden="true"><defs>
+      <linearGradient id="jbB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B7D6F8"/></linearGradient>
+      <linearGradient id="jbM" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".25"/><stop offset="1" stop-color="#7FE7FF"/></linearGradient>
+      <linearGradient id="jbV" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1A4A92"/><stop offset="1" stop-color="#050B1C"/></linearGradient>
+      <radialGradient id="jbC"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#7FE7FF"/><stop offset="1" stop-color="#7FE7FF" stop-opacity=".75"/></radialGradient>
+      <radialGradient id="jbJ" cx=".5" cy="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#7FE7FF" stop-opacity=".55"/><stop offset="1" stop-color="#7FE7FF" stop-opacity="0"/></radialGradient>
+      <filter id="jbF" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs><g class="bob">
+      <ellipse class="jet" cx="100" cy="228" rx="26" ry="18" fill="url(#jbJ)"/>
+      <line x1="100" y1="34" x2="100" y2="14" stroke="#B7D6F8" stroke-width="4" stroke-linecap="round"/>
+      <circle class="ant" cx="100" cy="10" r="7" fill="url(#jbC)" filter="url(#jbF)"/>
+      <rect class="arm-l" x="24" y="124" width="26" height="74" rx="13" fill="url(#jbB)" stroke="url(#jbM)"/>
+      <rect class="arm-r" x="150" y="124" width="26" height="74" rx="13" fill="url(#jbB)" stroke="url(#jbM)"/>
+      <rect x="54" y="118" width="92" height="98" rx="42" fill="url(#jbB)" stroke="url(#jbM)" stroke-width="1.6"/>
+      <circle cx="100" cy="164" r="15" fill="url(#jbC)" filter="url(#jbF)"/>
+      <g class="head">
+        <circle cx="41" cy="72" r="9" fill="#B7D6F8"/><circle cx="159" cy="72" r="9" fill="#B7D6F8"/>
+        <circle cx="41" cy="72" r="3.5" fill="#7FE7FF"/><circle cx="159" cy="72" r="3.5" fill="#7FE7FF"/>
+        <rect x="44" y="30" width="112" height="86" rx="36" fill="url(#jbB)" stroke="url(#jbM)" stroke-width="1.6"/>
+        <rect x="58" y="48" width="84" height="52" rx="24" fill="url(#jbV)"/>
+        <g class="eyes">
+          <ellipse class="eye" cx="84" cy="74" rx="9" ry="11" fill="#7FE7FF" filter="url(#jbF)"/>
+          <ellipse class="eye" cx="116" cy="74" rx="9" ry="11" fill="#7FE7FF" filter="url(#jbF)"/>
+          <path d="M90 90 q10 6 20 0" stroke="#7FE7FF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+        <ellipse cx="74" cy="44" rx="18" ry="5" fill="#FFFFFF" fill-opacity=".7"/>
+      </g>
+    </g></svg>
+  </button>
+  <div class="bot-bubble" id="botBubble" role="dialog" aria-label="안내 로봇" hidden>
+    <div class="bot-step" id="botStep"></div>
+    <p class="bot-text" id="botText" aria-hidden="true"></p>
+    <p class="bot-sr" id="botSay" aria-live="polite"></p>
+    <div class="bot-btns">
+      <button type="button" class="bot-b" id="botPrev">이전</button>
+      <button type="button" class="bot-b" id="botClose">그만</button>
+      <button type="button" class="bot-b pri" id="botNext">다음</button>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 /* ============================================================
@@ -1225,13 +1315,26 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 
 const $ = (id) => document.getElementById(id);
 
+/* 선 아이콘 — 이모지 대신 쓴다 (글자색을 따라감) */
+const icon = (d) => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
+const IC = {
+  play:  '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/></svg>',
+  stop:  '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor" stroke="none"/></svg>',
+  note:  icon('<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>'),
+  up:    icon('<path d="M12 18V6"/><path d="M6 12l6-6 6 6"/>'),
+  down:  icon('<path d="M12 6v12"/><path d="M6 12l6 6 6-6"/>'),
+  left:  icon('<path d="M18 12H6"/><path d="M12 6l-6 6 6 6"/>'),
+  right: icon('<path d="M6 12h12"/><path d="M12 6l6 6-6 6"/>'),
+  dot:   icon('<circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/>')
+};
+
 /* ---------- 상태 ---------- */
 const S = {
   ctx:null, bgmBuffer:null, bgmMeta:null,
   bgmSrc:null, previewSrc:null,
   bgmGain:null, micGain:null, monGain:null, mixBus:null, mixDest:null,
   bgmAnalyser:null, micAnalyser:null,
-  camStream:null, micStream:null, micNode:null,
+  camStream:null, micStream:null, micNode:null, micSeq:0,
   recorder:null, chunks:[], recStream:null,
   drawing:false, rafId:0, meterId:0,
   duration:30, res:720, facing:'user', mic:false, monitor:true,
@@ -1245,7 +1348,7 @@ const S = {
   cams:[], camId:'', mirror:null,
   ytLoaded:false, jamResults:[], jamTrack:null, capSelfTab:false, monBeforeCap:null,
   bgmLive:null, bgmLiveNode:null, trimming:false, trimNode:null, trimGain:null,
-  intro:{on:false, design:'typing',   auto:true, auto1:'', text:''},
+  intro:{on:false, design:'balloon',  auto:true, auto1:'', text:''},
   outro:{on:false, design:'confetti', auto:true, auto1:'', text:''}
 };
 
@@ -1337,25 +1440,25 @@ function pad(oc, out, t, chord, dur, gain, lp){
 /* --- 트랙 정의 --- */
 const TRACKS = [
   {
-    id:'lofi', emo:'🌙', name:'Lo-Fi Chill', mood:'차분 · 감성 · 브이로그',
+    id:'lofi', name:'Lo-Fi Chill', mood:'차분 · 감성 · 브이로그',
     bpm:82, key:'D minor', bars:8, inst:'로즈 패드 · 서브베이스 · 소프트킥 · 하이햇',
     why:'템포가 느리고 상단 주파수가 부드러워서 말소리·주변음과 겹쳐도 목소리를 가리지 않습니다. 일상 브이로그, 카페/책상 클로즈업, 잔잔한 인터뷰 컷에 잘 붙습니다.',
     build: buildLofi
   },
   {
-    id:'pop', emo:'✨', name:'Bright Pop', mood:'밝음 · 경쾌 · 제품 소개',
+    id:'pop', name:'Bright Pop', mood:'밝음 · 경쾌 · 제품 소개',
     bpm:118, key:'C major', bars:8, inst:'플럭 신스 · 포온더플로어 킥 · 클랩 · 베이스',
     why:'4분음표 킥이 일정해서 컷 편집 박자를 맞추기 쉽고, 밝은 장조라 첫 3초 이탈률이 낮습니다. 제품 언박싱, 튜토리얼, 비포/애프터 전환에 적합합니다.',
     build: buildPop
   },
   {
-    id:'trap', emo:'🔥', name:'Trap 808', mood:'강렬 · 트렌디 · 훅',
+    id:'trap', name:'Trap 808', mood:'강렬 · 트렌디 · 훅',
     bpm:140, key:'G minor', bars:8, inst:'808 서브 · 하이햇 롤 · 스네어 · 다크 리드',
     why:'하프타임 그루브라 느린 슬로모션 컷과 빠른 하이햇이 동시에 살아납니다. 트랜지션 효과, 운동/패션 릴스처럼 임팩트가 필요한 영상에 씁니다.',
     build: buildTrap
   },
   {
-    id:'cine', emo:'🎬', name:'Cinematic', mood:'웅장 · 서정 · 인트로',
+    id:'cine', name:'Cinematic', mood:'웅장 · 서정 · 인트로',
     bpm:70, key:'A minor', bars:8, inst:'스트링 패드 · 서브 드론 · 저역 임팩트',
     why:'드럼이 거의 없어 내레이션이나 자막 낭독이 그대로 들립니다. 풍경, 병원·기업 소개, 프로젝트 인트로처럼 톤을 무겁게 잡아야 할 때 선택합니다.',
     build: buildCinematic
@@ -1517,8 +1620,17 @@ function ac(){
     S.mixBus = c.createGain(); S.mixBus.gain.value = 1;
     S.mixDest = c.createMediaStreamDestination();
 
+    S.monBus = c.createGain(); S.monBus.gain.value = 1;
+
     S.bgmAnalyser = c.createAnalyser(); S.bgmAnalyser.fftSize = 1024;
     S.micAnalyser = c.createAnalyser(); S.micAnalyser.fftSize = 1024;
+
+    /* 목소리 전용 다듬기: 50·60Hz 험과 손 떨림 저음을 거르고, 큰 소리를 눌러 찢어지지 않게 */
+    S.micIn = c.createBiquadFilter(); S.micIn.type = 'highpass'; S.micIn.frequency.value = 90; S.micIn.Q.value = 0.707;
+    S.micComp = c.createDynamicsCompressor();
+    S.micComp.threshold.value = -24; S.micComp.knee.value = 12; S.micComp.ratio.value = 3;
+    S.micComp.attack.value = 0.005; S.micComp.release.value = 0.25;
+    S.micIn.connect(S.micComp); S.micComp.connect(S.micGain);
 
     S.bgmGain.connect(S.bgmAnalyser);
     S.micGain.connect(S.micAnalyser);
@@ -1526,7 +1638,10 @@ function ac(){
     S.micGain.connect(S.mixBus);
     S.srcGain.connect(S.mixBus);   // 기존 영상의 원본 소리
     S.mixBus.connect(S.mixDest);      // ← 녹화되는 오디오
-    S.mixBus.connect(S.monGain);
+    // 스피커로 듣는 소리에는 마이크를 넣지 않는다 — 스피커 → 마이크 되먹임(하울링)을 원천 차단
+    S.bgmGain.connect(S.monBus);
+    S.srcGain.connect(S.monBus);
+    S.monBus.connect(S.monGain);
     S.monGain.connect(c.destination); // ← 사람이 듣는 소리 (녹화와 무관)
   }
   return S.ctx;
@@ -1568,8 +1683,6 @@ function fmtTime(s){
 function renderTrackGrid(){
   $('trackGrid').innerHTML = TRACKS.map(t => (
     '<button type="button" class="tcard" data-track="' + t.id + '">' +
-      '<span class="chev">▾</span>' +
-      '<div class="emo">' + t.emo + '</div>' +
       '<div class="tn">' + t.name + '</div>' +
       '<div class="tm">' + t.mood + '</div>' +
       '<div class="tb">' + t.bpm + ' BPM · ' + t.key + '</div>' +
@@ -1586,7 +1699,7 @@ function drawWave(canvas, buffer, color){
   g.clearRect(0, 0, w, h);
   const data = buffer.getChannelData(0);
   const step = Math.max(1, Math.floor(data.length / w));
-  g.fillStyle = color || 'rgba(34,211,238,.85)';
+  g.fillStyle = color || 'rgba(138,176,255,.85)';
   for (let x = 0; x < w; x++){
     let mx = 0;
     const s = x * step, e = Math.min(data.length, s + step);
@@ -1602,7 +1715,7 @@ function showTrackDetail(track, buffer){
   const d = $('trackDetail');
   d.hidden = false;
   d.innerHTML =
-    '<h3>' + track.emo + ' ' + track.name + '</h3>' +
+    '<h3>' + track.name + '</h3>' +
     '<p class="why"><b style="color:var(--cy)">왜 이 트랙인가</b><br>' + track.why + '</p>' +
     '<canvas class="wave" id="detWave"></canvas>' +
     '<div class="wavelabel"><span>루프 파형 (코드로 생성된 실제 오디오)</span><span>' + fmtTime(buffer.duration) + ' 루프</span></div>' +
@@ -1612,9 +1725,9 @@ function showTrackDetail(track, buffer){
       '<div><b>샘플레이트</b><span>' + Math.round(buffer.sampleRate / 100) / 10 + ' kHz</span></div>' +
       '<div><b>채널</b><span>' + buffer.numberOfChannels + 'ch</span></div>' +
     '</div>' +
-    '<div class="filerow">🎛️ 구성 악기 — <b>' + track.inst + '</b></div>' +
-    '<div class="filerow">© 저작권 — <b>이 앱이 실시간 합성한 오디오</b> · 외부 음원 없음 · 상업적 사용 제한 없음</div>' +
-    '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
+    '<div class="filerow">구성 악기 — <b>' + track.inst + '</b></div>' +
+    '<div class="filerow">저작권 — <b>이 앱이 실시간 합성한 오디오</b> · 외부 음원 없음 · 상업적 사용 제한 없음</div>' +
+    '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기</button></div>';
   requestAnimationFrame(() => drawWave($('detWave'), buffer));
 }
 
@@ -1655,7 +1768,7 @@ async function loadUserFile(file, kind){
     d.hidden = false;
     d.className = 'detail';
     d.innerHTML =
-      '<h3>🎵 ' + file.name + '</h3>' +
+      '<h3>' + escapeHtml(file.name) + '</h3>' +
       '<p class="why">기기 안에서만 디코딩되어 <b style="color:var(--cy)">AudioBuffer</b>로 보관됩니다. 네트워크 전송이 없으므로 CORS로 음원이 차단되는 일도 없습니다.</p>' +
       '<canvas class="wave" id="upWave"></canvas>' +
       '<div class="wavelabel"><span>업로드한 음원 파형</span><span>' + fmtTime(buf.duration) + '</span></div>' +
@@ -1665,8 +1778,8 @@ async function loadUserFile(file, kind){
         '<div><b>채널</b><span>' + buf.numberOfChannels + 'ch</span></div>' +
         '<div><b>파일 크기</b><span>' + Math.round(file.size / 1024) + ' KB</span></div>' +
       '</div>' +
-      '<div class="filerow">📁 원본 파일 — <b>' + file.name + '</b> (' + (file.type || 'audio') + ')</div>' +
-      '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기 ▶</button></div>';
+      '<div class="filerow">원본 파일 — <b>' + escapeHtml(file.name) + '</b> (' + (file.type || 'audio') + ')</div>' +
+      '<div class="btnrow"><button type="button" class="btn ghost previewBtn" style="margin-top:11px">미리듣기</button></div>';
     requestAnimationFrame(() => drawWave($('upWave'), buf));
     afterBgmReady();
   } catch (e){
@@ -1682,7 +1795,7 @@ function afterBgmReady(){
   const off = $('bgmOff');
   off.max = Math.max(0, Math.floor(dur - 1));
   off.value = 0; S.offset = 0; $('offV').textContent = '0:00';
-  setBgmStatus('ok', '<b>' + S.bgmMeta.name + '</b> · ' + S.bgmMeta.kind + ' · ' + fmtTime(dur) + ' — 녹화 오디오에 직접 믹싱됩니다.');
+  setBgmStatus('ok', '<b>' + escapeHtml(S.bgmMeta.name) + '</b> · ' + escapeHtml(S.bgmMeta.kind) + ' · ' + fmtTime(dur) + ' — 녹화 오디오에 직접 믹싱됩니다.');
   updateStep();
   refreshRecBtn();
   refreshDubBtn();
@@ -1700,7 +1813,7 @@ function togglePreview(){
   if (S.previewSrc){
     try { S.previewSrc.stop(); } catch(e){}
     S.previewSrc = null;
-    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶');
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기');
     return;
   }
   if (!S.bgmBuffer) return;
@@ -1711,7 +1824,7 @@ function togglePreview(){
   src.connect(S.bgmGain);
   src.start(0, S.offset);
   S.previewSrc = src;
-  document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ■');
+  document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '정지');
 }
 
 /* ============================================================
@@ -1828,7 +1941,7 @@ function renderCamPicker(){
   box.innerHTML = '<div class="ds" style="margin-bottom:7px">이 기기의 카메라 — 전면이 안 잡히면 직접 고르세요</div>' +
     '<div class="chips">' + S.cams.map((d, i) => {
       const l = d.label || ('카메라 ' + (i+1));
-      const nm = FRONT_RE.test(l) ? '🤳 전면' : BACK_RE.test(l) ? '📷 후면' : ('카메라 ' + (i+1));
+      const nm = FRONT_RE.test(l) ? '전면' : BACK_RE.test(l) ? '후면' : ('카메라 ' + (i+1));
       return '<button type="button" class="chip' + (d.deviceId === S.camId ? ' on' : '') +
              '" data-camid="' + escapeAttr(d.deviceId) + '" title="' + escapeAttr(l) + '">' + nm +
              (S.cams.filter(x => FRONT_RE.test(x.label||'') === FRONT_RE.test(l)).length > 1 ? ' ' + (i+1) : '') + '</button>';
@@ -1879,29 +1992,55 @@ function pickMime(){
   return '';
 }
 
+/* 목소리 켜기/끄기
+   · 끄기는 소리 크기만 0으로 내린다 — 트랙을 끊지 않으므로 녹화 중에 눌러도 오류 없이 바로 조용해진다.
+   · 녹화 중이 아니면 마이크 장치까지 놓아 준다(휴대폰의 마이크 사용 표시가 꺼짐).
+   · 켜는 도중(권한 창)에 끄기를 누르면, 늦게 도착한 마이크는 받자마자 닫는다 — 화면과 실제 상태가 어긋나지 않게. */
+function releaseMic(){
+  if (S.micNode){ try { S.micNode.disconnect(); } catch(e){} S.micNode = null; }
+  if (S.micStream){ S.micStream.getTracks().forEach(t => { t.onended = null; t.stop(); }); S.micStream = null; }
+}
 async function enableMic(on){
+  const seq = ++S.micSeq;
   S.mic = on;
-  $('micVolRow').hidden = !on;
-  if (on){
-    try {
-      S.micStream = await navigator.mediaDevices.getUserMedia({
-        audio: {echoCancellation: false, noiseSuppression: false, autoGainControl: false}
-      });
-      const c = ac();
-      S.micNode = c.createMediaStreamSource(S.micStream);
-      S.micNode.connect(S.micGain);
-      S.micGain.gain.value = S.micVolume;
-    } catch (e){
-      S.mic = false;
-      $('micSw').classList.remove('on');
-      $('micVolRow').hidden = true;
-      showErr('마이크 권한을 받지 못했습니다. BGM만으로 촬영합니다.');
-    }
-  } else {
-    if (S.micNode){ try { S.micNode.disconnect(); } catch(e){} S.micNode = null; }
-    if (S.micStream){ S.micStream.getTracks().forEach(t => t.stop()); S.micStream = null; }
-    if (S.micGain) S.micGain.gain.value = 0;
+  syncVoiceUI();
+  if (!on){
+    if (S.micGain) ioRamp(S.micGain, 0, 0.06);
+    if (!S.recording) releaseMic();
+    return;
   }
+  if (!S.micStream){
+    let st;
+    try {
+      st = await navigator.mediaDevices.getUserMedia({
+        audio: {echoCancellation: true, noiseSuppression: true, autoGainControl: true, channelCount: 1}
+      });
+    } catch (e){
+      if (seq !== S.micSeq) return;
+      S.mic = false; syncVoiceUI();
+      showErr(e && e.name === 'NotAllowedError'
+        ? '마이크 권한이 없어 목소리는 빼고 녹화합니다. 목소리를 넣으려면 브라우저 설정에서 마이크를 허용해 주세요.'
+        : '마이크를 열 수 없어 목소리는 빼고 녹화합니다 (' + ((e && e.name) || '오류') + ').');
+      return;
+    }
+    if (seq !== S.micSeq || !S.mic){ st.getTracks().forEach(t => t.stop()); return; }   // 그사이 끄기를 눌렀다
+    S.micStream = st;
+    try {
+      S.micNode = ac().createMediaStreamSource(st);
+      S.micNode.connect(S.micIn);
+    } catch (e){                              // 마이크와 오디오 장치의 샘플레이트가 달라 연결을 거부하는 브라우저 등
+      releaseMic(); S.mic = false; syncVoiceUI();
+      showErr('이 기기의 마이크를 연결하지 못해 목소리는 빼고 녹화합니다 (' + ((e && e.name) || '오류') + ').');
+      return;
+    }
+    const tr = st.getAudioTracks()[0];
+    if (tr) tr.onended = () => {             // 이어폰을 뽑는 등 장치가 사라짐
+      if (S.micStream !== st) return;
+      S.micSeq++; S.mic = false; releaseMic(); ioRamp(S.micGain, 0, 0.05); syncVoiceUI();
+      showErr('마이크 연결이 끊겨 목소리를 뺐습니다. 배경음악은 그대로 녹화됩니다.');
+    };
+  }
+  ioRamp(S.micGain, S.micVolume, 0.06);
 }
 
 /* 목소리 살리기/빼기 — 촬영 화면의 표시를 상태와 맞춘다 */
@@ -1912,7 +2051,7 @@ function syncVoiceUI(){
   $('voiceBox').classList.toggle('live', on);
   $('voiceState').textContent = on ? '살리는 중' : '빼는 중';
   $('voiceDs').innerHTML = on
-    ? '말소리·웃음소리가 <b>배경음악과 함께</b> 파일에 들어갑니다. 조용한 곳일수록 깔끔합니다.'
+    ? '말소리·웃음소리가 <b>배경음악과 함께</b> 파일에 들어갑니다. 잡음 억제가 켜져 있고, 녹화 중에도 <b>빼기</b>를 누르면 바로 조용해집니다.'
     : '<b>배경음악만</b> 들어갑니다. 주변 소음과 말소리가 섞이지 않습니다.';
   $('micSw').classList.toggle('on', on);
   $('micSw').setAttribute('aria-checked', String(on));
@@ -1939,8 +2078,9 @@ async function startRecording(){
   const videoTrack = canvasStream.getVideoTracks()[0];
   const audioTrack = S.mixDest.stream.getAudioTracks()[0];
 
-  // ★ BGM 소실 방지 1차 방어선: 오디오 트랙이 없으면 아예 녹화하지 않는다
+  // BGM 소실 방지 1차 방어선: 오디오 트랙이 없으면 아예 녹화하지 않는다
   if (!audioTrack || audioTrack.readyState !== 'live'){
+    videoTrack.stop();
     showErr('오디오 트랙을 만들지 못해 녹화를 중단했습니다. 배경음악 없이 녹화되는 것을 막기 위한 안전장치입니다.');
     return;
   }
@@ -1953,6 +2093,7 @@ async function startRecording(){
   try {
     S.recorder = new MediaRecorder(S.recStream, opts);
   } catch (e){
+    videoTrack.stop();
     showErr('이 브라우저는 녹화를 지원하지 않습니다: ' + e.message);
     return;
   }
@@ -1964,7 +2105,7 @@ async function startRecording(){
 
   // BGM을 녹화 시작과 함께 재생 (그래프 경유 → 반드시 파일에 들어감)
   if (S.previewSrc){ try { S.previewSrc.stop(); } catch(e){} S.previewSrc = null;
-    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기'); }
   startBgm(c.currentTime + 0.06, S.offset);
 
   S.recording = true; S.lastWasTrim = false;
@@ -2000,6 +2141,7 @@ function stopRecording(){
   clearTimeout(S.autoStop);
   try { S.recorder.stop(); } catch(e){}
   stopBgm();
+  if (!S.mic) releaseMic();            // 녹화 중에 목소리를 뺐다면 이제 마이크 장치를 놓는다
   $('recBadge').classList.remove('on');
   $('recBtn').textContent = '녹화 시작';
   $('recBtn').classList.add('primary'); $('recBtn').classList.remove('stop');
@@ -2046,7 +2188,7 @@ function loadVideoFile(file){
     const d = $('vidDetail');
     d.hidden = false; d.className = 'detail';
     d.innerHTML =
-      '<h3>🎬 ' + file.name + '</h3>' +
+      '<h3>' + escapeHtml(file.name) + '</h3>' +
       '<p class="why">원본 영상을 재생하면서 배경음악을 함께 인코딩합니다. ' +
       '<b style="color:var(--cy)">영상 길이만큼 시간이 걸립니다</b> — 화면을 끄지 말고 기다려 주세요.</p>' +
       '<div class="specs">' +
@@ -2055,7 +2197,7 @@ function loadVideoFile(file){
         '<div><b>출력 해상도</b><span>' + cw + '×' + ch + '</span></div>' +
         '<div><b>파일 크기</b><span>' + Math.round(file.size / 1048576 * 10) / 10 + ' MB</span></div>' +
       '</div>' +
-      '<div class="filerow">📁 원본 파일 — <b>' + file.name + '</b> (' + (file.type || 'video') + ')</div>';
+      '<div class="filerow">원본 파일 — <b>' + escapeHtml(file.name) + '</b> (' + (file.type || 'video') + ')</div>';
 
     $('dubMsg').textContent = '준비 완료 — 예상 소요 ' + fmtTime(dubVideo.duration);
     S.dubReady = true;
@@ -2084,6 +2226,7 @@ async function startDub(){
     catch (e){ /* 오디오 트랙이 없어도 무시 */ }
   }
   S.srcGain.gain.value = S.useSrcAudio ? S.srcVolume : 0;
+  gainNow(S.micGain, 0);               // 입히기에는 마이크가 없다 — 촬영 화면에서 켜 둔 목소리가 파일에 새지 않게
 
   const cv = $('dubCanvas');
   const g = cv.getContext('2d');
@@ -2091,6 +2234,7 @@ async function startDub(){
   const videoTrack = canvasStream.getVideoTracks()[0];
   const audioTrack = S.mixDest.stream.getAudioTracks()[0];
   if (!audioTrack || audioTrack.readyState !== 'live'){
+    videoTrack.stop(); gainNow(S.micGain, S.mic ? S.micVolume : 0);
     dubErr('오디오 트랙을 만들지 못해 중단했습니다. 배경음악 없이 저장되는 것을 막기 위한 안전장치입니다.');
     return;
   }
@@ -2099,7 +2243,7 @@ async function startDub(){
   const opts = {videoBitsPerSecond: 6000000, audioBitsPerSecond: 128000};
   if (mime) opts.mimeType = mime;
   try { S.recorder = new MediaRecorder(new MediaStream([videoTrack, audioTrack]), opts); }
-  catch (e){ dubErr('이 브라우저는 녹화를 지원하지 않습니다: ' + e.message); return; }
+  catch (e){ videoTrack.stop(); gainNow(S.micGain, S.mic ? S.micVolume : 0); dubErr('이 브라우저는 녹화를 지원하지 않습니다: ' + e.message); return; }
 
   S.chunks = [];
   S.outMime = S.recorder.mimeType || mime || 'video/webm';
@@ -2107,7 +2251,7 @@ async function startDub(){
   S.recorder.onstop = onRecStop;
 
   if (S.previewSrc){ try { S.previewSrc.stop(); } catch(e){} S.previewSrc = null;
-    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기 ▶'); }
+    document.querySelectorAll('.previewBtn').forEach(b => b.textContent = '미리듣기'); }
 
   S.dubbing = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = false;
   S.subs = []; if ($('subText')) $('subText').value = '';
@@ -2140,6 +2284,7 @@ function stopDub(){
   try { S.recorder.stop(); } catch(e){}
   stopBgm();
   S.srcGain.gain.value = 0;
+  gainNow(S.micGain, S.mic ? S.micVolume : 0);
   $('dubBtn').textContent = '음악 입혀서 내보내기';
   $('dubBtn').classList.add('primary'); $('dubBtn').classList.remove('stop');
   $('dubMsg').textContent = '완료 — 결과 단계에서 확인하세요';
@@ -2151,6 +2296,8 @@ function stopDub(){
    5) 결과 검증
    ============================================================ */
 async function onRecStop(){
+  // 캔버스 캡처 트랙은 녹화마다 새로 생기므로 끝나면 닫는다 (쌓이면 점점 느려짐). 오디오 트랙은 계속 쓴다.
+  try { S.recorder.stream.getVideoTracks().forEach(t => t.stop()); } catch(e){}
   let blob = new Blob(S.chunks, {type: S.outMime.split(';')[0]});
   blob = await repairDuration(blob);     // 헤더에 전체 길이를 써 넣는다 (카톡 3초 잘림 방지)
   const isExport = S.lastWasTrim;      // 자막·자르기 내보내기 결과인가
@@ -2161,7 +2308,7 @@ async function onRecStop(){
   const wasResult = S.step === 4;
   S.step = 4;
   renderStep();
-  $('repBox').innerHTML = '<div class="rep warn"><span class="ic">⏳</span><div><b>검증 중…</b><span>녹화 파일을 디코딩해 배경음악이 실제로 들어갔는지 확인합니다.</span></div></div>';
+  $('repBox').innerHTML = '<div class="rep warn"><b>검증 중…</b><span>녹화 파일을 디코딩해 배경음악이 실제로 들어갔는지 확인합니다.</span></div>';
   $('resVideo').src = URL.createObjectURL(blob);
   if (!wasResult) history.pushState({rs: 4}, '');
   if (!isExport) setupTrim(0);        // 내보내기 결과일 때는 편집 구간을 건드리지 않는다
@@ -2179,6 +2326,7 @@ async function onRecStop(){
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
   if (!isExport) setupTrim(dur);       // 완성본을 볼 때는 편집 구간을 그대로 둔다
+  if (!isExport) setTimeout(() => botOffer('jj_bot_seen4', '결과 화면이에요. 자막과 앞뒤 3초 카드 넣는 법을 알려 드릴까요?'), 1200);
   renderStyleControls(); renderTimeline(); syncStyleInputs(); updateStyleFor();
   startSubPreview(); ensureFont(S.subStyle.font);
   applyEditMode();
@@ -2286,19 +2434,19 @@ function renderReport(r){
   const dbtx = (v) => (v === null ? '—' : (v > -0.05 ? '0.0' : v.toFixed(1)) + ' dBFS');
 
   if (r.hasAudio === true){
-    rows.push(['ok', '🎵', '배경음악이 영상에 포함되었습니다',
+    rows.push(['ok', '배경음악이 영상에 포함되었습니다',
       '녹화 파일을 실제로 디코딩해 확인했습니다. 평균 레벨 <b class="mono">' + dbtx(r.rmsDb) +
       '</b> · 피크 <b class="mono">' + dbtx(r.peakDb) + '</b>']);
   } else if (r.hasAudio === false){
-    rows.push(['bad', '⚠️', '오디오 신호를 찾지 못했습니다',
+    rows.push(['bad', '오디오 신호를 찾지 못했습니다',
       'BGM 볼륨과 음악 선택을 확인한 뒤 다시 촬영해 주세요.']);
   } else {
-    rows.push(['warn', '❓', '자동 검증을 완료하지 못했습니다',
+    rows.push(['warn', '자동 검증을 완료하지 못했습니다',
       '이 브라우저가 녹화 컨테이너를 디코딩하지 못했습니다. 다만 녹화 직전에 오디오 트랙 존재를 확인했으므로 아래 미리보기로 소리를 직접 들어봐 주세요.']);
   }
 
   if (r.silenceWarned){
-    rows.push(['warn', '🔇', '녹화 중 BGM이 잠시 무음이었습니다',
+    rows.push(['warn', '녹화 중 BGM이 잠시 무음이었습니다',
       '음악 시작 지점이 곡 끝에 너무 가깝지 않은지 확인해 보세요.']);
   }
 
@@ -2306,24 +2454,24 @@ function renderReport(r){
   const spec = '<b class="mono">' + (cd ? cd.container + ' · ' + cd.video + ' + ' + cd.audio : r.mime) + '</b> · ' +
                (r.size / 1048576).toFixed(1) + ' MB' + (r.duration ? ' · ' + fmtTime(r.duration) : '');
   if (cd && cd.ideal){
-    rows.push(['ok', '📦', '어느 기기로 보내도 그대로 재생됩니다',
+    rows.push(['ok', '어느 기기로 보내도 그대로 재생됩니다',
       'MP4 / H.264 / AAC — 아이폰·안드로이드·PC 모두 기본 재생기로 열립니다. ' + spec]);
   } else if (cd && cd.container === 'MP4'){
-    rows.push(['warn', '📦', '확장자는 MP4지만 코덱이 H.264/AAC가 아닙니다',
+    rows.push(['warn', '확장자는 MP4지만 코덱이 H.264/AAC가 아닙니다',
       '아이폰에서 재생되지 않을 수 있습니다. 받는 분 중 아이폰 사용자가 있다면 아이폰 사파리나 안드로이드 크롬에서 다시 만들어 주세요. ' + spec]);
   } else {
-    rows.push(['warn', '📦', 'WebM으로 저장됩니다',
+    rows.push(['warn', 'WebM으로 저장됩니다',
       '아이폰(사파리)에서는 WebM이 재생되지 않습니다. 받는 분 중 아이폰 사용자가 있다면 아이폰 사파리나 안드로이드 크롬에서 다시 만들어 주세요. ' + spec]);
   }
 
-  let html = rows.map(([k, ic, t, s]) =>
-    '<div class="rep ' + k + '"><span class="ic">' + ic + '</span><div><b>' + t + '</b><span>' + s + '</span></div></div>'
+  let html = rows.map(([k, t, s]) =>
+    '<div class="rep ' + k + '"><b>' + t + '</b><span>' + s + '</span></div>'
   ).join('');
 
   // 저장된 파일의 실제 프레임 — 화면 UI가 합성되지 않았음을 눈으로 확인
   if (r.frame){
     html += '<div class="rep ok" style="display:block">' +
-      '<b>🖼️ 저장된 파일에는 영상' + (S.subs.length && !S.editMode ? '·음악·자막' : '과 음악') + '만 들어 있습니다</b>' +
+      '<b>저장된 파일에는 영상' + (S.subs.length && !S.editMode ? '·음악·자막' : '과 음악') + '만 들어 있습니다</b>' +
       '<span>버튼·안내 문구·REC 표시·타이머는 화면에만 있고 파일에는 합성되지 않습니다. ' +
       '아래는 방금 저장된 파일에서 직접 꺼낸 프레임입니다.</span>' +
       '<img src="' + r.frame.url + '" alt="저장된 파일의 실제 프레임" ' +
@@ -2549,12 +2697,11 @@ document.addEventListener('click', async (ev) => {
     await openCamera(t.dataset.camid);
     return;
   }
-  // 목소리 칩도 .chip 이라서 일반 칩 분기보다 먼저 처리해야 한다
+  // 목소리 칩도 .chip 이라서 일반 칩 분기보다 먼저 처리해야 한다 (녹화 중에도 켜고 끌 수 있다)
   if (t.dataset.voice !== undefined){
-    if (S.recording) return;
     const want = t.dataset.voice === '1';
     if (want !== S.mic) await enableMic(want);
-    syncVoiceUI(); savePrefs(); return;
+    savePrefs(); return;
   }
   // 검색 태그 칩은 일반 설정 칩보다 먼저 처리 (같은 .chip 클래스)
   if (t.dataset.jamtag){ $('jamQ').value = t.dataset.jamtag; await jamSearch(t.dataset.jamtag); return; }
@@ -2568,10 +2715,7 @@ document.addEventListener('click', async (ev) => {
     if (group.id === 'camChips'){ S.facing = v; S._wanted = v; S.mirror = (v === 'user'); if (S.camStream) await openCamera(); }
     return;
   }
-  if (t.id === 'micSw'){
-    if (S.recording) return;
-    await enableMic(!S.mic); syncVoiceUI(); savePrefs(); return;
-  }
+  if (t.id === 'micSw'){ await enableMic(!S.mic); savePrefs(); return; }
   if (t.id === 'introSw' || t.id === 'outroSw'){
     const kind = t.id === 'introSw' ? 'intro' : 'outro';
     S[kind].on = !S[kind].on;
@@ -2676,7 +2820,7 @@ document.addEventListener('click', async (ev) => {
     const k = $('jamKey').value.trim();
     try { if (k) localStorage.setItem('jam_key', k); else localStorage.removeItem('jam_key'); } catch(e){}
     jamErr(k ? '' : 'Client ID를 입력해 주세요.');
-    if (k){ t.textContent = '저장됨 ✓'; setTimeout(() => { t.textContent = '저장'; }, 1500); if ($('jamQ').value.trim()) jamSearch($('jamQ').value); }
+    if (k){ t.textContent = '저장됨'; setTimeout(() => { t.textContent = '저장'; }, 1500); if ($('jamQ').value.trim()) jamSearch($('jamQ').value); }
     return;
   }
   if (t.id === 'jamGo'){ await jamSearch($('jamQ').value); return; }
@@ -2799,7 +2943,7 @@ $('bgmVol').addEventListener('input', (e) => {
 $('micVol').addEventListener('input', (e) => {
   S.micVolume = +e.target.value / 100;
   $('micVolV').textContent = e.target.value + '%';
-  if (S.micGain && S.mic) S.micGain.gain.value = S.micVolume;
+  if (S.micGain && S.mic) ioRamp(S.micGain, S.micVolume, 0.03);
 });
 $('bgmOff').addEventListener('input', (e) => {
   S.offset = +e.target.value;
@@ -2819,9 +2963,9 @@ if (!window.isSecureContext){
   const b = document.createElement('div');
   b.className = 'err';
   b.style.margin = '0 0 14px';
-  b.innerHTML = '<b>⚠️ 이 주소에서는 카메라를 쓸 수 없습니다.</b><br>' +
+  b.innerHTML = '<b>이 주소에서는 카메라를 쓸 수 없습니다.</b><br>' +
     '브라우저는 보안 연결(https)에서만 카메라를 허용합니다. 파일을 직접 열면 항상 막힙니다.<br>' +
-    '<b>[🎬 기존 영상에 입히기]</b> 모드는 카메라가 필요 없어 지금도 그대로 동작합니다.';
+    '<b>[기존 영상에 입히기]</b> 모드는 카메라가 필요 없어 지금도 그대로 동작합니다.';
   document.querySelector('#authScreen').insertAdjacentElement('beforebegin', b);
   document.querySelector('[data-mode="dub"]').click();
 }
@@ -2936,7 +3080,7 @@ async function doLogin(name, pw){
   if (!u) throw new Error('그 이름의 프로필이 없습니다. 회원가입을 먼저 해 주세요.');
   const h = await hashPw(pw, u.salt);
   if (h.algo !== u.algo)
-    throw new Error('가입할 때와 다른 주소(https ↔ 비보안)에서 여시면 비밀번호 확인 방식이 달라집니다. 가입한 주소로 접속해 주세요.');
+    throw new Error('가입할 때와 다른 주소(https와 비보안 주소)에서 여시면 비밀번호 확인 방식이 달라집니다. 가입한 주소로 접속해 주세요.');
   if (h.hash !== u.hash) throw new Error('비밀번호가 맞지 않습니다.');
   if (u.blocked) throw new Error('관리자가 이 프로필의 로그인을 막아 두었습니다.');
   try { await tx('users','readwrite', st => st.put(Object.assign(u, {lastLogin: Date.now()}))); } catch(e){}
@@ -3026,8 +3170,8 @@ async function renderHistory(){
   if (!rows.length){ box.innerHTML = '<div class="empty">아직 만든 영상이 없습니다.</div>'; return; }
   box.innerHTML = rows.map(r =>
     '<div class="hist">' +
-      (r.thumb ? '<img src="' + r.thumb + '" alt="">' : '<div class="hist-noimg" style="width:44px;height:78px;border-radius:7px;background:#04070e;border:1px solid var(--line);flex:0 0 44px"></div>') +
-      '<div class="hb"><div class="ht">' + (r.mode === 'dub' ? '🎬 ' : r.mode === 'trim' ? '✂️ ' : '📹 ') + r.music + '</div>' +
+      (r.thumb ? '<img src="' + r.thumb + '" alt="">' : '<div class="hist-noimg" style="width:44px;height:78px;border-radius:7px;background:#050608;border:1px solid var(--line);flex:0 0 44px"></div>') +
+      '<div class="hb"><div class="ht">' + (r.mode === 'dub' ? '입히기 · ' : r.mode === 'trim' ? '편집 · ' : '촬영 · ') + escapeHtml(r.music) + '</div>' +
       '<div class="hs">' + fmtWhen(r.at) + ' · ' + (r.dur ? fmtTime(r.dur) : '—') + ' · ' + (r.res || '—') +
       ' · ' + (r.size/1048576).toFixed(1) + 'MB</div>' +
       '<div class="hs">' + (r.codec || '') + '</div></div>' +
@@ -3082,6 +3226,7 @@ function updateNav(){
   $('nextBtn').disabled = busy || !canAdvance();
   $('navHint').innerHTML = S.step + ' / 4';
   $('nextBtn').textContent = S.step === 4 ? '새로 만들기' : '다음 ›';
+  queueMicrotask(() => botSync());
 }
 function goStep(n, viaPop){
   if (isBusy()) return;
@@ -3212,6 +3357,13 @@ function ioRamp(gn, v, dur){
   } catch(e){ gn.gain.value = v; }
 }
 
+/* 예약된 음량 변화를 지우고 지금 바로 값을 정한다 */
+function gainNow(gn, v){
+  if (!gn) return;
+  try { const now = ac().currentTime; gn.gain.cancelScheduledValues(now); gn.gain.setValueAtTime(v, now); }
+  catch(e){ gn.gain.value = v; }
+}
+
 function trimErr(msg){ const b = $('trimErr'); b.hidden = !msg; b.textContent = msg || ''; }
 
 function setupTrim(duration){
@@ -3253,7 +3405,7 @@ async function startTrim(){
   if (!S.trimNode){
     try { S.trimNode = c.createMediaElementSource(trimVideo); } catch (e){ trimErr('이 브라우저에서는 자르기를 지원하지 않습니다.'); return; }
     S.trimGain = c.createGain(); S.trimGain.gain.value = 1;
-    S.trimNode.connect(S.trimGain); S.trimGain.connect(S.mixBus);
+    S.trimNode.connect(S.trimGain); S.trimGain.connect(S.mixBus); S.trimGain.connect(S.monBus);
   }
   if (trimVideo._blob !== src){
     trimVideo.src = URL.createObjectURL(src);
@@ -3262,9 +3414,8 @@ async function startTrim(){
   }
   if (!trimVideo.videoWidth){ trimErr('영상을 열 수 없어 자를 수 없습니다.'); return; }
 
-  // 다른 입력은 잠시 끊는다 (마이크·원본소리가 섞이면 안 된다)
-  const savedMic = S.micGain.gain.value, savedBgm = S.bgmGain.gain.value, savedSrc = S.srcGain.gain.value;
-  S.micGain.gain.value = 0; S.srcGain.gain.value = 0;
+  // 다른 입력은 잠시 끊는다 (마이크·원본소리가 섞이면 안 된다). 예약된 음량 변화까지 지워야 도중에 되살아나지 않는다.
+  gainNow(S.micGain, 0); gainNow(S.srcGain, 0);
 
   /* 소리 배분
      · 본편 구간에는 이미 BGM 이 파일 안에 들어 있으므로 영상 소리만 쓴다.
@@ -3292,23 +3443,24 @@ async function startTrim(){
   const g = cv.getContext('2d');
   const videoTrack = cv.captureStream(30).getVideoTracks()[0];
   const audioTrack = S.mixDest.stream.getAudioTracks()[0];
-  if (!audioTrack){ trimErr('오디오 트랙을 만들지 못했습니다.'); return; }
+  // 끝나거나 도중에 실패해도 소리 배분을 원래대로 (BGM 이 혼자 계속 울리지 않게)
+  const restoreAudio = () => {
+    stopBgm();
+    gainNow(S.micGain, S.mic ? S.micVolume : 0); gainNow(S.bgmGain, S.bgmVolume); gainNow(S.srcGain, 0);
+    if (S.trimGain) gainNow(S.trimGain, 1);
+  };
+  if (!audioTrack){ restoreAudio(); videoTrack.stop(); trimErr('오디오 트랙을 만들지 못했습니다.'); return; }
 
   const mime = pickMime();
   const opts = {videoBitsPerSecond: cv.width >= 1080 ? 8000000 : 5000000, audioBitsPerSecond: 128000};
   if (mime) opts.mimeType = mime;
   try { S.recorder = new MediaRecorder(new MediaStream([videoTrack, audioTrack]), opts); }
-  catch (e){ trimErr('녹화기를 만들 수 없습니다: ' + e.message); return; }
+  catch (e){ restoreAudio(); videoTrack.stop(); trimErr('녹화기를 만들 수 없습니다: ' + e.message); return; }
 
   S.chunks = [];
   S.outMime = S.recorder.mimeType || mime || 'video/webm';
   S.recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) S.chunks.push(ev.data); };
-  S.recorder.onstop = () => {
-    stopBgm();
-    S.micGain.gain.value = savedMic; S.bgmGain.gain.value = savedBgm; S.srcGain.gain.value = savedSrc;
-    if (S.trimGain) S.trimGain.gain.value = 1;
-    onRecStop();
-  };
+  S.recorder.onstop = () => { restoreAudio(); onRecStop(); };
 
   S.trimming = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = true;
   $('trimBtn').textContent = useIo ? '인트로까지 굽는 중…' : (S.subs.length ? '자막 입히는 중…' : '자르는 중…');
@@ -3379,7 +3531,7 @@ function finishTrim(){
   S.trimming = false; S.recording = false;
   try { trimVideo.pause(); } catch(e){}
   try { S.recorder.stop(); } catch(e){}
-  $('trimBtn').textContent = '✨ 편집 적용해서 내보내기';
+  $('trimBtn').textContent = '편집 적용해서 내보내기';
   $('trimProg').style.width = '0%';
   updateNav();
 }
@@ -3422,7 +3574,7 @@ async function adminAuthSubmit(){
     } else {
       const u = await getAdmin();
       const h = await hashPw(pw, u.salt);
-      if (h.algo !== u.algo) throw new Error('가입할 때와 다른 주소(https ↔ 비보안)에서는 확인 방식이 달라집니다. 같은 주소로 접속해 주세요.');
+      if (h.algo !== u.algo) throw new Error('가입할 때와 다른 주소(https와 비보안 주소)에서는 확인 방식이 달라집니다. 같은 주소로 접속해 주세요.');
       if (h.hash !== u.hash) throw new Error('비밀번호가 맞지 않습니다.');
     }
     $('adminPw').value = ''; $('adminPw2').value = '';
@@ -3528,7 +3680,7 @@ async function adminChangePw(){
   await tx('users','readwrite', st => st.put(Object.assign(u, {salt:h.salt, hash:h.hash, algo:h.algo})));
   $('admNewPw').value = '';
   admErr('admChangeErr', '');
-  $('admChangeBtn').textContent = '변경됨 ✓'; setTimeout(() => { $('admChangeBtn').textContent = '변경'; }, 1500);
+  $('admChangeBtn').textContent = '변경됨'; setTimeout(() => { $('admChangeBtn').textContent = '변경'; }, 1500);
 }
 
 
@@ -3586,7 +3738,7 @@ let jamPlaying = -1;
 function jamStopPreview(){
   try { jamAudio.pause(); } catch(e){}
   jamPlaying = -1;
-  document.querySelectorAll('[data-jamplay]').forEach(b => b.textContent = '▶');
+  document.querySelectorAll('[data-jamplay]').forEach(b => { b.innerHTML = IC.play; b.setAttribute('aria-label', '미리듣기'); });
 }
 
 async function jamSearch(q){
@@ -3620,10 +3772,10 @@ async function jamSearch(q){
     '<div class="hist jamrow">' +
       ((t.image || t.album_image)
         ? '<img src="' + escapeAttr(t.image || t.album_image) + '" alt="" loading="lazy">'
-        : '<div style="width:44px;height:44px;flex:0 0 44px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-size:18px">🎵</div>') +
+        : '<div class="noimg">' + IC.note + '</div>') +
       '<div class="hb"><div class="ht">' + escapeHtml(t.name) + ' <small>— ' + escapeHtml(t.artist_name) + '</small></div>' +
       '<div class="hs">' + fmtTime(t.duration) + ' · <span class="lic">' + licShort(t.license_ccurl) + '</span></div></div>' +
-      '<button type="button" class="play" data-jamplay="' + i + '">▶</button>' +
+      '<button type="button" class="play" data-jamplay="' + i + '" aria-label="미리듣기">' + IC.play + '</button>' +
       '<button type="button" class="pick" data-jampick="' + i + '">선택</button>' +
     '</div>'
   ).join('');
@@ -3637,7 +3789,7 @@ function jamTogglePreview(i){
   jamAudio.src = t.audio;
   jamAudio.play().catch(() => jamErr('미리듣기를 재생할 수 없습니다.'));
   jamPlaying = i;
-  const b = document.querySelector('[data-jamplay="' + i + '"]'); if (b) b.textContent = '■';
+  const b = document.querySelector('[data-jamplay="' + i + '"]'); if (b){ b.innerHTML = IC.stop; b.setAttribute('aria-label', '정지'); }
   jamAudio.onended = jamStopPreview;
 }
 
@@ -3645,7 +3797,7 @@ async function selectJamendo(t, silent){
   if (!t || !t.audio) return;
   jamStopPreview();
   if (S.bgmLive) stopCapture('');
-  setBgmStatus('generating', '「' + t.name + '」 불러오는 중…');
+  setBgmStatus('generating', '「' + escapeHtml(t.name) + '」 불러오는 중…');
   try {
     ac();
     const r = await fetch(t.audio, {mode: 'cors'});
@@ -3667,14 +3819,14 @@ async function selectJamendo(t, silent){
     d.hidden = false;
     d.innerHTML =
       '<div class="detail" style="margin-top:12px">' +
-      '<h3>🎵 ' + escapeHtml(t.name) + ' <small style="color:var(--tx3);font-weight:400">— ' + escapeHtml(t.artist_name) + '</small></h3>' +
+      '<h3>' + escapeHtml(t.name) + ' <small style="color:var(--tx3);font-weight:400">— ' + escapeHtml(t.artist_name) + '</small></h3>' +
       '<canvas class="wave" id="jamWave"></canvas>' +
       '<div class="wavelabel"><span>음원 파형</span><span>' + fmtTime(buf.duration) + '</span></div>' +
       '<div class="specs">' +
         '<div><b>라이선스</b><span>' + licShort(t.license_ccurl) + '</span></div>' +
         '<div><b>출처</b><span>Jamendo</span></div>' +
       '</div>' +
-      '<div class="filerow">📝 표기 — <b>' + escapeHtml(t.name) + ' · ' + escapeHtml(t.artist_name) + '</b> (' + licShort(t.license_ccurl) + ', jamendo.com)' +
+      '<div class="filerow">표기 — <b>' + escapeHtml(t.name) + ' · ' + escapeHtml(t.artist_name) + '</b> (' + licShort(t.license_ccurl) + ', jamendo.com)' +
         (t.license_ccurl ? ' · <a href="' + escapeAttr(t.license_ccurl) + '" target="_blank" rel="noopener" style="color:var(--cy)">라이선스 보기</a>' : '') + '</div>' +
       '<div class="filerow">CC 라이선스 곡은 당사자끼리 공유하는 용도로는 자유롭게 쓸 수 있습니다. 공개 게시·상업 사용 시에는 라이선스 조건(NC/ND)을 확인하세요.</div>' +
       '</div>';
@@ -3728,21 +3880,21 @@ const SUB_FONTS = [
 ];
 const SUB_COLORS = ['#ffffff','#fff27a','#22d3ee','#ff7ab8','#7cf59b','#ffa94d','#b39dff','#0a0e1a'];
 const SUB_ANIMS = [
-  {id:'none',    icon:'▪',  label:'없음'},
-  {id:'fade',    icon:'◐',  label:'서서히'},
-  {id:'typing',  icon:'⌨',  label:'타자'},
-  {id:'pop',     icon:'✦',  label:'팝'},
-  {id:'slide',   icon:'↑',  label:'올라오기'},
-  {id:'zoom',    icon:'⊙',  label:'줌아웃'},
-  {id:'bounce',  icon:'⇅',  label:'통통'},
-  {id:'wave',    icon:'〜', label:'물결'},
-  {id:'shake',   icon:'⚡', label:'흔들'},
-  {id:'karaoke', icon:'🎤', label:'노래방'}
+  {id:'none',    label:'없음'},
+  {id:'fade',    label:'서서히'},
+  {id:'typing',  label:'타자'},
+  {id:'pop',     label:'팝'},
+  {id:'slide',   label:'올라오기'},
+  {id:'zoom',    label:'줌아웃'},
+  {id:'bounce',  label:'통통'},
+  {id:'wave',    label:'물결'},
+  {id:'shake',   label:'흔들'},
+  {id:'karaoke', label:'노래방'}
 ];
 const POS_PRESETS = [
-  {x:0.5,  y:0.12, ic:'▲'}, {x:0.5, y:0.12, ic:'▲'}, {x:0.5, y:0.12, ic:'▲'},
-  {x:0.22, y:0.5,  ic:'◀'}, {x:0.5, y:0.5,  ic:'●'}, {x:0.78, y:0.5, ic:'▶'},
-  {x:0.5,  y:0.86, ic:'▼'}, {x:0.5, y:0.86, ic:'▼'}, {x:0.5, y:0.86, ic:'▼'}
+  {x:0.5,  y:0.12, ic:'up', t:'위'},    {x:0.5, y:0.12, ic:'up', t:'위'},       {x:0.5, y:0.12, ic:'up', t:'위'},
+  {x:0.22, y:0.5,  ic:'left', t:'왼쪽'}, {x:0.5, y:0.5,  ic:'dot', t:'가운데'}, {x:0.78, y:0.5, ic:'right', t:'오른쪽'},
+  {x:0.5,  y:0.86, ic:'down', t:'아래'}, {x:0.5, y:0.86, ic:'down', t:'아래'},   {x:0.5, y:0.86, ic:'down', t:'아래'}
 ];
 
 S.subs = [];
@@ -3873,11 +4025,11 @@ function renderStyleControls(){
     '<button type="button" class="sw-c ' + (S.subStyle.color === c ? 'on' : '') + '" data-subcolor="' + c + '" style="background:' + c + '"></button>'
   ).join('');
   $('posGrid').innerHTML = POS_PRESETS.map((p, i) =>
-    '<button type="button" data-pos="' + i + '">' + p.ic + '</button>'
+    '<button type="button" data-pos="' + i + '" aria-label="' + p.t + '">' + IC[p.ic] + '</button>'
   ).join('');
   $('animGrid').innerHTML = SUB_ANIMS.map(a =>
     '<button type="button" data-anim="' + a.id + '" class="' + (S.subStyle.anim === a.id ? 'on' : '') + '">' +
-    '<b>' + a.icon + '</b>' + a.label + '</button>'
+    a.label + '</button>'
   ).join('');
 }
 
@@ -4066,7 +4218,7 @@ function updateStyleFor(){
   $('styleFor').disabled = !c;
 }
 
-/* --- 컨트롤 ↔ 상태 동기화 --- */
+/* --- 컨트롤과 상태 동기화 --- */
 function syncStyleInputs(){
   const st = S.subStyle;
   $('subSize').value = Math.round(st.size * 1000);      $('subSizeV').textContent = (st.size * 100).toFixed(1) + '%';
@@ -4083,7 +4235,7 @@ function syncStyleInputs(){
   document.querySelectorAll('[data-lay]').forEach(c => c.classList.toggle('on', c.dataset.lay === S.subLayout));
 }
 
-/* --- 편집 모드 ↔ 완성본 모드 --- */
+/* --- 편집 모드와 완성본 모드 --- */
 function applyEditMode(){
   const done = !S.editMode;
   $('doneBar').hidden = !done;
@@ -4267,32 +4419,13 @@ const ioEase = (x) => 1 - Math.pow(1 - x, 3);
 const ioBack = (x) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
 const ioClamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
-function ioGrad(g, W, H, c1, c2){
-  const gr = g.createLinearGradient(0, 0, W * 0.4, H);
-  gr.addColorStop(0, c1); gr.addColorStop(1, c2);
-  g.fillStyle = gr; g.fillRect(0, 0, W, H);
-}
-/* 영상 프레임을 배경으로 (꽉 채우고 어둡게) */
-function ioFrame(g, W, H, frame, dim){
-  let ok = false;
-  try {
-    if (frame && frame.videoWidth){
-      const s = Math.max(W / frame.videoWidth, H / frame.videoHeight);
-      const dw = frame.videoWidth * s, dh = frame.videoHeight * s;
-      g.drawImage(frame, (W - dw) / 2, (H - dh) / 2, dw, dh);
-      ok = true;
-    }
-  } catch(e){}
-  if (!ok) ioGrad(g, W, H, '#132038', '#04070e');
-  g.fillStyle = 'rgba(4,7,14,' + dim + ')';
-  g.fillRect(0, 0, W, H);
-}
 /* 한 줄이 폭 안에 들어오도록 글자 크기를 줄인다 */
 function ioFit(g, text, maxW, px, fam, weight){
   let s = px;
   g.font = weight + ' ' + s + 'px "' + fam + '", "Noto Sans KR", sans-serif';
   let guard = 60;
-  while (g.measureText(text).width > maxW && s > 11 && guard--){
+  const floor = Math.min(11, px * 0.12);
+  while (g.measureText(text).width > maxW && s > floor && guard--){
     s *= Math.max(0.86, maxW / Math.max(1, g.measureText(text).width));
     g.font = weight + ' ' + s + 'px "' + fam + '", "Noto Sans KR", sans-serif';
   }
@@ -4307,292 +4440,439 @@ function ioSub(g, W, H, L2, y, alpha, color, fam){
   g.restore();
 }
 
+/* 다섯 가지 모두 그림을 캔버스에 직접 그린다(이모지 · 외부 이미지 없음).
+   3초가 끝나는 순간에도 글자는 화면에 그대로 남는다. */
+function ioShade(hex, k){
+  const n = parseInt(hex.slice(1), 16);
+  const f = (c) => Math.round(Math.max(0, Math.min(255, k < 0 ? c * (1 + k) : c + (255 - c) * k)));
+  return 'rgb(' + f(n >> 16) + ',' + f((n >> 8) & 255) + ',' + f(n & 255) + ')';
+}
+function ioCloud(g, x, y, s, a){
+  g.save(); g.globalAlpha = a; g.fillStyle = '#ffffff';
+  g.beginPath();
+  [[0, 0, 0.5], [0.48, -0.22, 0.62], [1.02, 0, 0.46], [0.5, 0.12, 0.5]].forEach(([dx, dy, r]) => {
+    g.moveTo(x + dx * s + r * s, y + dy * s); g.arc(x + dx * s, y + dy * s, r * s, 0, Math.PI * 2);
+  });
+  g.fill(); g.restore();
+}
+function ioBalloon(g, x, y, s, col, sway){
+  g.save();
+  g.strokeStyle = 'rgba(55,65,85,.45)'; g.lineWidth = Math.max(1, s * 0.035);
+  g.beginPath(); g.moveTo(x, y + s * 1.06);
+  g.quadraticCurveTo(x + sway * s * 0.5, y + s * 1.8, x - sway * s * 0.25, y + s * 2.6);
+  g.stroke();
+  g.fillStyle = ioShade(col, -0.18);
+  g.beginPath(); g.moveTo(x - s * 0.11, y + s * 1.1); g.lineTo(x + s * 0.11, y + s * 1.1); g.lineTo(x, y + s * 0.95); g.closePath(); g.fill();
+  const gr = g.createRadialGradient(x - s * 0.3, y - s * 0.38, s * 0.08, x, y, s * 1.12);
+  gr.addColorStop(0, ioShade(col, 0.55)); gr.addColorStop(0.3, col); gr.addColorStop(1, ioShade(col, -0.3));
+  g.fillStyle = gr;
+  g.beginPath(); g.ellipse(x, y, s * 0.86, s, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = 'rgba(255,255,255,.6)';
+  g.beginPath(); g.ellipse(x - s * 0.36, y - s * 0.42, s * 0.11, s * 0.22, -0.5, 0, Math.PI * 2); g.fill();
+  g.restore();
+}
+function ioRibbon(g, cx, cy, w, h, col){
+  const tw = h * 0.95;
+  g.fillStyle = ioShade(col, -0.28);
+  [-1, 1].forEach(sd => {
+    const x0 = cx + sd * (w / 2 - h * 0.25);
+    g.beginPath();
+    g.moveTo(x0, cy - h * 0.18); g.lineTo(x0 + sd * tw, cy - h * 0.18);
+    g.lineTo(x0 + sd * tw * 0.7, cy + h * 0.32); g.lineTo(x0 + sd * tw, cy + h * 0.82);
+    g.lineTo(x0, cy + h * 0.82); g.closePath(); g.fill();
+  });
+  g.fillStyle = col;
+  roundRect(g, cx - w / 2, cy - h / 2, w, h, h * 0.2); g.fill();
+  g.fillStyle = 'rgba(255,255,255,.18)';
+  roundRect(g, cx - w / 2 + h * 0.12, cy - h / 2 + h * 0.1, w - h * 0.24, h * 0.22, h * 0.1); g.fill();
+}
+function ioHeart(g, x, y, s){
+  g.beginPath();
+  g.moveTo(x, y + s * 0.35);
+  g.bezierCurveTo(x - s * 0.9, y - s * 0.25, x - s * 0.4, y - s * 0.95, x, y - s * 0.45);
+  g.bezierCurveTo(x + s * 0.4, y - s * 0.95, x + s * 0.9, y - s * 0.25, x, y + s * 0.35);
+  g.closePath();
+}
+function ioSparkle(g, x, y, s){
+  g.beginPath();
+  for (let k = 0; k < 4; k++){
+    const a = k * Math.PI / 2;
+    g.lineTo(x + Math.cos(a) * s, y + Math.sin(a) * s);
+    g.lineTo(x + Math.cos(a + Math.PI / 4) * s * 0.3, y + Math.sin(a + Math.PI / 4) * s * 0.3);
+  }
+  g.closePath();
+}
+function ioStarPath(g, x, y, r){
+  g.beginPath();
+  for (let k = 0; k < 10; k++){
+    const a = -Math.PI / 2 + k * Math.PI / 5, rr = k % 2 ? r * 0.45 : r;
+    g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+  }
+  g.closePath();
+}
+/* 선이 그려지는 낙서 — p(0~1) 만큼만 선을 보인다 */
+function ioDoodle(g, pathFn, len, p, col, lw){
+  if (p <= 0) return;
+  g.save();
+  g.strokeStyle = col; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round';
+  g.setLineDash([len, len]); g.lineDashOffset = len * (1 - p);
+  pathFn(); g.stroke();
+  g.restore();
+}
+/* 안내 로봇과 같은 모습(가로 200 · 세로 260 칸 기준). 팻말을 앞에 들고 머리만 위로 보인다.
+   화면의 SVG 로봇을 그림으로 불러와 캔버스에 그리면 일부 브라우저에서 캔버스가 '오염'되어 녹화(captureStream)가
+   막힐 수 있으므로, 같은 치수로 도형을 직접 그린다. 로봇 모양을 고치면 #botFig 의 SVG 도 함께 고칠 것. */
+function ioRobot(g, ox, oy, k, t){
+  g.save(); g.translate(ox, oy); g.scale(k, k);
+  const glow = '#7FE7FF';
+  const bodyG = g.createLinearGradient(0, 30, 0, 216);
+  bodyG.addColorStop(0, '#FFFFFF'); bodyG.addColorStop(1, '#B7D6F8');
+  // 추진기 불꽃
+  const jf = 0.8 + 0.2 * Math.sin(t * 22);
+  const jg = g.createRadialGradient(100, 226, 0, 100, 226, 30);
+  jg.addColorStop(0, 'rgba(255,255,255,.95)'); jg.addColorStop(0.55, 'rgba(127,231,255,.55)'); jg.addColorStop(1, 'rgba(127,231,255,0)');
+  g.fillStyle = jg; g.beginPath(); g.ellipse(100, 232, 26, 18 * jf, 0, 0, Math.PI * 2); g.fill();
+  // 몸
+  g.fillStyle = bodyG; roundRect(g, 54, 118, 92, 98, 42); g.fill();
+  // 안테나
+  g.strokeStyle = '#B7D6F8'; g.lineWidth = 4; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(100, 34); g.lineTo(100, 15); g.stroke();
+  g.save(); g.shadowColor = glow; g.shadowBlur = 12; g.globalAlpha = 0.65 + 0.35 * Math.sin(t * 5);
+  g.fillStyle = glow; g.beginPath(); g.arc(100, 10, 7, 0, Math.PI * 2); g.fill(); g.restore();
+  // 귀
+  g.fillStyle = '#B7D6F8';
+  g.beginPath(); g.arc(41, 72, 9, 0, Math.PI * 2); g.arc(159, 72, 9, 0, Math.PI * 2); g.fill();
+  g.fillStyle = glow;
+  g.beginPath(); g.arc(41, 72, 3.5, 0, Math.PI * 2); g.arc(159, 72, 3.5, 0, Math.PI * 2); g.fill();
+  // 머리 · 얼굴 창
+  g.fillStyle = bodyG; roundRect(g, 44, 30, 112, 86, 36); g.fill();
+  g.strokeStyle = 'rgba(255,255,255,.9)'; g.lineWidth = 1.6; roundRect(g, 44, 30, 112, 86, 36); g.stroke();
+  const vg = g.createLinearGradient(58, 48, 142, 100);
+  vg.addColorStop(0, '#1A4A92'); vg.addColorStop(1, '#050B1C');
+  g.fillStyle = vg; roundRect(g, 58, 48, 84, 52, 24); g.fill();
+  // 눈(2초쯤 한 번 깜빡) · 입
+  const blink = (t > 1.9 && t < 2.04) ? 0.12 : 1;
+  g.save(); g.shadowColor = glow; g.shadowBlur = 10; g.fillStyle = glow;
+  g.beginPath(); g.ellipse(84, 76, 9, 11 * blink, 0, 0, Math.PI * 2); g.ellipse(116, 76, 9, 11 * blink, 0, 0, Math.PI * 2); g.fill();
+  g.restore();
+  g.strokeStyle = glow; g.lineWidth = 2.5; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(90, 91); g.quadraticCurveTo(100, 98, 110, 91); g.stroke();
+  g.fillStyle = 'rgba(255,255,255,.7)'; g.beginPath(); g.ellipse(74, 44, 18, 5, 0, 0, Math.PI * 2); g.fill();
+  g.restore();
+}
+
 const IO_DESIGNS = [
-  { id:'typing', e:'⌨️', name:'타자기', font:'JetBrains Mono',
+  { id:'balloon', name:'풍선 파티', short:'풍선', font:'Do Hyeon',
     draw(g, W, H, t, D, L1, L2){
-      ioGrad(g, W, H, '#05070c', '#01030a');
-      g.save();
-      g.globalAlpha = 0.5; g.strokeStyle = '#123b32'; g.lineWidth = Math.max(1, H * 0.0012);
-      for (let y = 0; y < H; y += H * 0.02){ g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
-      g.restore();
-      const chars = [...L1];
-      const n = Math.floor(chars.length * ioClamp(t / (D * 0.6), 0, 1));
-      const shown = chars.slice(0, n).join('');
-      const px = ioFit(g, L1 + '_', W * 0.8, H * 0.052, 'JetBrains Mono', '600');
-      g.font = '600 ' + px + 'px "JetBrains Mono", monospace';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.shadowColor = '#22e88a'; g.shadowBlur = px * 0.4;
-      g.fillStyle = '#5bffb0';
-      const blink = (Math.floor(t * 2.6) % 2) === 0 ? '_' : ' ';
-      g.fillText(shown + blink, W / 2, H * 0.46);
-      g.shadowBlur = 0;
-      ioSub(g, W, H, L2, H * 0.54, ioClamp((t - D * 0.55) / 0.5, 0, 1), '#3f8f70', 'JetBrains Mono');
+      const bg = g.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#86CBFF'); bg.addColorStop(0.58, '#CFEBFF'); bg.addColorStop(1, '#FFE4EF');
+      g.fillStyle = bg; g.fillRect(0, 0, W, H);
+      [[0.02, 0.1, 1], [0.6, 0.05, 0.8], [0.18, 0.93, 1.4]].forEach(([cx, cy, k], i) =>
+        ioCloud(g, cx * W + t * W * 0.025 * (i + 1), cy * H, W * 0.11 * k, 0.85));
+      const B = [[0.15, 0.22, 1.0], [0.36, 0.12, 0.85], [0.66, 0.11, 0.95], [0.86, 0.23, 1.05],
+                 [0.1, 0.63, 0.9], [0.9, 0.62, 0.85], [0.27, 0.76, 0.8], [0.74, 0.77, 0.9], [0.5, 0.86, 0.72]];
+      const pal = ['#FF6B8B', '#FFC145', '#4CC9F0', '#8BD450', '#B28DFF', '#FF8C42'];
+      B.forEach(([fx, fy, sz], i) => {
+        const s = W * 0.085 * sz;
+        const sy = H + s * 1.4 + (i % 3) * H * 0.06;
+        const p = ioEase(ioClamp((t - i * 0.07) / 1.5, 0, 1));
+        const y = sy + (fy * H - sy) * p + Math.sin(t * 1.8 + i) * s * 0.07;
+        const x = fx * W + Math.sin(t * 1.2 + i * 1.9) * s * 0.14;
+        ioBalloon(g, x, y, s, pal[i % pal.length], Math.sin(t * 1.6 + i));
+      });
+      const p = ioClamp((t - 0.85) / 0.55, 0, 1);
+      if (p > 0){
+        const cy = H * 0.455;
+        const px = ioFit(g, L1, W * 0.66, H * 0.052, 'Do Hyeon', '400');
+        const tw = Math.min(W * 0.66, g.measureText(L1).width);
+        const bw = tw + px * 1.5, bh = px * 1.75;
+        g.save(); g.translate(W / 2, cy);
+        const sc = 0.6 + 0.4 * ioBack(p); g.scale(sc, sc); g.globalAlpha = Math.min(1, p * 1.8);
+        ioRibbon(g, 0, 0, bw, bh, '#FF5D86');
+        g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
+        g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText(L1, 0, px * 0.05);
+        g.restore();
+        ioSub(g, W, H, L2, cy + bh * 1.05, ioClamp((t - 1.2) / 0.5, 0, 1), '#28385A', 'Do Hyeon');
+      }
     } },
 
-  { id:'countdown', e:'🎬', name:'필름 카운트', font:'Black Han Sans',
+  { id:'confetti', name:'축하 폭죽', short:'폭죽', font:'Black Han Sans',
     draw(g, W, H, t, D, L1, L2){
-      ioGrad(g, W, H, '#0e0e12', '#050508');
-      const cx = W / 2, cy = H * 0.44, R = Math.min(W, H) * 0.22;
-      g.save();
-      g.strokeStyle = 'rgba(255,255,255,.16)'; g.lineWidth = Math.max(1, W * 0.004);
-      g.beginPath(); g.moveTo(0, cy); g.lineTo(W, cy); g.moveTo(cx, 0); g.lineTo(cx, H); g.stroke();
-      g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke();
-      g.beginPath(); g.arc(cx, cy, R * 1.45, 0, Math.PI * 2); g.stroke();
+      const cx = W / 2, cy = H * 0.45;
+      const bg = g.createRadialGradient(cx, cy, 0, cx, cy, H * 0.78);
+      bg.addColorStop(0, '#42308A'); bg.addColorStop(1, '#0E0B26');
+      g.fillStyle = bg; g.fillRect(0, 0, W, H);
+      g.save(); g.translate(cx, cy); g.rotate(t * 0.12);
+      g.fillStyle = 'rgba(255,255,255,.05)';
+      for (let i = 0; i < 12; i++){
+        g.rotate(Math.PI / 6);
+        g.beginPath(); g.moveTo(0, 0); g.lineTo(-W * 0.1, -H); g.lineTo(W * 0.1, -H); g.closePath(); g.fill();
+      }
       g.restore();
-      const cut = D - 1.05;
-      if (t < cut){
-        const step = cut / 3, num = 3 - Math.floor(t / step);
-        const frac = (t % step) / step;
-        g.save();
-        g.fillStyle = 'rgba(255,255,255,.1)';
-        g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, R * 1.45, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); g.closePath(); g.fill();
-        g.font = '400 ' + (H * 0.2) + 'px "Black Han Sans", sans-serif';
-        g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#f4f4f5';
-        g.globalAlpha = 0.35 + 0.65 * (1 - frac);
-        g.fillText(String(Math.max(1, num)), cx, cy);
+      const bp = ioClamp((t - 0.42) / 0.55, 0, 1);
+      if (bp > 0 && bp < 1){
+        g.save(); g.globalAlpha = 1 - bp; g.strokeStyle = '#FFD84D'; g.lineWidth = Math.max(2, W * 0.008); g.lineCap = 'round';
+        for (let i = 0; i < 16; i++){
+          const a = i * Math.PI / 8, r0 = W * (0.16 + 0.24 * ioEase(bp)), r1 = r0 + W * 0.05;
+          g.beginPath(); g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0 * 0.9);
+          g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1 * 0.9); g.stroke();
+        }
         g.restore();
-      } else {
-        const p = ioClamp((t - cut) / 0.55, 0, 1);
-        g.save(); g.translate(cx, cy); g.scale(0.7 + 0.3 * ioBack(p), 0.7 + 0.3 * ioBack(p));
-        const px = ioFit(g, L1, W * 0.78, H * 0.068, 'Black Han Sans', '400');
+      }
+      const p = ioClamp((t - 0.38) / 0.5, 0, 1);
+      if (p > 0){
+        const px = ioFit(g, L1, W * 0.82, H * 0.07, 'Black Han Sans', '400');
+        g.save(); g.translate(cx, cy);
+        const sc = 0.4 + 0.6 * ioBack(p); g.scale(sc, sc);
+        g.globalAlpha = Math.min(1, p * 1.6);
         g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
         g.textAlign = 'center'; g.textBaseline = 'middle';
-        g.globalAlpha = Math.min(1, p * 1.6); g.fillStyle = '#fff';
-        g.fillText(L1, 0, 0); g.restore();
-        ioSub(g, W, H, L2, cy + H * 0.075, p, '#a1a1aa');
-      }
-    } },
-
-  { id:'neon', e:'💡', name:'네온사인', font:'Do Hyeon',
-    draw(g, W, H, t, D, L1, L2){
-      ioGrad(g, W, H, '#150a24', '#05030c');
-      const r = ioRand(7);
-      let fl = 1;
-      for (let i = 0; i < 40; i++){ const v = r(); if (i / 40 * D < t) fl = v > 0.94 ? 0.35 : 1; }
-      const on = ioClamp(t / 0.45, 0, 1) * fl;
-      const pad = W * 0.08, top = H * 0.32, bh = H * 0.20;
-      g.save();
-      g.globalAlpha = on; g.strokeStyle = '#ff5cc8'; g.lineWidth = Math.max(2, W * 0.006);
-      g.shadowColor = '#ff5cc8'; g.shadowBlur = W * 0.05;
-      roundRect(g, pad, top, W - pad * 2, bh, W * 0.035); g.stroke();
-      g.restore();
-      const px = ioFit(g, L1, W - pad * 2.6, H * 0.055, 'Do Hyeon', '400');
-      g.save();
-      g.globalAlpha = on; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
-      g.shadowColor = '#5ce1ff'; g.shadowBlur = px * 0.75;
-      g.fillStyle = '#eaffff'; g.fillText(L1, W / 2, top + bh / 2);
-      g.shadowBlur = px * 0.35; g.fillText(L1, W / 2, top + bh / 2);
-      g.restore();
-      ioSub(g, W, H, L2, top + bh + H * 0.055, on, '#ff9ad8', 'Do Hyeon');
-    } },
-
-  { id:'swipe', e:'🎞', name:'컬러 스와이프', font:'Black Han Sans',
-    draw(g, W, H, t, D, L1, L2){
-      g.fillStyle = '#07080d'; g.fillRect(0, 0, W, H);
-      const cols = ['#22d3ee', '#f472b6', '#facc15'];
-      cols.forEach((c, i) => {
-        const st = i * 0.16, p = ioEase(ioClamp((t - st) / 0.62, 0, 1));
-        const q = ioEase(ioClamp((t - st - 0.5) / 0.62, 0, 1));
-        const y = H * (0.30 + i * 0.11), h = H * 0.10;
-        g.fillStyle = c;
-        g.fillRect(W * q, y, W * (p - q), h);
-      });
-      const p = ioClamp((t - 1.0) / 0.5, 0, 1);
-      if (p > 0){
-        const px = ioFit(g, L1, W * 0.82, H * 0.070, 'Black Han Sans', '400');
-        const bw = Math.min(W * 0.82, g.measureText(L1).width) * ioEase(p);
-        g.fillStyle = '#22d3ee';
-        g.fillRect(W / 2 - bw / 2, H * 0.535, bw, Math.max(2, H * 0.0035));
-        g.save();
-        g.globalAlpha = p; g.textAlign = 'center'; g.textBaseline = 'middle';
-        g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
-        g.translate(0, (1 - ioEase(p)) * H * 0.03);
-        g.fillStyle = '#fff'; g.fillText(L1, W / 2, H * 0.47);
+        g.lineWidth = px * 0.2; g.lineJoin = 'round'; g.miterLimit = 2;
+        g.strokeStyle = '#1A1040'; g.strokeText(L1, 0, 0);
+        g.fillStyle = '#ffffff'; g.fillText(L1, 0, 0);
         g.restore();
-        ioSub(g, W, H, L2, H * 0.585, p, '#94a3b8');
+        ioSub(g, W, H, L2, cy + px * 0.95, ioClamp((t - 0.7) / 0.5, 0, 1), '#FFD84D');
+      }
+      // 양쪽 아래에서 터지는 종이 조각 (공기 저항이 있는 포물선이라 천천히 팔랑이며 내려온다)
+      const r = ioRand(4242);
+      const pal = ['#FF5D86', '#FFD84D', '#4CC9F0', '#8BD450', '#B28DFF', '#FF8C42', '#ffffff'];
+      for (let side = 0; side < 2; side++){
+        const ox = side ? W * 1.02 : -W * 0.02, oy = H * 1.0, sgn = side ? -1 : 1;
+        for (let i = 0; i < 64; i++){
+          const ang = 0.12 + r() * 0.55, sp = H * (1.25 + r() * 0.95), del = 0.1 + r() * 0.22;
+          const kk = 1.9 + r() * 1.1, grav = H * (0.8 + r() * 0.3), rot0 = r() * 6.3, spin = (r() - 0.5) * 14;
+          const flip = 5 + r() * 9, sz = W * (0.018 + r() * 0.016), shape = Math.floor(r() * 3);
+          const col = pal[Math.floor(r() * pal.length)], ph = r() * 6.3;
+          const tt = t - del; if (tt <= 0) continue;
+          const vx = sgn * Math.sin(ang) * sp, vy = -Math.cos(ang) * sp, e = 1 - Math.exp(-kk * tt);
+          const x = ox + vx * e / kk + Math.sin(tt * 6 + ph) * W * 0.012 * e;
+          const y = oy + (grav / kk) * tt + (vy - grav / kk) * e / kk;
+          if (y > H * 1.06 || x < -W * 0.1 || x > W * 1.1) continue;
+          g.save(); g.translate(x, y); g.rotate(rot0 + spin * tt); g.scale(Math.cos(tt * flip + ph), 1);
+          g.fillStyle = col;
+          if (shape === 0) g.fillRect(-sz / 2, -sz / 4, sz, sz / 2);
+          else if (shape === 1){ g.beginPath(); g.arc(0, 0, sz * 0.32, 0, Math.PI * 2); g.fill(); }
+          else { g.beginPath(); g.moveTo(0, -sz * 0.4); g.lineTo(sz * 0.4, sz * 0.3); g.lineTo(-sz * 0.4, sz * 0.3); g.closePath(); g.fill(); }
+          g.restore();
+        }
+      }
+      // 터진 뒤에는 위에서 종이 조각이 천천히 내려와 끝 장면까지 화면을 채운다
+      for (let i = 0; i < 46; i++){
+        const x0 = r() * W, del = 0.75 + r() * 1.1, sp = H * (0.16 + r() * 0.14), ph = r() * 6.3;
+        const sz = W * (0.016 + r() * 0.014), col = pal[Math.floor(r() * pal.length)], spin = (r() - 0.5) * 6, shape = r() > 0.5 ? 0 : 1;
+        const tt = t - del; if (tt <= 0) continue;
+        const y = -H * 0.04 + tt * sp, x = x0 + Math.sin(tt * 2.4 + ph) * W * 0.03;
+        if (y > H * 1.04) continue;
+        g.save(); g.translate(x, y); g.rotate(ph + spin * tt); g.scale(Math.cos(tt * 5 + ph), 1);
+        g.globalAlpha = Math.min(1, tt * 3); g.fillStyle = col;
+        if (shape === 0) g.fillRect(-sz / 2, -sz / 4, sz, sz / 2);
+        else { g.beginPath(); g.arc(0, 0, sz * 0.3, 0, Math.PI * 2); g.fill(); }
+        g.restore();
       }
     } },
 
-  { id:'polaroid', e:'📸', name:'폴라로이드', font:'Nanum Pen Script', useFrame:true,
+  { id:'polaroid', name:'폴라로이드', short:'사진', font:'Nanum Pen Script', useFrame:true,
     draw(g, W, H, t, D, L1, L2, frame){
-      ioGrad(g, W, H, '#1c1917', '#0a0908');
-      const p = ioEase(ioClamp(t / 0.7, 0, 1));
-      const cw = W * 0.74, ch = cw * 1.22;
-      const cx = W / 2, cy = H * 0.44 - (1 - p) * H * 0.35;
+      g.fillStyle = '#FFF6DC'; g.fillRect(0, 0, W, H);
+      g.strokeStyle = 'rgba(110,160,215,.22)'; g.lineWidth = Math.max(1, W * 0.0016);
+      const step = W * 0.065;
+      g.beginPath();
+      for (let x = step; x < W; x += step){ g.moveTo(x, 0); g.lineTo(x, H); }
+      for (let y = step; y < H; y += step){ g.moveTo(0, y); g.lineTo(W, y); }
+      g.stroke();
+      const p = ioEase(ioClamp(t / 0.75, 0, 1));
+      const cw = W * 0.7, ch = cw * 1.2;
+      const cx = W / 2, cy = H * 0.42 - (1 - p) * H * 0.45;
       g.save();
-      g.translate(cx, cy); g.rotate((1 - p) * -0.22 + 0.025);
-      g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = W * 0.06; g.shadowOffsetY = H * 0.012;
-      g.fillStyle = '#f8f7f2'; roundRect(g, -cw / 2, -ch / 2, cw, ch, W * 0.012); g.fill();
+      g.translate(cx, cy); g.rotate((1 - p) * 0.35 - 0.055);
+      g.shadowColor = 'rgba(70,50,20,.35)'; g.shadowBlur = W * 0.05; g.shadowOffsetY = H * 0.01;
+      g.fillStyle = '#FFFFFF'; roundRect(g, -cw / 2, -ch / 2, cw, ch, W * 0.012); g.fill();
       g.shadowBlur = 0; g.shadowOffsetY = 0;
-      const iw = cw * 0.88, ih = ch * 0.72, ix = -iw / 2, iy = -ch / 2 + cw * 0.06;
+      const iw = cw * 0.88, ih = ch * 0.7, ix = -iw / 2, iy = -ch / 2 + cw * 0.06;
       g.save(); g.beginPath(); g.rect(ix, iy, iw, ih); g.clip();
-      g.translate(ix + iw / 2, iy + ih / 2);
       let ok = false;
       try {
         if (frame && frame.videoWidth){
           const s = Math.max(iw / frame.videoWidth, ih / frame.videoHeight);
-          g.drawImage(frame, -frame.videoWidth * s / 2, -frame.videoHeight * s / 2, frame.videoWidth * s, frame.videoHeight * s);
+          g.drawImage(frame, ix + iw / 2 - frame.videoWidth * s / 2, iy + ih / 2 - frame.videoHeight * s / 2, frame.videoWidth * s, frame.videoHeight * s);
           ok = true;
         }
       } catch(e){}
-      if (!ok){ g.fillStyle = '#20293a'; g.fillRect(-iw / 2, -ih / 2, iw, ih); }
-      g.restore();
-      const tp = ioClamp((t - 0.6) / 0.6, 0, 1);
-      g.globalAlpha = tp;
-      const px = ioFit(g, L1, iw, ch * 0.16, 'Nanum Pen Script', '400');
-      g.font = '400 ' + px + 'px "Nanum Pen Script", sans-serif';
-      g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#26221d';
-      g.fillText(L1, 0, iy + ih + (ch / 2 - iy - ih) * 0.52);
-      g.restore();
-      ioSub(g, W, H, L2, cy + ch / 2 + H * 0.05, tp, '#d6d3d1', 'Nanum Pen Script');
-    } },
-
-  { id:'variety', e:'📺', name:'예능 자막', font:'Jua', useFrame:true,
-    draw(g, W, H, t, D, L1, L2, frame){
-      ioFrame(g, W, H, frame, 0.42);
-      const chars = [...L1];
-      const px = ioFit(g, L1, W * 0.84, H * 0.075, 'Jua', '400');
-      g.font = '400 ' + px + 'px "Jua", sans-serif';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      const total = g.measureText(L1).width;
-      let x = W / 2 - total / 2;
-      const base = H * 0.45;
-      for (let i = 0; i < chars.length; i++){
-        const w = g.measureText(chars[i]).width;
-        const st = i * 0.045, p = ioClamp((t - st) / 0.34, 0, 1);
-        if (p <= 0){ x += w; continue; }
-        const s = 0.4 + 0.6 * ioBack(p);
-        const dy = -Math.abs(Math.sin((t - st) * 5.5)) * H * 0.012 * (1 - ioClamp((t - st) / 1.4, 0, 1));
-        g.save();
-        g.translate(x + w / 2, base + dy); g.scale(s, s);
-        g.lineWidth = px * 0.22; g.lineJoin = 'round'; g.miterLimit = 2;
-        g.strokeStyle = '#1a1207'; g.strokeText(chars[i], 0, 0);
-        g.fillStyle = i % 2 ? '#fff27a' : '#ffffff'; g.fillText(chars[i], 0, 0);
-        g.restore();
-        x += w;
+      if (!ok){
+        const sky = g.createLinearGradient(0, iy, 0, iy + ih);
+        sky.addColorStop(0, '#7CC8FF'); sky.addColorStop(1, '#E6F5FF');
+        g.fillStyle = sky; g.fillRect(ix, iy, iw, ih);
+        g.fillStyle = '#FFD166'; g.beginPath(); g.arc(ix + iw * 0.72, iy + ih * 0.28, iw * 0.11, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#8BD450'; g.beginPath(); g.ellipse(ix + iw * 0.3, iy + ih * 1.02, iw * 0.55, ih * 0.3, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#6CC04A'; g.beginPath(); g.ellipse(ix + iw * 0.85, iy + ih * 1.06, iw * 0.5, ih * 0.28, 0, 0, Math.PI * 2); g.fill();
       }
-      const r = ioRand(21);
-      for (let i = 0; i < 16; i++){
-        const sx = r() * W, sy = H * (0.28 + r() * 0.3), ph = r();
-        const a = Math.max(0, Math.sin((t * 3.2 + ph * 6)) ) * ioClamp(t / 0.5, 0, 1);
-        if (a <= 0.05) continue;
-        const rr = W * 0.012 * a;
-        g.save(); g.globalAlpha = a; g.fillStyle = '#fff27a';
-        g.beginPath();
-        for (let k = 0; k < 4; k++){
-          const ang = k * Math.PI / 2;
-          g.lineTo(sx + Math.cos(ang) * rr, sy + Math.sin(ang) * rr);
-          g.lineTo(sx + Math.cos(ang + Math.PI / 4) * rr * 0.28, sy + Math.sin(ang + Math.PI / 4) * rr * 0.28);
-        }
+      g.restore();
+      // 마스킹 테이프 두 줄
+      [[-cw * 0.36, -ch / 2, -0.5, 'rgba(255,150,180,.82)'], [cw * 0.36, -ch / 2, 0.45, 'rgba(120,200,255,.82)']].forEach(([tx, ty, rot, col]) => {
+        g.save(); g.translate(tx, ty); g.rotate(rot); g.fillStyle = col;
+        const tw = cw * 0.3, th = cw * 0.075;
+        g.beginPath(); g.moveTo(-tw / 2, -th / 2);
+        for (let z = 0; z <= 4; z++) g.lineTo(-tw / 2 + tw * z / 4, -th / 2 + (z % 2 ? th * 0.12 : 0));
+        g.lineTo(tw / 2, th / 2);
+        for (let z = 4; z >= 0; z--) g.lineTo(-tw / 2 + tw * z / 4, th / 2 - (z % 2 ? th * 0.12 : 0));
         g.closePath(); g.fill(); g.restore();
+      });
+      // 손글씨 — 왼쪽부터 써 내려간다
+      const wp = ioClamp((t - 0.95) / 1.0, 0, 1);
+      if (wp > 0){
+        const px = ioFit(g, L1, iw, ch * 0.15, 'Nanum Pen Script', '400');
+        const ty = iy + ih + (ch / 2 - iy - ih) * 0.5;
+        const tw = Math.min(iw, g.measureText(L1).width);
+        g.save(); g.beginPath(); g.rect(-tw / 2 - px * 0.2, ty - px, (tw + px * 0.4) * wp, px * 2); g.clip();
+        g.font = '400 ' + px + 'px "Nanum Pen Script", sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#26221D';
+        g.fillText(L1, 0, ty); g.restore();
       }
-      ioSub(g, W, H, L2, base + px * 0.95, ioClamp((t - 0.5) / 0.5, 0, 1), '#ffffff', 'Jua');
+      g.restore();
+      // 둘레 낙서: 별 · 하트 · 반짝이
+      const lw = Math.max(1.5, W * 0.006);
+      const dp = (s0) => ioClamp((t - s0) / 0.55, 0, 1);
+      // 선 길이는 도형 둘레의 어림값(별 6.9r · 하트 3.7s · 반짝이 6.6s)보다 조금 길게 잡는다
+      ioDoodle(g, () => ioStarPath(g, W * 0.13, H * 0.16, W * 0.06), W * 0.06 * 7.2, dp(0.8), '#FF8C42', lw);
+      ioDoodle(g, () => ioHeart(g, W * 0.86, H * 0.72, W * 0.075), W * 0.075 * 4, dp(1.1), '#FF5D86', lw);
+      ioDoodle(g, () => ioSparkle(g, W * 0.85, H * 0.12, W * 0.045), W * 0.045 * 6.9, dp(1.35), '#4CC9F0', lw);
+      ioDoodle(g, () => ioSparkle(g, W * 0.14, H * 0.74, W * 0.035), W * 0.035 * 6.9, dp(1.55), '#B28DFF', lw);
+      ioSub(g, W, H, L2, cy + ch / 2 + H * 0.06, ioClamp((t - 1.5) / 0.5, 0, 1), '#5A4A33', 'Nanum Pen Script');
     } },
 
-  { id:'glitch', e:'⚡', name:'글리치', font:'Black Han Sans', useFrame:true,
-    draw(g, W, H, t, D, L1, L2, frame){
-      ioFrame(g, W, H, frame, 0.62);
-      const px = ioFit(g, L1, W * 0.8, H * 0.068, 'Black Han Sans', '400');
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.font = '400 ' + px + 'px "Black Han Sans", sans-serif';
-      const r = ioRand(Math.floor(t * 18) + 3);
-      const j = (Math.sin(t * 41) > 0.6 ? 1 : 0.25) * px * 0.14;
-      const y = H * 0.45;
-      g.save();
-      g.globalCompositeOperation = 'lighter';
-      g.fillStyle = '#ff2d55'; g.fillText(L1, W / 2 - j, y);
-      g.fillStyle = '#00e5ff'; g.fillText(L1, W / 2 + j, y);
+  { id:'slate', name:'촬영 슬레이트', short:'촬영', font:'Do Hyeon',
+    draw(g, W, H, t, D, L1, L2){
+      g.fillStyle = '#16181D'; g.fillRect(0, 0, W, H);
+      const lg = g.createRadialGradient(W / 2, H * 0.44, 0, W / 2, H * 0.44, H * 0.58);
+      lg.addColorStop(0, 'rgba(255,208,130,.34)'); lg.addColorStop(1, 'rgba(255,208,130,0)');
+      g.fillStyle = lg; g.fillRect(0, 0, W, H);
+      // 양옆 필름 띠 — 천천히 흐른다
+      const fw = W * 0.065, gap = H * 0.036, off = (t * H * 0.06) % gap;
+      g.fillStyle = '#0A0B0E'; g.fillRect(0, 0, fw, H); g.fillRect(W - fw, 0, fw, H);
+      g.fillStyle = '#2C3038';
+      for (let y = -gap + off; y < H; y += gap){
+        roundRect(g, fw * 0.28, y, fw * 0.44, gap * 0.5, fw * 0.1); g.fill();
+        roundRect(g, W - fw * 0.72, y, fw * 0.44, gap * 0.5, fw * 0.1); g.fill();
+      }
+      const bw = W * 0.76, bh = bw * 0.68, bx = W / 2 - bw / 2;
+      const q = ioEase(ioClamp(t / 0.5, 0, 1));
+      const by = H * 0.37 + (1 - q) * H * 0.55;
+      const sh = bw * 0.13;
+      // 판
+      g.fillStyle = '#23262D'; roundRect(g, bx, by, bw, bh, bw * 0.03); g.fill();
+      g.strokeStyle = 'rgba(247,243,232,.55)'; g.lineWidth = Math.max(1, W * 0.003);
+      g.beginPath();
+      g.moveTo(bx + bw * 0.05, by + bh * 0.24); g.lineTo(bx + bw * 0.95, by + bh * 0.24);
+      g.moveTo(bx + bw * 0.5, by + bh * 0.06); g.lineTo(bx + bw * 0.5, by + bh * 0.24);
+      g.moveTo(bx + bw * 0.05, by + bh * 0.78); g.lineTo(bx + bw * 0.95, by + bh * 0.78);
+      g.stroke();
+      g.font = '600 ' + (bh * 0.075) + 'px "JetBrains Mono", monospace';
+      g.fillStyle = 'rgba(247,243,232,.7)'; g.textAlign = 'left'; g.textBaseline = 'middle';
+      g.fillText('SCENE 01', bx + bw * 0.08, by + bh * 0.15);
+      g.fillText('TAKE 01', bx + bw * 0.56, by + bh * 0.15);
+      // 막대 두 개(아래는 판에 붙어 있고, 위는 열렸다가 0.75초에 '딱' 닫힌다)
+      const stripes = (x, y, w, h) => {
+        g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip();
+        g.fillStyle = '#F4F1E8'; g.fillRect(x, y, w, h);
+        g.fillStyle = '#17181C';
+        for (let s = -h; s < w + h; s += h * 1.1){
+          g.beginPath(); g.moveTo(x + s, y + h); g.lineTo(x + s + h * 0.55, y + h); g.lineTo(x + s + h * 1.1, y); g.lineTo(x + s + h * 0.55, y); g.closePath(); g.fill();
+        }
+        g.restore();
+      };
+      stripes(bx, by - sh, bw, sh);
+      let ang = -0.55;
+      if (t >= 0.55 && t < 0.75) ang = -0.55 * (1 - Math.pow((t - 0.55) / 0.2, 2));
+      else if (t >= 0.75) ang = -0.07 * Math.exp(-(t - 0.75) * 9) * Math.abs(Math.sin((t - 0.75) * 26));
+      g.save(); g.translate(bx, by - sh); g.rotate(ang);
+      stripes(0, -sh, bw, sh);
       g.restore();
-      g.fillStyle = '#ffffff'; g.fillText(L1, W / 2, y);
-      for (let i = 0; i < 5; i++){
-        if (r() > 0.55) continue;
-        const sy = y - px * 0.6 + r() * px * 1.2, sh = px * 0.10;
-        const off = (r() - 0.5) * W * 0.09;
-        g.save(); g.beginPath(); g.rect(0, sy, W, sh); g.clip();
-        g.fillStyle = '#0b0f18'; g.fillRect(0, sy, W, sh);
-        g.fillStyle = '#ffffff'; g.fillText(L1, W / 2 + off, y);
+      // 닫히는 순간 번쩍
+      if (t >= 0.75 && t < 1.0){
+        const f = 1 - (t - 0.75) / 0.25;
+        g.save(); g.globalAlpha = f; g.strokeStyle = '#FFE7A8'; g.lineWidth = Math.max(2, W * 0.007); g.lineCap = 'round';
+        const hx = bx + bw, hy = by - sh;
+        for (let i = 0; i < 5; i++){
+          const a = -Math.PI * 0.62 + i * 0.3, r0 = bw * 0.05, r1 = bw * (0.12 + 0.06 * (1 - f));
+          g.beginPath(); g.moveTo(hx + Math.cos(a) * r0, hy + Math.sin(a) * r0); g.lineTo(hx + Math.cos(a) * r1, hy + Math.sin(a) * r1); g.stroke();
+        }
+        g.globalAlpha = f * 0.18; g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
         g.restore();
       }
-      g.save(); g.globalAlpha = 0.18; g.fillStyle = '#000';
-      for (let sy = 0; sy < H; sy += Math.max(2, H * 0.004)) g.fillRect(0, sy, W, Math.max(1, H * 0.0016));
-      g.restore();
-      ioSub(g, W, H, L2, y + px * 0.85, ioClamp((t - 0.4) / 0.5, 0, 1), '#8ef6ff');
+      // 분필 글씨
+      const tp = ioClamp((t - 0.82) / 0.45, 0, 1);
+      if (tp > 0){
+        const px = ioFit(g, L1, bw * 0.84, bh * 0.2, 'Do Hyeon', '400');
+        g.save(); g.globalAlpha = tp;
+        g.translate(W / 2, by + bh * 0.51); const sc = 0.85 + 0.15 * ioBack(tp); g.scale(sc, sc);
+        g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.shadowColor = 'rgba(255,255,255,.35)'; g.shadowBlur = px * 0.12;
+        g.fillStyle = '#F7F3E8'; g.fillText(L1, 0, 0);
+        g.restore();
+        if (L2){
+          g.save(); g.globalAlpha = ioClamp((t - 1.1) / 0.5, 0, 1);
+          const p2 = ioFit(g, L2, bw * 0.84, bh * 0.085, 'Do Hyeon', '400');
+          g.font = '400 ' + p2 + 'px "Do Hyeon", sans-serif';
+          g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = 'rgba(247,243,232,.8)';
+          g.fillText(L2, W / 2, by + bh * 0.89); g.restore();
+        }
+      }
     } },
 
-  { id:'minimal', e:'▫️', name:'미니멀 라인', font:'Song Myung',
+  { id:'robot', name:'로봇 팻말', short:'로봇', font:'Do Hyeon',
     draw(g, W, H, t, D, L1, L2){
-      g.fillStyle = '#06080e'; g.fillRect(0, 0, W, H);
-      const p = ioEase(ioClamp(t / 0.85, 0, 1));
-      const y1 = H * 0.40, y2 = H * 0.53, half = W * 0.38 * p;
-      g.strokeStyle = 'rgba(180,200,225,.55)'; g.lineWidth = Math.max(1, H * 0.0014);
-      g.beginPath(); g.moveTo(W / 2 - half, y1); g.lineTo(W / 2 + half, y1);
-      g.moveTo(W / 2 - half, y2); g.lineTo(W / 2 + half, y2); g.stroke();
-      const tp = ioClamp((t - 0.5) / 0.7, 0, 1);
-      const px = ioFit(g, L1, W * 0.7, H * 0.047, 'Song Myung', '400');
-      g.save(); g.globalAlpha = tp;
-      g.font = '400 ' + px + 'px "Song Myung", serif';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillStyle = '#eef3fa';
-      g.translate(0, (1 - ioEase(tp)) * H * 0.012);
-      g.fillText(L1, W / 2, (y1 + y2) / 2);
-      g.restore();
-      ioSub(g, W, H, L2, y2 + H * 0.05, tp, '#64748b', 'Song Myung');
-    } },
-
-  { id:'spotlight', e:'🔦', name:'스포트라이트', font:'Do Hyeon',
-    draw(g, W, H, t, D, L1, L2){
-      g.fillStyle = '#04040a'; g.fillRect(0, 0, W, H);
-      const p = ioEase(ioClamp(t / 0.9, 0, 1));
-      const cx = W / 2, cy = H * 0.45, R = Math.min(W, H) * (0.08 + 0.52 * p);
-      const gr = g.createRadialGradient(cx, cy * 0.96, R * 0.05, cx, cy, R);
-      gr.addColorStop(0, 'rgba(255,246,214,.95)');
-      gr.addColorStop(0.45, 'rgba(255,225,150,.22)');
-      gr.addColorStop(1, 'rgba(255,220,140,0)');
-      g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill();
-      const tp = ioClamp((t - 0.55) / 0.6, 0, 1);
-      const px = ioFit(g, L1, W * 0.74, H * 0.062, 'Do Hyeon', '400');
-      g.save(); g.globalAlpha = tp;
-      g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillStyle = '#2b1d05';
-      g.fillText(L1, cx, cy);
-      g.restore();
-      ioSub(g, W, H, L2, cy + px * 0.9, tp, '#7c6a3c', 'Do Hyeon');
-    } },
-
-  { id:'confetti', e:'🎉', name:'폭죽', font:'Jua',
-    draw(g, W, H, t, D, L1, L2){
-      ioGrad(g, W, H, '#1b1140', '#07061a');
-      const r = ioRand(99);
-      const cols = ['#ff5c8a', '#ffd93d', '#4ade80', '#38bdf8', '#c084fc', '#fb923c'];
-      for (let i = 0; i < 70; i++){
-        const x0 = r() * W, sp = 0.55 + r() * 0.95, del = r() * 0.8;
-        const sw = (r() - 0.5) * W * 0.22, rot = r() * 7, c = cols[Math.floor(r() * cols.length)];
-        const tt = t - del; if (tt < 0) continue;
-        const y = -H * 0.08 + tt * sp * H * 0.55;
-        if (y > H * 1.05) continue;
-        const x = x0 + Math.sin(tt * 2.2 + i) * sw;
-        const s = W * 0.016;
-        g.save(); g.translate(x, y); g.rotate(rot + tt * 4.2);
-        g.fillStyle = c; g.fillRect(-s / 2, -s / 4, s, s / 2);
+      const bg = g.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#DDF6EF'); bg.addColorStop(1, '#D3E4FF');
+      g.fillStyle = bg; g.fillRect(0, 0, W, H);
+      const r = ioRand(77), pal = ['#FF8FB1', '#7CC8FF', '#FFC857', '#8FDDBB'];
+      for (let i = 0; i < 14; i++){
+        const x0 = r() * W, sp = 0.05 + r() * 0.06, ph = r(), sz = W * (0.018 + r() * 0.022), heart = r() > 0.5, col = pal[Math.floor(r() * 4)];
+        const y = H * (1.05 - ((ph + t * sp) % 1.1));
+        g.save(); g.globalAlpha = 0.75; g.fillStyle = col;
+        const x = x0 + Math.sin(t * 1.5 + i) * W * 0.015;
+        if (heart){ ioHeart(g, x, y, sz); g.fill(); } else { ioSparkle(g, x, y, sz); g.fill(); }
         g.restore();
       }
-      const p = ioClamp(t / 0.55, 0, 1);
-      const px = ioFit(g, L1, W * 0.82, H * 0.072, 'Jua', '400');
-      g.save();
-      g.translate(W / 2, H * 0.45);
-      const sc = 0.5 + 0.5 * ioBack(p); g.scale(sc, sc);
-      g.font = '400 ' + px + 'px "Jua", sans-serif';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.globalAlpha = Math.min(1, p * 1.5);
-      g.lineWidth = px * 0.2; g.lineJoin = 'round'; g.miterLimit = 2;
-      g.strokeStyle = '#1a0f33'; g.strokeText(L1, 0, 0);
-      g.fillStyle = '#ffffff'; g.fillText(L1, 0, 0);
+      const k = W * 0.8 / 260;                        // 팻말 폭(로봇 칸 260)이 화면 폭의 80%
+      const p = ioClamp(t / 0.9, 0, 1);
+      const rise = (1 - ioBack(p)) * H * 0.62;
+      const bob = p >= 1 ? Math.sin((t - 0.9) * 3) * k * 4 : 0;
+      const ox = W / 2 - 100 * k, oy = H * 0.47 - 173 * k + rise + bob;
+      ioRobot(g, ox, oy, k, t);
+      // 팻말과 쥔 손
+      g.save(); g.translate(ox, oy); g.scale(k, k);
+      g.shadowColor = 'rgba(30,60,110,.22)'; g.shadowBlur = 16; g.shadowOffsetY = 6;
+      g.fillStyle = '#FFFFFF'; roundRect(g, -30, 118, 260, 112, 18); g.fill();
+      g.shadowBlur = 0; g.shadowOffsetY = 0;
+      g.strokeStyle = '#9CC7FF'; g.lineWidth = 5; roundRect(g, -30, 118, 260, 112, 18); g.stroke();
+      [[-14, 124], [214, 124]].forEach(([hx, hy]) => {
+        const hg = g.createLinearGradient(0, hy - 13, 0, hy + 13);
+        hg.addColorStop(0, '#FFFFFF'); hg.addColorStop(1, '#B7D6F8');
+        g.fillStyle = hg; g.beginPath(); g.arc(hx, hy, 13, 0, Math.PI * 2); g.fill();
+      });
       g.restore();
-      ioSub(g, W, H, L2, H * 0.45 + px * 0.9, ioClamp((t - 0.4) / 0.5, 0, 1), '#ffd93d', 'Jua');
+      const tp = ioClamp((t - 0.6) / 0.45, 0, 1);
+      if (tp > 0){
+        const signW = 232 * k, cyS = oy + 174 * k - (L2 ? 12 * k : 0);
+        const px = ioFit(g, L1, signW, 44 * k, 'Do Hyeon', '400');
+        g.save(); g.globalAlpha = tp;
+        g.translate(W / 2, cyS); const sc = 0.7 + 0.3 * ioBack(tp); g.scale(sc, sc);
+        g.font = '400 ' + px + 'px "Do Hyeon", sans-serif';
+        g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#1F2A44';
+        g.fillText(L1, 0, 0); g.restore();
+        if (L2){
+          g.save(); g.globalAlpha = ioClamp((t - 0.9) / 0.4, 0, 1);
+          const p2 = ioFit(g, L2, signW, 20 * k, 'Do Hyeon', '400');
+          g.font = '400 ' + p2 + 'px "Do Hyeon", sans-serif';
+          g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#5A6B8C';
+          g.fillText(L2, W / 2, oy + 206 * k); g.restore();
+        }
+      }
     } }
 ];
+const IO_DEFAULT = {intro:'balloon', outro:'confetti'};
 
 /* --- 자동 멘트 --- */
 const IO_LINES = {
@@ -4612,7 +4892,7 @@ function ioPick(kind){
   return v;
 }
 function ioDesign(kind){
-  return IO_DESIGNS.find(d => d.id === S[kind].design) || IO_DESIGNS[0];
+  return IO_DESIGNS.find(d => d.id === S[kind].design) || IO_DESIGNS.find(d => d.id === IO_DEFAULT[kind]);
 }
 /* 실제로 그릴 문구 — 자동이면 뽑아둔 멘트, 직접이면 입력값(1줄=큰글씨, 2줄=작은글씨) */
 function ioText(kind){
@@ -4621,8 +4901,8 @@ function ioText(kind){
   const ls = String(st.text || '').split('\n').map(x => x.trim()).filter(Boolean);
   return {L1: ls[0] || IO_LINES[kind][0], L2: ls[1] || ''};
 }
-function ioDrawAt(g, W, H, kind, t, frame){
-  const d = ioDesign(kind), tx = ioText(kind);
+function ioDrawAt(g, W, H, kind, t, frame, design){
+  const d = design || ioDesign(kind), tx = ioText(kind);
   g.save();
   try { d.draw(g, W, H, ioClamp(t, 0, IO_DUR), IO_DUR, tx.L1, tx.L2, d.useFrame ? frame : null); }
   catch(e){ g.fillStyle = '#05070c'; g.fillRect(0, 0, W, H); }
@@ -4630,14 +4910,24 @@ function ioDrawAt(g, W, H, kind, t, frame){
 }
 
 /* --- UI --- */
+/* 고르는 칸에는 그 디자인의 마지막 장면(글자가 남은 모습)을 작게 그려 보여 준다 */
 function ioGridHtml(kind){
   return IO_DESIGNS.map(d =>
     '<button type="button" class="icard' + (S[kind].design === d.id ? ' on' : '') +
-    '" data-iodesign="' + kind + ':' + d.id + '"><span class="e">' + d.e + '</span>' + d.name + '</button>'
+    '" data-iodesign="' + kind + ':' + d.id + '" aria-pressed="' + (S[kind].design === d.id) + '" title="' + d.name + '">' +
+    '<canvas data-thumb="' + d.id + '" width="90" height="160" aria-hidden="true"></canvas><span>' + d.short + '</span></button>'
   ).join('');
 }
+function drawIoThumbs(kind){
+  document.querySelectorAll('#' + kind + 'Grid canvas[data-thumb]').forEach(cv => {
+    const d = IO_DESIGNS.find(x => x.id === cv.dataset.thumb);
+    if (d) ioDrawAt(cv.getContext('2d'), cv.width, cv.height, kind, IO_DUR - 0.2, $('resVideo'), d);
+  });
+}
+const ioFontsReady = () => Promise.all([...new Set(IO_DESIGNS.map(d => d.font))].map(f => ensureFont(f)));
 function syncIo(kind){
   const st = S[kind];
+  if (!IO_DESIGNS.some(d => d.id === st.design)) st.design = IO_DEFAULT[kind];   // 예전 디자인 이름이 저장돼 있으면 기본값으로
   const Cap = kind === 'intro' ? 'intro' : 'outro';
   $(Cap + 'Sw').classList.toggle('on', st.on);
   $(Cap + 'Sw').setAttribute('aria-checked', String(st.on));
@@ -4650,6 +4940,8 @@ function syncIo(kind){
   $(Cap + 'Text').hidden = st.auto;
   $(Cap + 'AutoTx').textContent = st.auto1 || '—';
   if ($(Cap + 'Text').value !== st.text) $(Cap + 'Text').value = st.text || '';
+  $(Cap + 'Name').textContent = ioDesign(kind).name;
+  if (st.on) ioFontsReady().then(() => drawIoThumbs(kind));
   ensureFont(ioDesign(kind).font);
   updateExportBtn();
 }
@@ -4714,8 +5006,8 @@ async function doInstall(){
       p.prompt();
       const res = await p.userChoice;
       if (res && res.outcome === 'accepted'){ setInstallUI('installed'); return; }
-      setInstallUI('ready', '📲 홈 화면에 앱으로 설치');   // 취소 → 다시 누를 수 있게
-    } catch(e){ setInstallUI('manual', '📲 홈 화면에 추가하는 법'); }
+      setInstallUI('ready', '홈 화면에 앱으로 설치');   // 취소 → 다시 누를 수 있게
+    } catch(e){ setInstallUI('manual', '홈 화면에 추가하는 법'); }
     return;
   }
   openHelp();   // 프롬프트를 쓸 수 없는 브라우저 → 기기별 설치 안내를 펼친다
@@ -4726,18 +5018,18 @@ function initPwa(){
   if (btn) btn.addEventListener('click', doInstall);
 
   if (isStandalone()){ setInstallUI('installed'); }
-  else if (isIosDevice() || inAppBrowser()){ setInstallUI('manual', '📲 홈 화면에 추가하는 법'); }
+  else if (isIosDevice() || inAppBrowser()){ setInstallUI('manual', '홈 화면에 추가하는 법'); }
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     PWA.prompt = e;
-    if (!isStandalone()) setInstallUI('ready', '📲 홈 화면에 앱으로 설치');
+    if (!isStandalone()) setInstallUI('ready', '홈 화면에 앱으로 설치');
   });
   window.addEventListener('appinstalled', () => { PWA.prompt = null; setInstallUI('installed'); });
 
   // 안드로이드인데 프롬프트가 안 오는 경우(이미 설치됨/조건 미충족) → 수동 안내라도 띄운다
   setTimeout(() => {
-    if (PWA.state === 'unknown' && !isStandalone()) setInstallUI('manual', '📲 홈 화면에 추가하는 법');
+    if (PWA.state === 'unknown' && !isStandalone()) setInstallUI('manual', '홈 화면에 추가하는 법');
   }, 4000);
 
   if ('serviceWorker' in navigator && location.protocol === 'https:'){
@@ -4757,14 +5049,320 @@ S.intro.auto1 = ioPick('intro');
 S.outro.auto1 = ioPick('outro');
 ['intro','outro'].forEach(kind => {
   const el = $(kind + 'Text');
-  el.addEventListener('input', () => { S[kind].text = el.value; updateExportBtn(); });
+  el.addEventListener('input', () => { S[kind].text = el.value; updateExportBtn(); drawIoThumbs(kind); });
 });
 syncIo('intro'); syncIo('outro'); syncVoiceUI();
+
+/* ============================================================
+   15) 안내 로봇 — s2s 강의의 로봇처럼 화면 부품을 짚어 가며 말풍선으로 설명한다.
+   · 대본은 지금 화면(로그인 · 1~4단계 · 촬영/입히기)에 맞춰 그때그때 만든다.
+   · act:true 인 줄은 설명을 다 한 뒤 로봇이 그 부품을 직접 누르고, 결과가 나오면 다음 화면 대본으로 이어 간다.
+     누르는 곳은 되돌리기 쉬운 것뿐이다(내장 트랙 고르기 · 다음 · 로그인 없이 사용 · 탭 전환).
+   ============================================================ */
+const BOT = {on:false, mode:'', list:[], i:0, token:0, greeted:false, el:null, typer:0, finish:null, acting:false, key:''};
+/* 지금 화면을 나타내는 열쇠 — 바뀌면 그 화면의 대본으로 새로 시작한다 */
+const botKey = () => !$('authScreen').hidden ? 'auth'
+  : ('app' + S.step + (S.step > 1 ? S.mode : '') + (S.step === 4 && S.editMode ? 'e' : ''));
+const botReduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const botWait = (ms) => new Promise(r => setTimeout(r, ms));
+function botVisible(el){
+  return !!(el && el.isConnected && el.getClientRects().length && !el.closest('[hidden]'));
+}
+function botScript(){
+  const L = [];
+  const add = (sel, text, o) => L.push(Object.assign({sel, text}, o || {}));
+  if (!BOT.greeted){
+    add(null, '안녕하세요, 주접 도우미예요. 영상 한 편 만드는 순서를 화면을 짚어 가며 알려 드릴게요.', {wave:true});
+  }
+  if (!$('authScreen').hidden){
+    add('#authSeg', '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
+    add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 누르면 돼요. 제가 눌러 볼게요.',
+      {act:true, until: () => !$('appScreen').hidden});
+    return L;
+  }
+  if (S.step === 1){
+    add('#modeSeg', '먼저 방식을 골라요. 카메라로 새로 찍거나, 이미 있는 영상에 음악만 입힐 수 있어요.');
+    add('#srcSeg', '배경음악은 내장 트랙, 내 음악 파일, 탭 소리, 무료 음원 검색 가운데서 골라요.');
+    if (!hasBgm()){
+      add('#trackGrid', '가장 쉬운 건 내장 트랙이에요. 저작권 걱정이 없어요. 제가 하나 골라 볼게요.',
+        {act:true, prep: () => { if ($('paneBuiltin').hidden) document.querySelector('[data-src="builtin"]').click(); },
+         press: () => document.querySelector('[data-track="lofi"]'), until: () => hasBgm()});
+    }
+    add('#bgmStatus', '초록 불이 켜지면 준비 끝이에요. 음악은 파일 안에 직접 섞여서, 어디로 보내도 지워지지 않아요.');
+    add('#nextBtn', '다음 단계로 넘어갈게요.', {act:true, until: () => S.step === 2});
+    return L;
+  }
+  if (S.step === 2 && S.mode === 'shoot'){
+    add('#durChips', '영상 길이를 고르면 그 시간에 맞춰 자동으로 멈춰요.');
+    add('#camChips', '셀카는 전면, 앞에 있는 걸 찍을 때는 후면 카메라예요.');
+    add(null, '배경음악 크기와 시작 지점도 여기서 맞춰요. 후렴부터 시작하고 싶을 때 좋아요.', {pick: () => $('bgmVol').closest('.row')});
+    add('#nextBtn', '이제 촬영하러 가요.', {act:true, until: () => S.step === 3});
+    return L;
+  }
+  if (S.step === 2){
+    add(null, '음악을 입힐 영상을 골라 주세요. 파일은 이 기기 밖으로 나가지 않아요.', {pick: () => document.querySelector('label[for="vidInput"]')});
+    add(null, '영상에 원래 목소리가 남아 있으면 이 스위치를 켜서 같이 넣을 수 있어요.', {pick: () => $('srcSw').closest('.row')});
+    if (S.dubReady) add('#nextBtn', '다음으로 가요.', {act:true, until: () => S.step === 3});
+    else add('#nextBtn', '영상을 고르면 이 버튼이 켜지고 다음으로 넘어갈 수 있어요.');
+    return L;
+  }
+  if (S.step === 3 && S.mode === 'shoot'){
+    if (!S.camStream) add('#camBtn', '「카메라 켜기」를 누르고 권한을 허용해 주세요. 화면이 9:16 세로로 잘려 녹화돼요.');
+    else add('.stage', '미리보기 화면이에요. 버튼과 글씨는 화면에만 있고 파일에는 들어가지 않아요.');
+    add('#voiceBox', '내 목소리를 넣을지 뺄지 골라요. 넣으면 잡음 억제가 켜지고, 녹화 중에도 「빼기」를 누르면 바로 조용해져요.');
+    add('.meters', '녹화하는 동안 배경음악과 목소리 크기가 여기서 움직여요. 배경음악이 끊기면 바로 알려 드려요.');
+    add('#recBtn', '준비되면 녹화 시작! 3, 2, 1 뒤에 찍히고, 정한 길이가 되면 알아서 멈춰요.');
+    add(null, '다 찍으면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
+    return L;
+  }
+  if (S.step === 3){
+    add('#dubBtn', '「음악 입혀서 내보내기」를 누르면 영상 길이만큼 걸려요. 그동안 화면을 켜 두세요.');
+    add(null, '끝나면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
+    return L;
+  }
+  add('#repBox', '저장된 파일을 직접 열어서, 배경음악이 정말 들어갔는지 확인한 결과예요.');
+  if (S.editMode){
+    add('#editTabs', '구간 자르기, 자막, 꾸미기, 인트로를 여기서 골라요.');
+    add('[data-tab="intro"]', '영상 앞뒤에 붙는 3초 카드를 볼게요.', {act:true, until: () => S.activeTab === 'intro'});
+    add('#introBlock', '스위치를 켜고 다섯 가지 그림 가운데 하나를 고르면, 끝 장면에 글자가 남아요. 문구는 자동으로 고르거나 직접 쓸 수 있어요.');
+    add('#trimBtn', '다 고쳤으면 「편집 적용해서 내보내기」. 자막·구간·인트로가 한 번에 구워져요.');
+  }
+  add(botVisible($('shareBtn')) ? '#shareBtn' : '#dlBtn', '마지막으로 보내거나 내려받으면 끝이에요. 배경음악은 파일 안에 들어 있어요.');
+  add(null, '궁금하면 언제든 오른쪽 아래의 저를 눌러 주세요.', {wave:true});
+  return L;
+}
+
+/* 자리 잡기: 짚을 부품 위나 아래의 빈 곳에 로봇과 말풍선을 두고, 팔과 눈을 부품 쪽으로 돌린다.
+   snap 이면 날아가는 움직임 없이 바로 옮긴다(레이아웃이 밀려 부품이 움직였을 때) */
+function botPlace(snap){
+  const bot = $('bot'), fig = $('botFig'), ring = $('botRing');
+  if (snap){
+    bot.classList.add('snap'); ring.classList.add('snap');
+    requestAnimationFrame(() => requestAnimationFrame(() => { bot.classList.remove('snap'); ring.classList.remove('snap'); }));
+  }
+  const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  const nav = $('navBar'), navH = (nav && !nav.hidden) ? nav.getBoundingClientRect().height : 0;
+  const bottom = vh - navH - 10, top = 10;
+  const T = BOT.on ? BOT.el : null;
+  const bw = bot.offsetWidth, bh = bot.offsetHeight;
+  let x, y, r = null;
+  if (T && botVisible(T)){
+    r = T.getBoundingClientRect();
+    const pad = 6, rl = Math.max(4, r.left - pad), rt = Math.max(4, r.top - pad);
+    const rr = Math.min(vw - 4, r.right + pad), rb = Math.min(vh - 4, r.bottom + pad);
+    ring.hidden = false;
+    Object.assign(ring.style, {left: rl + 'px', top: rt + 'px', width: Math.max(0, rr - rl) + 'px', height: Math.max(0, rb - rt) + 'px'});
+    const below = bottom - r.bottom, above = r.top - top;
+    if (below >= bh + 12) y = r.bottom + 12;
+    else if (above >= bh + 12) y = r.top - 12 - bh;
+    else y = below >= above ? bottom - bh : top;
+    const cx = r.left + r.width / 2;
+    x = Math.min(Math.max(12, cx - bw / 2), vw - 12 - bw);
+    bot.classList.toggle('flip', cx > x + bw / 2);
+  } else {
+    ring.hidden = true;
+    bot.classList.add('flip');
+    x = vw - 12 - bw; y = bottom - bh;
+  }
+  bot.style.setProperty('--bx', Math.round(x) + 'px');
+  bot.style.setProperty('--by', Math.round(y) + 'px');
+  // 팔 · 눈: 도착할 자리를 기준으로 부품 가운데를 향한다
+  const fw = fig.offsetWidth, fh = fig.offsetHeight;
+  const fx = x + (bot.classList.contains('flip') ? bw - fw : 0), fy = y + bh - fh;
+  let la = '10deg', ra = '-10deg', ex = 0, ey = 0;
+  if (r){
+    const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
+    const right = tx >= fx + fw / 2;
+    const sx = fx + fw * (right ? 150 : 37) / 200, sy = fy + fh * 131 / 260;
+    let a = Math.atan2(-(tx - sx), ty - sy) * 180 / Math.PI;       // 팔은 아래(0°)에서 돈다
+    if (right){ a = Math.min(-15, Math.max(-165, a)); ra = a.toFixed(0) + 'deg'; }
+    else { a = Math.max(15, Math.min(165, a)); la = a.toFixed(0) + 'deg'; }
+    const d = Math.hypot(tx - (fx + fw / 2), ty - (fy + fh * 0.28)) || 1;
+    ex = (tx - (fx + fw / 2)) / d * 5; ey = (ty - (fy + fh * 0.28)) / d * 4;
+  }
+  fig.style.setProperty('--la', la); fig.style.setProperty('--ra', ra);
+  fig.style.setProperty('--ex', ex.toFixed(1) + 'px'); fig.style.setProperty('--ey', ey.toFixed(1) + 'px');
+}
+function botSettle(el){
+  return new Promise(res => {
+    let last = '', same = 0, n = 0;
+    const tick = () => {
+      const r = el.getBoundingClientRect(), k = Math.round(r.top) + ',' + Math.round(r.left);
+      same = (k === last) ? same + 1 : 0; last = k;
+      if (same >= 3 || ++n > 70) return res();
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+function botType(text){
+  const box = $('botText');
+  $('botSay').textContent = text;
+  clearInterval(BOT.typer);
+  box.innerHTML = '<span class="on"></span><span class="off"></span>';
+  const on = box.firstChild, off = box.lastChild, ch = [...text];
+  off.textContent = text;                      // 다 쓴 크기로 먼저 자리를 잡아 말풍선이 출렁이지 않게
+  return new Promise(res => {
+    let i = 0;
+    BOT.finish = () => { clearInterval(BOT.typer); on.textContent = text; off.textContent = ''; BOT.finish = null; res(); };
+    if (botReduced()) return BOT.finish();
+    BOT.typer = setInterval(() => {
+      i++; on.textContent = ch.slice(0, i).join(''); off.textContent = ch.slice(i).join('');
+      if (i >= ch.length) BOT.finish();
+    }, 24);
+  });
+}
+function botBounce(cls){
+  const bot = $('bot'); bot.classList.remove(cls); void bot.offsetWidth; bot.classList.add(cls);
+  setTimeout(() => bot.classList.remove(cls), cls === 'bot-wave' ? 2200 : 700);
+}
+async function botTap(el){
+  const r = el.getBoundingClientRect(), tap = $('botTap');
+  tap.style.left = (r.left + r.width / 2) + 'px'; tap.style.top = (r.top + r.height / 2) + 'px';
+  tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go');
+  botBounce('bot-hop');
+  await botWait(220);
+  el.click();
+}
+async function botWaitFor(fn, ms){
+  const t0 = performance.now();
+  while (performance.now() - t0 < ms){ try { if (fn()) return true; } catch(e){} await botWait(120); }
+  return false;
+}
+async function botShow(i){
+  const tok = ++BOT.token;
+  const e = BOT.list[i];
+  if (!e){ botEnd(); return; }
+  BOT.i = i;
+  if (!BOT.greeted && e.wave) BOT.greeted = true;
+  if (e.prep) try { e.prep(); } catch(x){}
+  const el = e.pick ? e.pick() : (e.sel ? document.querySelector(e.sel) : null);
+  BOT.el = botVisible(el) ? el : null;
+  const last = i === BOT.list.length - 1;
+  $('botStep').textContent = '안내 ' + (i + 1) + ' / ' + BOT.list.length;
+  $('botPrev').hidden = false; $('botPrev').disabled = i === 0;
+  $('botClose').textContent = '그만';
+  $('botNext').textContent = e.act ? '건너뛰기' : (last ? '끝' : '다음');
+  $('botBubble').hidden = false;
+  $('botText').textContent = e.text;           // 크기 재기용
+  if (BOT.el){
+    BOT.el.scrollIntoView({block:'center', behavior: botReduced() ? 'auto' : 'smooth'});
+    await botSettle(BOT.el);
+    if (tok !== BOT.token) return;
+  }
+  botPlace();
+  if (e.wave) botBounce('bot-wave');
+  await botType(e.text);
+  if (tok !== BOT.token || !e.act) return;
+  await botWait(650);
+  if (tok !== BOT.token) return;
+  const target = e.press ? e.press() : BOT.el;
+  if (!target || target.disabled || !botVisible(target)){ botShow(i + 1); return; }
+  const key0 = botKey(), after = BOT.list[i + 1];
+  BOT.acting = true;
+  await botTap(target);
+  if (e.until) await botWaitFor(e.until, 9000);
+  await botWait(250);
+  BOT.acting = false;
+  if (tok !== BOT.token) return;
+  // 누른 결과로 화면이 바뀌었으면 새 화면의 대본을 처음부터, 같은 화면이면 바로 다음 설명으로
+  BOT.list = botScript(); BOT.key = botKey();
+  const at = (BOT.key === key0 && after) ? BOT.list.findIndex(x => x.text === after.text) : 0;
+  botShow(Math.max(0, at));
+}
+/* 안내 중에는 짚은 부품이 레이아웃 변화로 움직였는지 살펴 따라간다(설치 안내 칩이 늦게 나타나는 경우 등) */
+let botWatchId = 0, botLastRect = '';
+function botWatch(on){
+  clearInterval(botWatchId); botLastRect = '';
+  if (!on) return;
+  botWatchId = setInterval(() => {
+    if (!BOT.on || !BOT.el) return;
+    const r = BOT.el.getBoundingClientRect();
+    const k = Math.round(r.left) + ',' + Math.round(r.top) + ',' + Math.round(r.width) + ',' + Math.round(r.height);
+    if (k !== botLastRect){ if (botLastRect) botPlace(true); botLastRect = k; }
+  }, 300);
+}
+function botStart(){
+  BOT.on = true; BOT.mode = 'tour'; BOT.acting = false;
+  botWatch(true);
+  try { localStorage.setItem('jj_bot_seen', '1'); } catch(e){}
+  BOT.list = botScript(); BOT.key = botKey();
+  botSync();
+  botShow(0);
+  $('botNext').focus({preventScroll: true});
+}
+function botEnd(){
+  const had = BOT.on || BOT.mode === 'offer';
+  BOT.token++; BOT.on = false; BOT.mode = ''; BOT.el = null; BOT.acting = false;
+  clearInterval(BOT.typer); BOT.finish = null; botWatch(false);
+  $('botBubble').hidden = true; $('botRing').hidden = true;
+  botPlace();
+  if (had && $('bot').contains(document.activeElement)) $('botFig').focus({preventScroll: true});
+}
+/* 처음 온 사람에게 한 번만 먼저 말을 건다 */
+function botOffer(key, text){
+  let seen = false;
+  try { seen = !!localStorage.getItem(key); } catch(e){}
+  if (seen || BOT.on || isBusy() || $('bot').classList.contains('away')) return;
+  try { localStorage.setItem(key, '1'); } catch(e){}
+  BOT.token++; BOT.mode = 'offer'; BOT.el = null;
+  $('botStep').textContent = '안내 로봇';
+  $('botPrev').hidden = true;
+  $('botClose').textContent = '괜찮아요';
+  $('botNext').textContent = '안내 시작';
+  $('botBubble').hidden = false;
+  $('botText').textContent = text;
+  botPlace(); botBounce('bot-wave');
+  botType(text);
+  // 대답이 없으면 12초 뒤 조용히 들어간다 — 말풍선이 화면 아래쪽 부품을 오래 가리지 않게
+  const tok = BOT.token;
+  setTimeout(() => { if (BOT.mode === 'offer' && BOT.token === tok) botEnd(); }, 12000);
+}
+/* 보일지 말지: 로그인·앱 화면에서만, 도움말 시트가 열렸거나 녹화·인코딩 중이면 비킨다 */
+function botSync(){
+  const bot = $('bot'); if (!bot) return;
+  const screen = !$('authScreen').hidden || !$('appScreen').hidden;
+  const sheet = !$('helpSheet').hidden || !$('userSheet').hidden;
+  const away = !screen || sheet || isBusy();
+  if (away && (BOT.on || BOT.mode === 'offer')) botEnd();
+  bot.classList.toggle('away', away);
+  // 사람이 직접 단계를 옮겼으면 새 화면의 대본으로 다시 시작한다(로봇이 누른 경우는 botShow 가 이어 간다)
+  if (!away && BOT.on && !BOT.acting && botKey() !== BOT.key){ BOT.key = botKey(); BOT.list = botScript(); botShow(0); return; }
+  if (!away) botPlace();
+}
+$('botFig').addEventListener('click', () => { BOT.on ? botEnd() : botStart(); });
+$('botNext').addEventListener('click', () => {
+  if (BOT.mode === 'offer'){ botStart(); return; }
+  const cur = BOT.list[BOT.i] || {};
+  if (cur.act && !BOT.acting){                        // 「건너뛰기」: 로봇이 누르지 않고 넘어간다
+    if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
+    return;
+  }
+  if (BOT.finish){ BOT.finish(); return; }            // 쓰는 중이면 먼저 다 보여 준다
+  if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
+});
+$('botPrev').addEventListener('click', () => { if (BOT.i > 0) botShow(BOT.i - 1); });
+$('botClose').addEventListener('click', botEnd);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (BOT.on || BOT.mode === 'offer')) botEnd(); });
+// 제안 말풍선이 떠 있을 때 다른 곳을 누르면 말풍선을 거둔다(누른 곳은 그대로 동작)
+document.addEventListener('pointerdown', (e) => { if (BOT.mode === 'offer' && !$('bot').contains(e.target)) botEnd(); }, true);
+let botRaf = 0;
+const botReflow = () => { cancelAnimationFrame(botRaf); botRaf = requestAnimationFrame(() => { if (!$('bot').classList.contains('away')) botPlace(); }); };
+window.addEventListener('resize', botReflow);
+// 내용이 늦게 끼어들어 페이지 높이가 바뀌면(설치 안내 칩 등) 곧바로 따라간다
+if (window.ResizeObserver) new ResizeObserver(() => { if (BOT.on && BOT.el) botPlace(true); }).observe(document.body);
+window.addEventListener('scroll', botReflow, {passive: true});
+// 화면·시트가 열리고 닫힐 때만 본다(로봇 자신의 말풍선·테두리 변화는 보지 않아야 되풀이가 생기지 않는다)
+const botMo = new MutationObserver(botSync);
+['authScreen', 'appScreen', 'helpSheet', 'userSheet'].forEach(id => botMo.observe($(id), {attributes: true, attributeFilter: ['hidden']}));
+botSync();
+setTimeout(() => botOffer('jj_bot_seen', '처음 오셨네요. 제가 화면을 짚어 가며 순서대로 안내해 드릴까요?'), 900);
 
 /* 테스트 훅 (헤드리스 검증용) */
 window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
   applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont,
-  fixMp4Duration, repairDuration, IO_DESIGNS, IO_LINES, IO_DUR, ioText, ioDesign, ioPick, ioDrawAt, syncIo, syncVoiceUI, PWA, isStandalone, isIosDevice, inAppBrowser, setInstallUI, doInstall};
+  fixMp4Duration, repairDuration, IO_DESIGNS, IO_LINES, IO_DUR, ioText, ioDesign, ioPick, ioDrawAt, syncIo, syncVoiceUI, PWA, isStandalone, isIosDevice, inAppBrowser, setInstallUI, doInstall,
+  BOT, botStart, botEnd, botScript, enableMic};
 </script>
 </body>
 </html>
