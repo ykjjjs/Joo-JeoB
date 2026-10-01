@@ -69,6 +69,9 @@ body{
   font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}
 .seg button.on{background:#272D3A;color:var(--tx);box-shadow:inset 0 0 0 1px #363D4D}
 .guideseg{max-width:340px;margin:14px auto 0}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 14px;font-size:12.5px;line-height:1.55;color:var(--tx2);cursor:pointer}
+.consent input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--cy)}
+.consent b{color:var(--tx)}
 
 /* track cards */
 .trackgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -504,10 +507,17 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <input id="authPw" type="password" autocomplete="current-password" placeholder="4자 이상"></div>
       <div class="field" id="authPw2Row" hidden><label for="authPw2">비밀번호 확인</label>
         <input id="authPw2" type="password" autocomplete="new-password" placeholder="한 번 더"></div>
+      <label class="consent" id="consentRow" hidden>
+        <input type="checkbox" id="consentChk">
+        <span><b>이용 기록 전송에 동의합니다(로그인·가입할 때 필수).</b>
+          프로필 이름, 기기 구분용 무작위 번호, 가입·로그인·접속 시각, 기기 종류, 만든 영상 수를 운영자에게 보냅니다.
+          비밀번호와 영상은 보내지 않고, 마지막 이용 후 1년이 지나면 지웁니다. 로그인한 뒤 내 이름 메뉴에서 언제든 철회할 수 있고,
+          철회하면 운영자 쪽 기록도 지웁니다. 동의하지 않으면 「로그인 없이 사용」을 쓰세요(아무것도 보내지 않습니다).</span>
+      </label>
       <button type="button" class="btn primary" id="authBtn">로그인</button>
       <button type="button" class="btn ghost" id="guestBtn">로그인 없이 사용</button>
       <div class="err" id="authErr" hidden></div>
-      <div class="note"><b>이 계정은 이 기기 안에만 저장됩니다.</b> 서버로 전송되지 않으므로 다른 기기에서는 보이지 않고,
+      <div class="note" id="authNote"><b>이 계정은 이 기기 안에만 저장됩니다.</b> 서버로 전송되지 않으므로 다른 기기에서는 보이지 않고,
         브라우저 데이터를 지우면 함께 사라집니다. 비밀번호는 원문이 아니라 해시로만 저장되지만,
         기기를 공유한다면 다른 서비스와 같은 비밀번호는 쓰지 마세요.</div>
       <button type="button" class="linkbtn" id="adminLink">관리자 로그인</button>
@@ -1070,7 +1080,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>2</i> 프로필 만들기</h4>
           <p><b>회원가입</b>으로 이름과 비밀번호를 정하면 설정과 작업 기록이 남아 다음에 이어서 쓸 수 있습니다.
-            이 계정은 <span class="hl">이 폰 안에만</span> 저장되고 서버로 가지 않습니다.
+            <span id="helpPrivAnd">이 계정은 <span class="hl">이 폰 안에만</span> 저장되고 서버로 가지 않습니다.</span>
             그냥 한번 써보려면 <b>로그인 없이 사용</b>을 누르세요.</p>
         </div>
 
@@ -1179,7 +1189,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <div class="guide-sec">
           <h4><i>2</i> 프로필 만들기</h4>
           <p><b>회원가입</b>으로 이름과 비밀번호를 정하면 설정과 작업 기록이 남습니다.
-            이 계정은 <span class="hl">이 아이폰 안에만</span> 저장되고 서버로 가지 않습니다.
+            <span id="helpPrivIos">이 계정은 <span class="hl">이 아이폰 안에만</span> 저장되고 서버로 가지 않습니다.</span>
             그냥 써보려면 <b>로그인 없이 사용</b>을 누르세요.</p>
         </div>
 
@@ -1262,10 +1272,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <h3><span>내 작업 기록</span><button type="button" id="sheetClose" aria-label="닫기">×</button></h3>
       <div id="histList"></div>
       <button type="button" class="btn ghost" id="logoutBtn">로그아웃</button>
+      <button type="button" class="btn ghost" id="forgetBtn" hidden>이용 기록 보내기 그만두기</button>
     </div>
   </div>
 
-  <p class="foot">모든 처리는 이 기기의 브라우저 안에서만 일어납니다. 서버 업로드 없음.</p>
+  <p class="foot" id="footNote">모든 처리는 이 기기의 브라우저 안에서만 일어납니다. 서버 업로드 없음.</p>
 </div>
 
 <!-- ===== 안내 로봇 ===== -->
@@ -1325,6 +1336,58 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
    ============================================================ */
 
 const $ = (id) => document.getElementById(id);
+
+/* ---------- 이용 기록(관리자 페이지용) ----------
+   TRACK_URL: worker/index.js 를 배포한 Cloudflare Worker 주소(예: https://joo-jeob-admin.이름.workers.dev).
+   비워 두면 아무것도 보내지 않고, 동의 칸과 안내 문구도 원래대로 둔다.
+   보내는 것: 무작위 기기 ID · 프로필 이름 · 종류(가입/로그인/접속/영상). 비밀번호와 영상은 보내지 않는다.
+   로그인·가입할 때 동의한 사람만 보낸다. */
+const TRACK_URL = '';
+const trackOn = () => !!TRACK_URL;
+function consentMap(){
+  try { const m = JSON.parse(localStorage.getItem('jj_consent') || '{}'); return (m && typeof m === 'object') ? m : {}; } catch(e){ return {}; }
+}
+const hasConsent = (name) => !!(name && consentMap()[name]);
+function setConsent(name, on){
+  const m = consentMap();
+  if (on) m[name] = Date.now(); else delete m[name];
+  try { localStorage.setItem('jj_consent', JSON.stringify(m)); } catch(e){}
+}
+function devId(){
+  let id = null;
+  try { id = localStorage.getItem('jj_dev'); } catch(e){}
+  if (!id || !/^[0-9a-f]{32}$/.test(id)){
+    const a = new Uint8Array(16); crypto.getRandomValues(a);
+    id = Array.from(a, b => b.toString(16).padStart(2, '0')).join('');
+    try { localStorage.setItem('jj_dev', id); } catch(e){}
+  }
+  return id;
+}
+function track(type, name){
+  if (!TRACK_URL || !hasConsent(name)) return;
+  try {
+    // text/plain 이라 사전 확인(preflight) 없이 바로 간다. 실패해도 앱은 그대로 쓴다
+    fetch(TRACK_URL.replace(/\/+$/, '') + '/track', {method: 'POST', mode: 'cors', keepalive: true,
+      headers: {'content-type': 'text/plain'}, body: JSON.stringify({type, dev: devId(), name})}).catch(() => {});
+  } catch(e){}
+}
+/* 기록을 보낼 때만: 동의 칸을 보이고, "서버로 가지 않는다"는 안내를 사실대로 바꾼다 */
+if (TRACK_URL){
+  $('consentRow').hidden = false;
+  $('authNote').innerHTML = '<b>계정과 비밀번호는 이 기기 안에만 저장됩니다.</b> 다른 기기에서는 보이지 않고, 브라우저 데이터를 지우면 함께 사라집니다. '
+    + '비밀번호는 원문이 아니라 해시로만 저장되지만, 기기를 공유한다면 다른 서비스와 같은 비밀번호는 쓰지 마세요. 운영자에게는 위에서 동의한 이용 기록만 전송됩니다.';
+  // 철회: 운영자 쪽 기록을 지우라고 알리고, 이 기기에서도 동의를 거둔 뒤 로그아웃한다(로그인하려면 동의가 필요하므로)
+  $('forgetBtn').addEventListener('click', () => {
+    const name = S.user;
+    if (!name || !confirm('이용 기록 보내기를 그만둘까요?\n운영자 쪽에 있는 내 기록도 지우고 로그아웃합니다. 작업 기록은 이 기기에 그대로 남습니다.')) return;
+    track('forget', name);
+    setConsent(name, false);
+    $('logoutBtn').click();
+  });
+  $('helpPrivAnd').innerHTML = '계정과 비밀번호는 <span class="hl">이 폰 안에만</span> 저장됩니다. 로그인하면 동의한 이용 기록(이름 · 기기 번호 · 시각 · 기기 종류 · 영상 수)만 운영자에게 가고, 내 이름 메뉴에서 언제든 철회할 수 있습니다.';
+  $('helpPrivIos').innerHTML = '계정과 비밀번호는 <span class="hl">이 아이폰 안에만</span> 저장됩니다. 로그인하면 동의한 이용 기록(이름 · 기기 번호 · 시각 · 기기 종류 · 영상 수)만 운영자에게 가고, 내 이름 메뉴에서 언제든 철회할 수 있습니다.';
+  $('footNote').textContent = '영상과 음악 처리는 모두 이 기기 브라우저 안에서 일어나고, 영상은 서버로 올라가지 않습니다. 로그인한 경우에만 동의한 이용 기록이 운영자에게 전송됩니다.';
+}
 
 /* 선 아이콘 — 이모지 대신 쓴다 (글자색을 따라감) */
 const icon = (d) => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
@@ -2812,11 +2875,15 @@ document.addEventListener('click', async (ev) => {
     if (isAdminName(name)){ await showAdminAuth(); return; }
     if (pw.length < 4) return err('비밀번호는 4자 이상으로 해 주세요.');
     if (su && pw !== $('authPw2').value) return err('두 비밀번호가 다릅니다.');
+    if (trackOn() && !$('consentChk').checked)
+      return err('이용 기록 전송에 동의해야 로그인·가입할 수 있어요. 동의하지 않으면 「로그인 없이 사용」을 눌러 주세요.');
     t.disabled = true; t.textContent = '처리 중…';
     try {
       if (su) await doSignup(name, pw); else await doLogin(name, pw);
       S.user = name;
       try { localStorage.setItem('rs_user', name); } catch(e){}
+      if (trackOn()) setConsent(name, true);
+      track(su ? 'signup' : 'login', name);
       $('authPw').value = ''; $('authPw2').value = '';
       await showApp();
     } catch (e){ err(e.message || '처리에 실패했습니다.'); }
@@ -2852,7 +2919,7 @@ document.addEventListener('click', async (ev) => {
     $('helpSheet').querySelector('.inner').scrollTop = 0;
     return;
   }
-  if (t.id === 'userChip'){ $('userSheet').hidden = false; await renderHistory(); return; }
+  if (t.id === 'userChip'){ $('forgetBtn').hidden = !(trackOn() && hasConsent(S.user)); $('userSheet').hidden = false; await renderHistory(); return; }
   if (t.id === 'sheetClose'){ $('userSheet').hidden = true; return; }
   if (t.id === 'logoutBtn'){
     S.user = null; try { localStorage.removeItem('rs_user'); } catch(e){}
@@ -3159,6 +3226,7 @@ async function addHistory(r){
     size: r.size, thumb: r.frame ? r.frame.thumb : null, prefs: collectPrefs()
   };
   try { await tx('history','readwrite', st => st.put(rec)); } catch(e){}
+  track('work', S.user);
 }
 function listHistory(){
   return openDB().then(d => new Promise((res, rej) => {
@@ -3866,7 +3934,7 @@ function openHelp(){
   if (saved){
     try {
       const u = await tx('users','readonly', st => st.get(saved));
-      if (u && !u.blocked && u.role !== 'admin'){ S.user = saved; await showApp(); return; }
+      if (u && !u.blocked && u.role !== 'admin'){ S.user = saved; track('visit', saved); await showApp(); return; }
     } catch(e){}
   }
   showAuth();
@@ -5089,7 +5157,9 @@ function botScript(){
     add(null, '안녕하세요, 주접 도우미예요. 영상 한 편 만드는 순서를 화면을 짚어 가며 처음부터 끝까지 알려 드릴게요.', {wave:true});
   }
   if (!$('authScreen').hidden){
-    add('#authSeg', '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
+    add('#authSeg', trackOn() ? '프로필을 만들면 설정과 작업 기록이 이 기기에 남아요. 운영자에게는 동의한 이용 기록만 보내요.'
+      : '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
+    if (trackOn()) add('#consentRow', '로그인하려면 이 동의 칸을 체크해야 해요. 동의하지 않으면 아래 「로그인 없이 사용」으로 쓰면 돼요.');
     add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 눌러 보세요.',
       {act:true, until: () => !$('appScreen').hidden});
     return L;
