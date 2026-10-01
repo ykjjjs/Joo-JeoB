@@ -35,7 +35,7 @@ body{
   font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',system-ui,sans-serif;
   font-size:15px; line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  padding:0 0 64px;
+  padding:0 0 max(64px,var(--botpad,0px));
 }
 .wrap{max-width:520px;margin:0 auto;padding:0 16px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -312,7 +312,7 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
 .nav:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
 .navhint{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--tx3);text-align:center;
   min-width:52px;line-height:1.3}
-body.hasnav{padding-bottom:104px}
+body.hasnav{padding-bottom:max(104px,var(--botpad,0px))}
 
 /* ── 자막 편집 ── */
 .vidwrap{position:relative;margin-top:12px;line-height:0}
@@ -408,13 +408,14 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 .stats b{display:block;font-size:10px;color:var(--tx3);font-weight:600}
 .stats span{font-family:var(--mono);font-size:18px;color:var(--cy);font-weight:600}
 /* ── 안내 로봇 (s2s 강의의 클래식 로봇과 같은 모습) ──
-   오른쪽 아래에 앉아 있다가, 누르면 지금 화면의 부품 옆으로 날아가
-   그 부품을 테두리로 짚고 말풍선으로 설명한다. 필요한 곳은 직접 눌러 보인다. */
-#bot{position:fixed;left:0;top:0;z-index:72;display:flex;align-items:flex-end;gap:6px;
-  transform:translate(var(--bx,-200px),var(--by,-200px));transition:transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
-#bot.flip{flex-direction:row-reverse}
+   오른쪽 아래(다음 버튼 막대 바로 위)에 앉아 있고, 말할 때는 그 왼쪽에 말풍선 안내판을 펼친다.
+   안내판은 움직이지 않는다. 짚을 부품은 안내판 위 빈 곳으로 스크롤해 와서 테두리로 짚으므로
+   안내판이 부품이나 그 설명을 덮지 않는다. 사람이 짚은 부품을 직접 누르면 다음 설명으로 넘어간다. */
+#bot{position:fixed;right:12px;bottom:calc(var(--navh,env(safe-area-inset-bottom,0px)) + 10px);z-index:72;
+  display:flex;flex-direction:row-reverse;align-items:flex-end;gap:6px;pointer-events:none}
+#bot.dock{width:min(496px,calc(100vw - 24px))}
 #bot.away{opacity:0;visibility:hidden}
-#bot.snap,#botRing.snap{transition:none}
+#botRing.snap{transition:none}
 .bot-fig{flex:none;width:58px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
   filter:drop-shadow(0 8px 12px rgba(0,0,0,.45));-webkit-tap-highlight-color:transparent}
 .bot-fig:focus-visible{outline:2px solid var(--cy);outline-offset:4px;border-radius:12px}
@@ -434,22 +435,23 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 @keyframes botWave{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(-150deg)}}
 #bot.bot-hop .bob{animation:botHop .6s cubic-bezier(.3,.7,.4,1)}
 @keyframes botHop{35%{transform:translateY(-14%) rotate(-6deg)}70%{transform:translateY(-3%) rotate(3deg)}}
-.bot-bubble{position:relative;width:min(300px,calc(100vw - 94px));padding:12px 14px 10px;border-radius:16px;
-  background:#FFFFFF;color:#1A2233;box-shadow:0 14px 34px -8px rgba(0,0,0,.55);pointer-events:auto;margin-bottom:26px}
-.bot-bubble::after{content:'';position:absolute;left:-7px;bottom:16px;border:8px solid transparent;border-left:0;border-right-color:#FFFFFF}
-#bot.flip .bot-bubble::after{left:auto;right:-7px;border-right:0;border-left:8px solid #FFFFFF}
-.bot-step{font-family:var(--mono);font-size:10.5px;font-weight:600;color:#6B7486;letter-spacing:.02em;margin-bottom:4px}
+.bot-bubble{position:relative;flex:1;min-width:0;padding:12px 14px 10px;border-radius:16px;
+  background:#FFFFFF;color:#1A2233;box-shadow:0 14px 34px -8px rgba(0,0,0,.55);pointer-events:auto;margin-bottom:26px;
+  animation:botIn .22s ease-out}
+@keyframes botIn{from{opacity:0;transform:translateY(8px)}}
+.bot-bubble::after{content:'';position:absolute;right:-7px;bottom:16px;border:8px solid transparent;border-right:0;border-left-color:#FFFFFF}
+.bot-step{margin-right:auto;font-family:var(--mono);font-size:10.5px;font-weight:600;color:#6B7486;letter-spacing:.02em}
 .bot-text{margin:0;font-size:14px;line-height:1.6;font-weight:600;word-break:keep-all}
 .bot-text .off{color:transparent}
 .bot-sr{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.bot-btns{display:flex;gap:6px;justify-content:flex-end;margin-top:10px}
+.bot-btns{display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:flex-end;margin-top:10px}
 .bot-b{min-height:34px;padding:0 12px;border-radius:9px;border:1px solid #D9DEE7;background:#fff;color:#3A4456;
   font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .bot-b.pri{border-color:#1A2233;background:#1A2233;color:#fff}
 .bot-b:disabled{opacity:.35;cursor:default}
 .bot-b:focus-visible{outline:2px solid var(--cy2);outline-offset:2px}
 #botRing{position:fixed;z-index:70;left:0;top:0;border-radius:14px;pointer-events:none;
-  box-shadow:0 0 0 2px var(--cy),0 0 0 100vmax rgba(5,6,8,.5);transition:all .45s cubic-bezier(.2,.8,.2,1)}
+  box-shadow:0 0 0 2px var(--cy),0 0 0 100vmax rgba(5,6,8,.28);transition:all .45s cubic-bezier(.2,.8,.2,1)}
 #botRing::after{content:'';position:absolute;inset:-6px;border-radius:18px;border:2px solid var(--cy);opacity:0;animation:botRing 1.6s ease-out infinite}
 @keyframes botRing{0%{opacity:.7;transform:scale(.97)}100%{opacity:0;transform:scale(1.05)}}
 #botTap{position:fixed;z-index:73;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
@@ -457,8 +459,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 #botTap.go{animation:botTap .55s ease-out}
 @keyframes botTap{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
 @media (prefers-reduced-motion:reduce){
-  #bot,#botRing{transition:none}
-  .bot-fig .bob,.bot-fig .eye,.bot-fig .jet,.bot-fig .ant,#bot.bot-wave .arm-r,#bot.bot-hop .bob,#botRing::after{animation:none}
+  #botRing{transition:none}
+  .bot-fig .bob,.bot-fig .eye,.bot-fig .jet,.bot-fig .ant,#bot.bot-wave .arm-r,#bot.bot-hop .bob,#botRing::after,.bot-bubble{animation:none}
 }
 [hidden]{display:none!important}
 .err{margin-top:11px;padding:11px 12px;border-radius:11px;background:rgba(255,107,107,.08);
@@ -1053,7 +1055,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
             ② 크롬에서 <b>⋮ → 설치 및 바로가기 만들기</b> → <b>설치</b>(바로가기 말고)를 고릅니다.<br>
             ③ 그래도 홈 화면에 안 생기면 삼성 런처가 막은 것입니다. <b>홈 화면 길게 누르기 → 설정 → "홈 화면에 앱 추가"(새 앱 자동 추가)</b>를 켜고 다시 설치하거나,
             <b>앱스 화면(모든 앱)</b>에서 Joo-JeoB 아이콘을 찾아 홈 화면으로 끌어다 놓으세요.</div>
-          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다. 짚은 버튼을 직접 누르면 다음 설명으로 넘어가고, 「대신 누르기」를 누르면 로봇이 눌러 줍니다.</p>
         </div>
 
         <div class="guide-sec">
@@ -1162,7 +1164,7 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <div class="trouble"><b>"홈 화면에 추가"가 안 보일 때</b><br>
             크롬·카카오톡 안의 브라우저에는 그 메뉴가 없습니다. 반드시 <b>사파리</b>로 여세요.
             (카톡에서 열렸다면 오른쪽 아래 <b>⋯ → Safari로 열기</b>)</div>
-          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다. 짚은 버튼을 직접 누르면 다음 설명으로 넘어가고, 「대신 누르기」를 누르면 로봇이 눌러 줍니다.</p>
         </div>
 
         <div class="guide-sec">
@@ -1292,13 +1294,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </g></svg>
   </button>
   <div class="bot-bubble" id="botBubble" role="dialog" aria-label="안내 로봇" hidden>
-    <div class="bot-step" id="botStep"></div>
     <p class="bot-text" id="botText" aria-hidden="true"></p>
     <p class="bot-sr" id="botSay" aria-live="polite"></p>
     <div class="bot-btns">
+      <span class="bot-step" id="botStep"></span>
       <button type="button" class="bot-b" id="botPrev">이전</button>
       <button type="button" class="bot-b" id="botClose">그만</button>
-      <button type="button" class="bot-b pri" id="botNext">다음</button>
+      <button type="button" class="bot-b pri" id="botNext">계속</button>
     </div>
   </div>
 </div>
@@ -5056,10 +5058,11 @@ syncIo('intro'); syncIo('outro'); syncVoiceUI();
 /* ============================================================
    15) 안내 로봇 — s2s 강의의 로봇처럼 화면 부품을 짚어 가며 말풍선으로 설명한다.
    · 대본은 지금 화면(로그인 · 1~4단계 · 촬영/입히기)에 맞춰 그때그때 만든다.
-   · act:true 인 줄은 설명을 다 한 뒤 로봇이 그 부품을 직접 누르고, 결과가 나오면 다음 화면 대본으로 이어 간다.
-     누르는 곳은 되돌리기 쉬운 것뿐이다(내장 트랙 고르기 · 다음 · 로그인 없이 사용 · 탭 전환).
+   · act:true 인 줄은 사람이 짚은 부품을 직접 눌러 따라 하기를 기다린다. 누르면 다음 설명으로 이어 간다.
+     「대신 누르기」를 누르면 로봇이 대신 누른다. 누르는 곳은 되돌리기 쉬운 것뿐이다
+     (내장 트랙 고르기 · 다음 · 로그인 없이 사용 · 탭 전환).
    ============================================================ */
-const BOT = {on:false, mode:'', list:[], i:0, token:0, greeted:false, el:null, typer:0, finish:null, acting:false, key:''};
+const BOT = {on:false, mode:'', list:[], i:0, token:0, greeted:false, el:null, typer:0, finish:null, acting:false, key:'', top:0, room:null, pad:0, padKey:''};
 /* 지금 화면을 나타내는 열쇠 — 바뀌면 그 화면의 대본으로 새로 시작한다 */
 const botKey = () => !$('authScreen').hidden ? 'auth'
   : ('app' + S.step + (S.step > 1 ? S.mode : '') + (S.step === 4 && S.editMode ? 'e' : ''));
@@ -5076,7 +5079,7 @@ function botScript(){
   }
   if (!$('authScreen').hidden){
     add('#authSeg', '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
-    add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 누르면 돼요. 제가 눌러 볼게요.',
+    add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 눌러 보세요.',
       {act:true, until: () => !$('appScreen').hidden});
     return L;
   }
@@ -5084,25 +5087,25 @@ function botScript(){
     add('#modeSeg', '먼저 방식을 골라요. 카메라로 새로 찍거나, 이미 있는 영상에 음악만 입힐 수 있어요.');
     add('#srcSeg', '배경음악은 내장 트랙, 내 음악 파일, 탭 소리, 무료 음원 검색 가운데서 골라요.');
     if (!hasBgm()){
-      add('#trackGrid', '가장 쉬운 건 내장 트랙이에요. 저작권 걱정이 없어요. 제가 하나 골라 볼게요.',
+      add('#trackGrid', '가장 쉬운 건 내장 트랙이에요. 저작권 걱정이 없어요. 마음에 드는 카드를 하나 눌러 보세요.',
         {act:true, prep: () => { if ($('paneBuiltin').hidden) document.querySelector('[data-src="builtin"]').click(); },
          press: () => document.querySelector('[data-track="lofi"]'), until: () => hasBgm()});
     }
     add('#bgmStatus', '초록 불이 켜지면 준비 끝이에요. 음악은 파일 안에 직접 섞여서, 어디로 보내도 지워지지 않아요.');
-    add('#nextBtn', '다음 단계로 넘어갈게요.', {act:true, until: () => S.step === 2});
+    add('#nextBtn', '아래 「다음」을 눌러 다음 단계로 넘어가요.', {act:true, until: () => S.step === 2});
     return L;
   }
   if (S.step === 2 && S.mode === 'shoot'){
     add('#durChips', '영상 길이를 고르면 그 시간에 맞춰 자동으로 멈춰요.');
     add('#camChips', '셀카는 전면, 앞에 있는 걸 찍을 때는 후면 카메라예요.');
     add(null, '배경음악 크기와 시작 지점도 여기서 맞춰요. 후렴부터 시작하고 싶을 때 좋아요.', {pick: () => $('bgmVol').closest('.row')});
-    add('#nextBtn', '이제 촬영하러 가요.', {act:true, until: () => S.step === 3});
+    add('#nextBtn', '이제 아래 「다음」을 눌러 촬영하러 가요.', {act:true, until: () => S.step === 3});
     return L;
   }
   if (S.step === 2){
     add(null, '음악을 입힐 영상을 골라 주세요. 파일은 이 기기 밖으로 나가지 않아요.', {pick: () => document.querySelector('label[for="vidInput"]')});
     add(null, '영상에 원래 목소리가 남아 있으면 이 스위치를 켜서 같이 넣을 수 있어요.', {pick: () => $('srcSw').closest('.row')});
-    if (S.dubReady) add('#nextBtn', '다음으로 가요.', {act:true, until: () => S.step === 3});
+    if (S.dubReady) add('#nextBtn', '아래 「다음」을 눌러 넘어가요.', {act:true, until: () => S.step === 3});
     else add('#nextBtn', '영상을 고르면 이 버튼이 켜지고 다음으로 넘어갈 수 있어요.');
     return L;
   }
@@ -5123,7 +5126,7 @@ function botScript(){
   add('#repBox', '저장된 파일을 직접 열어서, 배경음악이 정말 들어갔는지 확인한 결과예요.');
   if (S.editMode){
     add('#editTabs', '구간 자르기, 자막, 꾸미기, 인트로를 여기서 골라요.');
-    add('[data-tab="intro"]', '영상 앞뒤에 붙는 3초 카드를 볼게요.', {act:true, until: () => S.activeTab === 'intro'});
+    add('[data-tab="intro"]', '「인트로」 탭을 눌러 영상 앞뒤에 붙는 3초 카드를 볼게요.', {act:true, until: () => S.activeTab === 'intro'});
     add('#introBlock', '스위치를 켜고 다섯 가지 그림 가운데 하나를 고르면, 끝 장면에 글자가 남아요. 문구는 자동으로 고르거나 직접 쓸 수 있어요.');
     add('#trimBtn', '다 고쳤으면 「편집 적용해서 내보내기」. 자막·구간·인트로가 한 번에 구워져요.');
   }
@@ -5132,43 +5135,40 @@ function botScript(){
   return L;
 }
 
-/* 자리 잡기: 짚을 부품 위나 아래의 빈 곳에 로봇과 말풍선을 두고, 팔과 눈을 부품 쪽으로 돌린다.
-   snap 이면 날아가는 움직임 없이 바로 옮긴다(레이아웃이 밀려 부품이 움직였을 때) */
+/* 자리 잡기: 로봇은 오른쪽 아래 제자리, 말하는 동안은 그 왼쪽에 말풍선 안내판(.dock)을 펼친다.
+   페이지 아래에 로봇·안내판 높이만큼 여백(--botpad)을 두어 맨 끝 내용도 그 위로 올라올 수 있게 하고,
+   짚은 부품에 테두리를 두르고 팔과 눈을 부품 쪽으로 돌린다.
+   snap 이면 테두리를 움직임 없이 바로 옮긴다(레이아웃이 밀려 부품이 움직였을 때) */
 function botPlace(snap){
   const bot = $('bot'), fig = $('botFig'), ring = $('botRing');
+  if (bot.classList.contains('away')){ ring.hidden = true; document.body.style.removeProperty('--botpad'); return; }
   if (snap){
-    bot.classList.add('snap'); ring.classList.add('snap');
-    requestAnimationFrame(() => requestAnimationFrame(() => { bot.classList.remove('snap'); ring.classList.remove('snap'); }));
+    ring.classList.add('snap');
+    requestAnimationFrame(() => requestAnimationFrame(() => ring.classList.remove('snap')));
   }
   const vw = document.documentElement.clientWidth, vh = window.innerHeight;
   const nav = $('navBar'), navH = (nav && !nav.hidden) ? nav.getBoundingClientRect().height : 0;
-  const bottom = vh - navH - 10, top = 10;
+  if (navH) bot.style.setProperty('--navh', navH + 'px'); else bot.style.removeProperty('--navh');
+  bot.classList.toggle('dock', !$('botBubble').hidden);
+  BOT.top = bot.getBoundingClientRect().top;                // 안내판 윗변: 짚을 부품은 이보다 위로 스크롤해 온다
+  // 같은 화면에서는 여백을 줄이지 않는다: 안내판이 닫히며 페이지가 짧아지면 스크롤이 당겨져 누르던 곳이 움직인다
+  const key = botKey();
+  if (BOT.padKey !== key){ BOT.padKey = key; BOT.pad = 0; }
+  BOT.pad = Math.max(BOT.pad, Math.ceil(vh - BOT.top + 12));
+  document.body.style.setProperty('--botpad', BOT.pad + 'px');
   const T = BOT.on ? BOT.el : null;
-  const bw = bot.offsetWidth, bh = bot.offsetHeight;
-  let x, y, r = null;
+  let r = null;
   if (T && botVisible(T)){
     r = T.getBoundingClientRect();
     const pad = 6, rl = Math.max(4, r.left - pad), rt = Math.max(4, r.top - pad);
     const rr = Math.min(vw - 4, r.right + pad), rb = Math.min(vh - 4, r.bottom + pad);
     ring.hidden = false;
     Object.assign(ring.style, {left: rl + 'px', top: rt + 'px', width: Math.max(0, rr - rl) + 'px', height: Math.max(0, rb - rt) + 'px'});
-    const below = bottom - r.bottom, above = r.top - top;
-    if (below >= bh + 12) y = r.bottom + 12;
-    else if (above >= bh + 12) y = r.top - 12 - bh;
-    else y = below >= above ? bottom - bh : top;
-    const cx = r.left + r.width / 2;
-    x = Math.min(Math.max(12, cx - bw / 2), vw - 12 - bw);
-    bot.classList.toggle('flip', cx > x + bw / 2);
   } else {
     ring.hidden = true;
-    bot.classList.add('flip');
-    x = vw - 12 - bw; y = bottom - bh;
   }
-  bot.style.setProperty('--bx', Math.round(x) + 'px');
-  bot.style.setProperty('--by', Math.round(y) + 'px');
-  // 팔 · 눈: 도착할 자리를 기준으로 부품 가운데를 향한다
-  const fw = fig.offsetWidth, fh = fig.offsetHeight;
-  const fx = x + (bot.classList.contains('flip') ? bw - fw : 0), fy = y + bh - fh;
+  // 팔 · 눈: 부품 가운데를 향한다
+  const f = fig.getBoundingClientRect(), fw = f.width, fh = f.height, fx = f.left, fy = f.top;
   let la = '10deg', ra = '-10deg', ex = 0, ey = 0;
   if (r){
     const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
@@ -5229,6 +5229,15 @@ async function botWaitFor(fn, ms){
   while (performance.now() - t0 < ms){ try { if (fn()) return true; } catch(e){} await botWait(120); }
   return false;
 }
+const botDone = (e) => { try { return !!(e.until && e.until()); } catch(x){ return false; } };
+/* 짚을 부품을 안내판 위 빈 곳의 가운데로 스크롤한다. 빈 곳보다 크면 윗변을 맞춘다.
+   아래 고정 막대(다음 버튼)는 늘 보이므로 그대로 둔다 */
+function botScrollTo(el){
+  if (el.closest('#navBar')) return;
+  const r = el.getBoundingClientRect(), top = 12, room = BOT.top - 12 - top;
+  const dy = r.height <= room ? (r.top + r.height / 2) - (top + room / 2) : r.top - top;
+  if (Math.abs(dy) > 2) window.scrollBy({top: dy, behavior: botReduced() ? 'auto' : 'smooth'});
+}
 async function botShow(i){
   const tok = ++BOT.token;
   const e = BOT.list[i];
@@ -5236,26 +5245,44 @@ async function botShow(i){
   BOT.i = i;
   if (!BOT.greeted && e.wave) BOT.greeted = true;
   if (e.prep) try { e.prep(); } catch(x){}
+  if (e.act && botDone(e)){ botResume(botKey(), BOT.list[i + 1]); return; }   // 먼저 따라 해 두었으면 넘어간다
   const el = e.pick ? e.pick() : (e.sel ? document.querySelector(e.sel) : null);
   BOT.el = botVisible(el) ? el : null;
   const last = i === BOT.list.length - 1;
-  $('botStep').textContent = '안내 ' + (i + 1) + ' / ' + BOT.list.length;
+  $('botStep').textContent = (i + 1) + ' / ' + BOT.list.length;
   $('botPrev').hidden = false; $('botPrev').disabled = i === 0;
   $('botClose').textContent = '그만';
-  $('botNext').textContent = e.act ? '건너뛰기' : (last ? '끝' : '다음');
+  $('botNext').textContent = e.act ? '대신 누르기' : (last ? '끝' : '계속');
   $('botBubble').hidden = false;
   $('botText').textContent = e.text;           // 크기 재기용
+  botPlace();                                  // 안내판 높이가 정해져야 그 위 빈 곳을 안다
   if (BOT.el){
-    BOT.el.scrollIntoView({block:'center', behavior: botReduced() ? 'auto' : 'smooth'});
+    botScrollTo(BOT.el);
     await botSettle(BOT.el);
     if (tok !== BOT.token) return;
   }
   botPlace();
   if (e.wave) botBounce('bot-wave');
+  if (e.act) botFollow(tok, e);
   await botType(e.text);
-  if (tok !== BOT.token || !e.act) return;
-  await botWait(650);
-  if (tok !== BOT.token) return;
+}
+/* 사람이 짚은 부품을 직접 눌러 따라 하면 다음 설명으로 간다.
+   화면이 바뀌는 경우(로그인 없이 사용 · 다음)는 botSync 가 새 화면의 대본으로 이어 간다 */
+async function botFollow(tok, e){
+  const key0 = botKey(), after = BOT.list[BOT.i + 1];
+  while (tok === BOT.token){
+    if (!BOT.acting && botDone(e)){
+      if (botKey() === key0) botResume(key0, after); else botSync();
+      return;
+    }
+    await botWait(150);
+  }
+}
+/* 「대신 누르기」: 로봇이 짚은 부품을 누르고, 결과가 나오면 이어서 설명한다 */
+async function botDo(){
+  const tok = BOT.token, i = BOT.i, e = BOT.list[i];
+  if (BOT.acting || !e) return;
+  if (BOT.finish) BOT.finish();
   const target = e.press ? e.press() : BOT.el;
   if (!target || target.disabled || !botVisible(target)){ botShow(i + 1); return; }
   const key0 = botKey(), after = BOT.list[i + 1];
@@ -5265,10 +5292,15 @@ async function botShow(i){
   await botWait(250);
   BOT.acting = false;
   if (tok !== BOT.token) return;
-  // 누른 결과로 화면이 바뀌었으면 새 화면의 대본을 처음부터, 같은 화면이면 바로 다음 설명으로
+  botResume(key0, after);
+}
+/* 누른 결과로 화면이 바뀌었으면 새 화면의 대본을 처음부터, 같은 화면이면 같은 대본의 다음 설명으로
+   (같은 화면에서 대본을 새로 만들면 「3 / 5」가 「3 / 4」로 바뀌는 식으로 번호가 흔들린다) */
+function botResume(key0, after){
+  const at = BOT.list.indexOf(after);
+  if (botKey() === key0 && at >= 0){ botShow(at); return; }
   BOT.list = botScript(); BOT.key = botKey();
-  const at = (BOT.key === key0 && after) ? BOT.list.findIndex(x => x.text === after.text) : 0;
-  botShow(Math.max(0, at));
+  botShow(0);
 }
 /* 안내 중에는 짚은 부품이 레이아웃 변화로 움직였는지 살펴 따라간다(설치 안내 칩이 늦게 나타나는 경우 등) */
 let botWatchId = 0, botLastRect = '';
@@ -5283,7 +5315,7 @@ function botWatch(on){
   }, 300);
 }
 function botStart(){
-  BOT.on = true; BOT.mode = 'tour'; BOT.acting = false;
+  BOT.on = true; BOT.mode = 'tour'; BOT.acting = false; BOT.room = null;
   botWatch(true);
   try { localStorage.setItem('jj_bot_seen', '1'); } catch(e){}
   BOT.list = botScript(); BOT.key = botKey();
@@ -5292,14 +5324,18 @@ function botStart(){
   $('botNext').focus({preventScroll: true});
 }
 function botEnd(){
-  const had = BOT.on || BOT.mode === 'offer';
-  BOT.token++; BOT.on = false; BOT.mode = ''; BOT.el = null; BOT.acting = false;
+  const had = BOT.on || BOT.mode === 'offer', room = BOT.room;
+  BOT.token++; BOT.on = false; BOT.mode = ''; BOT.el = null; BOT.acting = false; BOT.room = null;
   clearInterval(BOT.typer); BOT.finish = null; botWatch(false);
   $('botBubble').hidden = true; $('botRing').hidden = true;
   botPlace();
+  // 제안 때 올려 둔 화면을 되돌린다(그 사이 직접 더 내렸으면 그대로 둔다)
+  if (room && window.scrollY > room.from - 8 && window.scrollY < room.to + 8)
+    window.scrollTo({top: room.from, behavior: botReduced() ? 'auto' : 'smooth'});
   if (had && $('bot').contains(document.activeElement)) $('botFig').focus({preventScroll: true});
 }
-/* 처음 온 사람에게 한 번만 먼저 말을 건다 */
+/* 처음 온 사람에게 한 번만 먼저 말을 건다.
+   안내판 높이만큼 화면을 올려 자리를 만든다: 보이던 버튼과 설명은 안내판 위로 올라오고 맨 위 머리말이 대신 비켜난다 */
 function botOffer(key, text){
   let seen = false;
   try { seen = !!localStorage.getItem(key); } catch(e){}
@@ -5313,8 +5349,11 @@ function botOffer(key, text){
   $('botBubble').hidden = false;
   $('botText').textContent = text;
   botPlace(); botBounce('bot-wave');
+  const from = window.scrollY, need = window.innerHeight - BOT.top;
+  BOT.room = {from, to: Math.min(from + need, document.documentElement.scrollHeight - window.innerHeight)};
+  window.scrollBy({top: need, behavior: botReduced() ? 'auto' : 'smooth'});
   botType(text);
-  // 대답이 없으면 12초 뒤 조용히 들어간다 — 말풍선이 화면 아래쪽 부품을 오래 가리지 않게
+  // 대답이 없으면 12초 뒤 조용히 들어간다
   const tok = BOT.token;
   setTimeout(() => { if (BOT.mode === 'offer' && BOT.token === tok) botEnd(); }, 12000);
 }
@@ -5326,26 +5365,29 @@ function botSync(){
   const away = !screen || sheet || isBusy();
   if (away && (BOT.on || BOT.mode === 'offer')) botEnd();
   bot.classList.toggle('away', away);
-  // 사람이 직접 단계를 옮겼으면 새 화면의 대본으로 다시 시작한다(로봇이 누른 경우는 botShow 가 이어 간다)
+  // 사람이 직접 단계를 옮겼으면 새 화면의 대본으로 다시 시작한다(로봇이 누른 경우는 botDo 가 이어 간다)
   if (!away && BOT.on && !BOT.acting && botKey() !== BOT.key){ BOT.key = botKey(); BOT.list = botScript(); botShow(0); return; }
-  if (!away) botPlace();
+  botPlace();
 }
 $('botFig').addEventListener('click', () => { BOT.on ? botEnd() : botStart(); });
 $('botNext').addEventListener('click', () => {
   if (BOT.mode === 'offer'){ botStart(); return; }
-  const cur = BOT.list[BOT.i] || {};
-  if (cur.act && !BOT.acting){                        // 「건너뛰기」: 로봇이 누르지 않고 넘어간다
-    if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
-    return;
-  }
+  if (BOT.acting) return;
+  if ((BOT.list[BOT.i] || {}).act){ botDo(); return; } // 「대신 누르기」
   if (BOT.finish){ BOT.finish(); return; }            // 쓰는 중이면 먼저 다 보여 준다
   if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
 });
-$('botPrev').addEventListener('click', () => { if (BOT.i > 0) botShow(BOT.i - 1); });
+$('botPrev').addEventListener('click', () => {
+  if (BOT.acting) return;
+  // 이미 따라 한 줄은 뒤로 갈 때도 건너뛴다(그 줄을 보이면 botShow 가 다시 앞으로 보낸다)
+  let j = BOT.i - 1;
+  while (j > 0 && BOT.list[j].act && botDone(BOT.list[j])) j--;
+  if (j >= 0) botShow(j);
+});
 $('botClose').addEventListener('click', botEnd);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (BOT.on || BOT.mode === 'offer')) botEnd(); });
-// 제안 말풍선이 떠 있을 때 다른 곳을 누르면 말풍선을 거둔다(누른 곳은 그대로 동작)
-document.addEventListener('pointerdown', (e) => { if (BOT.mode === 'offer' && !$('bot').contains(e.target)) botEnd(); }, true);
+// 제안 말풍선이 떠 있을 때 다른 곳을 누르면 말풍선을 거둔다(누른 곳은 그대로 동작하도록 화면은 움직이지 않는다)
+document.addEventListener('pointerdown', (e) => { if (BOT.mode === 'offer' && !$('bot').contains(e.target)){ BOT.room = null; botEnd(); } }, true);
 let botRaf = 0;
 const botReflow = () => { cancelAnimationFrame(botRaf); botRaf = requestAnimationFrame(() => { if (!$('bot').classList.contains('away')) botPlace(); }); };
 window.addEventListener('resize', botReflow);
