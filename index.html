@@ -35,7 +35,7 @@ body{
   font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',system-ui,sans-serif;
   font-size:15px; line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  padding:0 0 64px;
+  padding:0 0 max(64px,var(--botpad,0px));
 }
 .wrap{max-width:520px;margin:0 auto;padding:0 16px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
@@ -68,6 +68,10 @@ body{
 .seg button{flex:1;padding:9px 4px;border:0;border-radius:9px;background:transparent;color:var(--tx2);white-space:nowrap;
   font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:.18s}
 .seg button.on{background:#272D3A;color:var(--tx);box-shadow:inset 0 0 0 1px #363D4D}
+.guideseg{max-width:340px;margin:14px auto 0}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:2px 0 14px;font-size:12.5px;line-height:1.55;color:var(--tx2);cursor:pointer}
+.consent input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--cy)}
+.consent b{color:var(--tx)}
 
 /* track cards */
 .trackgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -312,7 +316,7 @@ video.result{width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;bor
 .nav:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
 .navhint{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;color:var(--tx3);text-align:center;
   min-width:52px;line-height:1.3}
-body.hasnav{padding-bottom:104px}
+body.hasnav{padding-bottom:max(104px,var(--botpad,0px))}
 
 /* ── 자막 편집 ── */
 .vidwrap{position:relative;margin-top:12px;line-height:0}
@@ -408,13 +412,18 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 .stats b{display:block;font-size:10px;color:var(--tx3);font-weight:600}
 .stats span{font-family:var(--mono);font-size:18px;color:var(--cy);font-weight:600}
 /* ── 안내 로봇 (s2s 강의의 클래식 로봇과 같은 모습) ──
-   오른쪽 아래에 앉아 있다가, 누르면 지금 화면의 부품 옆으로 날아가
-   그 부품을 테두리로 짚고 말풍선으로 설명한다. 필요한 곳은 직접 눌러 보인다. */
-#bot{position:fixed;left:0;top:0;z-index:72;display:flex;align-items:flex-end;gap:6px;
-  transform:translate(var(--bx,-200px),var(--by,-200px));transition:transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none}
-#bot.flip{flex-direction:row-reverse}
+   오른쪽 아래(다음 버튼 막대 바로 위)에 앉아 있고, 말할 때는 그 왼쪽에 말풍선 안내판을 펼친다.
+   안내판은 움직이지 않는다. 짚을 부품은 안내판 위 빈 곳으로 스크롤해 와서 테두리로 짚으므로
+   안내판이 부품이나 그 설명을 덮지 않는다. 사람이 짚은 부품을 직접 누르면 다음 설명으로 넘어간다. */
+#bot{position:fixed;right:12px;bottom:calc(var(--navh,env(safe-area-inset-bottom,0px)) + 10px);z-index:72;
+  display:flex;flex-direction:row-reverse;align-items:flex-end;gap:6px;pointer-events:none}
+#bot.dock{width:min(496px,calc(100vw - 24px))}
+/* 실전 모드: 화면에 들어올 때 한 줄만 말하고 기다린다(버튼 없는 작은 말풍선, 누르면 그 화면 도우미 시작) */
+#bot.hint .bot-bubble{flex:none;width:max-content;max-width:calc(100vw - 100px);padding:8px 12px;margin-bottom:22px;cursor:pointer}
+#bot.hint .bot-text{font-size:13px}
+#bot.hint .bot-btns{display:none}
 #bot.away{opacity:0;visibility:hidden}
-#bot.snap,#botRing.snap{transition:none}
+#botRing.snap{transition:none}
 .bot-fig{flex:none;width:58px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;
   filter:drop-shadow(0 8px 12px rgba(0,0,0,.45));-webkit-tap-highlight-color:transparent}
 .bot-fig:focus-visible{outline:2px solid var(--cy);outline-offset:4px;border-radius:12px}
@@ -434,22 +443,23 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 @keyframes botWave{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(-150deg)}}
 #bot.bot-hop .bob{animation:botHop .6s cubic-bezier(.3,.7,.4,1)}
 @keyframes botHop{35%{transform:translateY(-14%) rotate(-6deg)}70%{transform:translateY(-3%) rotate(3deg)}}
-.bot-bubble{position:relative;width:min(300px,calc(100vw - 94px));padding:12px 14px 10px;border-radius:16px;
-  background:#FFFFFF;color:#1A2233;box-shadow:0 14px 34px -8px rgba(0,0,0,.55);pointer-events:auto;margin-bottom:26px}
-.bot-bubble::after{content:'';position:absolute;left:-7px;bottom:16px;border:8px solid transparent;border-left:0;border-right-color:#FFFFFF}
-#bot.flip .bot-bubble::after{left:auto;right:-7px;border-right:0;border-left:8px solid #FFFFFF}
-.bot-step{font-family:var(--mono);font-size:10.5px;font-weight:600;color:#6B7486;letter-spacing:.02em;margin-bottom:4px}
+.bot-bubble{position:relative;flex:1;min-width:0;padding:12px 14px 10px;border-radius:16px;
+  background:#FFFFFF;color:#1A2233;box-shadow:0 14px 34px -8px rgba(0,0,0,.55);pointer-events:auto;margin-bottom:26px;
+  animation:botIn .22s ease-out}
+@keyframes botIn{from{opacity:0;transform:translateY(8px)}}
+.bot-bubble::after{content:'';position:absolute;right:-7px;bottom:16px;border:8px solid transparent;border-right:0;border-left-color:#FFFFFF}
+.bot-step{margin-right:auto;font-family:var(--mono);font-size:10.5px;font-weight:600;color:#6B7486;letter-spacing:.02em}
 .bot-text{margin:0;font-size:14px;line-height:1.6;font-weight:600;word-break:keep-all}
 .bot-text .off{color:transparent}
 .bot-sr{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.bot-btns{display:flex;gap:6px;justify-content:flex-end;margin-top:10px}
+.bot-btns{display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:flex-end;margin-top:10px}
 .bot-b{min-height:34px;padding:0 12px;border-radius:9px;border:1px solid #D9DEE7;background:#fff;color:#3A4456;
   font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .bot-b.pri{border-color:#1A2233;background:#1A2233;color:#fff}
 .bot-b:disabled{opacity:.35;cursor:default}
 .bot-b:focus-visible{outline:2px solid var(--cy2);outline-offset:2px}
 #botRing{position:fixed;z-index:70;left:0;top:0;border-radius:14px;pointer-events:none;
-  box-shadow:0 0 0 2px var(--cy),0 0 0 100vmax rgba(5,6,8,.5);transition:all .45s cubic-bezier(.2,.8,.2,1)}
+  box-shadow:0 0 0 2px var(--cy),0 0 0 100vmax rgba(5,6,8,.28);transition:all .45s cubic-bezier(.2,.8,.2,1)}
 #botRing::after{content:'';position:absolute;inset:-6px;border-radius:18px;border:2px solid var(--cy);opacity:0;animation:botRing 1.6s ease-out infinite}
 @keyframes botRing{0%{opacity:.7;transform:scale(.97)}100%{opacity:0;transform:scale(1.05)}}
 #botTap{position:fixed;z-index:73;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
@@ -457,8 +467,8 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
 #botTap.go{animation:botTap .55s ease-out}
 @keyframes botTap{0%{opacity:1;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
 @media (prefers-reduced-motion:reduce){
-  #bot,#botRing{transition:none}
-  .bot-fig .bob,.bot-fig .eye,.bot-fig .jet,.bot-fig .ant,#bot.bot-wave .arm-r,#bot.bot-hop .bob,#botRing::after{animation:none}
+  #botRing{transition:none}
+  .bot-fig .bob,.bot-fig .eye,.bot-fig .jet,.bot-fig .ant,#bot.bot-wave .arm-r,#bot.bot-hop .bob,#botRing::after,.bot-bubble{animation:none}
 }
 [hidden]{display:none!important}
 .err{margin-top:11px;padding:11px 12px;border-radius:11px;background:rgba(255,107,107,.08);
@@ -475,6 +485,10 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </div>
     <h1>Joo-<span>JeoB</span></h1>
     <p class="sub">음악을 고르고 → 촬영하거나 기존 영상에 입히고 → 받는 분께 바로 보내세요.</p>
+    <div class="seg guideseg" id="guideSeg" role="group" aria-label="안내 방식">
+      <button type="button" data-guide="demo" aria-pressed="false">데모 따라하기</button>
+      <button type="button" data-guide="real" aria-pressed="true" class="on">실전 내가 만들기</button>
+    </div>
     <div class="pill">배경음악이 영상 파일 안에 합쳐집니다 · 어디로 보내도 지워지지 않음</div>
     <div class="instrow"><button type="button" class="instchip" id="installBtn" hidden>홈 화면에 앱으로 설치</button></div>
     <div class="instdone" id="installedMsg" hidden><span>앱으로 실행 중</span></div>
@@ -493,10 +507,17 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
         <input id="authPw" type="password" autocomplete="current-password" placeholder="4자 이상"></div>
       <div class="field" id="authPw2Row" hidden><label for="authPw2">비밀번호 확인</label>
         <input id="authPw2" type="password" autocomplete="new-password" placeholder="한 번 더"></div>
+      <label class="consent" id="consentRow" hidden>
+        <input type="checkbox" id="consentChk">
+        <span><b>이용 기록 전송에 동의합니다(로그인·가입할 때 필수).</b>
+          프로필 이름, 기기 구분용 무작위 번호, 가입·로그인·접속 시각, 기기 종류, 만든 영상 수를 운영자에게 보냅니다.
+          비밀번호와 영상은 보내지 않고, 마지막 이용 후 1년이 지나면 지웁니다. 로그인한 뒤 내 이름 메뉴에서 언제든 철회할 수 있고,
+          철회하면 운영자 쪽 기록도 지웁니다. 동의하지 않으면 「로그인 없이 사용」을 쓰세요(아무것도 보내지 않습니다).</span>
+      </label>
       <button type="button" class="btn primary" id="authBtn">로그인</button>
       <button type="button" class="btn ghost" id="guestBtn">로그인 없이 사용</button>
       <div class="err" id="authErr" hidden></div>
-      <div class="note"><b>이 계정은 이 기기 안에만 저장됩니다.</b> 서버로 전송되지 않으므로 다른 기기에서는 보이지 않고,
+      <div class="note" id="authNote"><b>이 계정은 이 기기 안에만 저장됩니다.</b> 서버로 전송되지 않으므로 다른 기기에서는 보이지 않고,
         브라우저 데이터를 지우면 함께 사라집니다. 비밀번호는 원문이 아니라 해시로만 저장되지만,
         기기를 공유한다면 다른 서비스와 같은 비밀번호는 쓰지 마세요.</div>
       <button type="button" class="linkbtn" id="adminLink">관리자 로그인</button>
@@ -1053,13 +1074,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
             ② 크롬에서 <b>⋮ → 설치 및 바로가기 만들기</b> → <b>설치</b>(바로가기 말고)를 고릅니다.<br>
             ③ 그래도 홈 화면에 안 생기면 삼성 런처가 막은 것입니다. <b>홈 화면 길게 누르기 → 설정 → "홈 화면에 앱 추가"(새 앱 자동 추가)</b>를 켜고 다시 설치하거나,
             <b>앱스 화면(모든 앱)</b>에서 Joo-JeoB 아이콘을 찾아 홈 화면으로 끌어다 놓으세요.</div>
-          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다. 짚은 버튼을 직접 누르면 다음 설명으로 넘어가고, 「대신 누르기」를 누르면 로봇이 눌러 줍니다. 맨 위에서 <b>데모 따라하기</b>를 고르면 화면마다 이어서 처음부터 끝까지 안내하고, <b>실전 내가 만들기</b>에서는 조용히 기다리다가 로봇을 누를 때만 지금 화면을 알려 줍니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>2</i> 프로필 만들기</h4>
           <p><b>회원가입</b>으로 이름과 비밀번호를 정하면 설정과 작업 기록이 남아 다음에 이어서 쓸 수 있습니다.
-            이 계정은 <span class="hl">이 폰 안에만</span> 저장되고 서버로 가지 않습니다.
+            <span id="helpPrivAnd">이 계정은 <span class="hl">이 폰 안에만</span> 저장되고 서버로 가지 않습니다.</span>
             그냥 한번 써보려면 <b>로그인 없이 사용</b>을 누르세요.</p>
         </div>
 
@@ -1162,13 +1183,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
           <div class="trouble"><b>"홈 화면에 추가"가 안 보일 때</b><br>
             크롬·카카오톡 안의 브라우저에는 그 메뉴가 없습니다. 반드시 <b>사파리</b>로 여세요.
             (카톡에서 열렸다면 오른쪽 아래 <b>⋯ → Safari로 열기</b>)</div>
-          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다.</p>
+          <p style="margin-top:8px"><b>안내 로봇</b> — 오른쪽 아래의 작은 로봇을 누르면 화면을 짚어 가며 지금 할 일을 말풍선으로 알려 줍니다. 짚은 버튼을 직접 누르면 다음 설명으로 넘어가고, 「대신 누르기」를 누르면 로봇이 눌러 줍니다. 맨 위에서 <b>데모 따라하기</b>를 고르면 화면마다 이어서 처음부터 끝까지 안내하고, <b>실전 내가 만들기</b>에서는 조용히 기다리다가 로봇을 누를 때만 지금 화면을 알려 줍니다.</p>
         </div>
 
         <div class="guide-sec">
           <h4><i>2</i> 프로필 만들기</h4>
           <p><b>회원가입</b>으로 이름과 비밀번호를 정하면 설정과 작업 기록이 남습니다.
-            이 계정은 <span class="hl">이 아이폰 안에만</span> 저장되고 서버로 가지 않습니다.
+            <span id="helpPrivIos">이 계정은 <span class="hl">이 아이폰 안에만</span> 저장되고 서버로 가지 않습니다.</span>
             그냥 써보려면 <b>로그인 없이 사용</b>을 누르세요.</p>
         </div>
 
@@ -1251,10 +1272,11 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       <h3><span>내 작업 기록</span><button type="button" id="sheetClose" aria-label="닫기">×</button></h3>
       <div id="histList"></div>
       <button type="button" class="btn ghost" id="logoutBtn">로그아웃</button>
+      <button type="button" class="btn ghost" id="forgetBtn" hidden>이용 기록 보내기 그만두기</button>
     </div>
   </div>
 
-  <p class="foot">모든 처리는 이 기기의 브라우저 안에서만 일어납니다. 서버 업로드 없음.</p>
+  <p class="foot" id="footNote">모든 처리는 이 기기의 브라우저 안에서만 일어납니다. 서버 업로드 없음.</p>
 </div>
 
 <!-- ===== 안내 로봇 ===== -->
@@ -1292,13 +1314,13 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </g></svg>
   </button>
   <div class="bot-bubble" id="botBubble" role="dialog" aria-label="안내 로봇" hidden>
-    <div class="bot-step" id="botStep"></div>
     <p class="bot-text" id="botText" aria-hidden="true"></p>
     <p class="bot-sr" id="botSay" aria-live="polite"></p>
     <div class="bot-btns">
+      <span class="bot-step" id="botStep"></span>
       <button type="button" class="bot-b" id="botPrev">이전</button>
       <button type="button" class="bot-b" id="botClose">그만</button>
-      <button type="button" class="bot-b pri" id="botNext">다음</button>
+      <button type="button" class="bot-b pri" id="botNext">계속</button>
     </div>
   </div>
 </div>
@@ -1314,6 +1336,58 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
    ============================================================ */
 
 const $ = (id) => document.getElementById(id);
+
+/* ---------- 이용 기록(관리자 페이지용) ----------
+   TRACK_URL: worker/index.js 를 배포한 Cloudflare Worker 주소(예: https://joo-jeob-admin.이름.workers.dev).
+   비워 두면 아무것도 보내지 않고, 동의 칸과 안내 문구도 원래대로 둔다.
+   보내는 것: 무작위 기기 ID · 프로필 이름 · 종류(가입/로그인/접속/영상). 비밀번호와 영상은 보내지 않는다.
+   로그인·가입할 때 동의한 사람만 보낸다. */
+const TRACK_URL = '';
+const trackOn = () => !!TRACK_URL;
+function consentMap(){
+  try { const m = JSON.parse(localStorage.getItem('jj_consent') || '{}'); return (m && typeof m === 'object') ? m : {}; } catch(e){ return {}; }
+}
+const hasConsent = (name) => !!(name && consentMap()[name]);
+function setConsent(name, on){
+  const m = consentMap();
+  if (on) m[name] = Date.now(); else delete m[name];
+  try { localStorage.setItem('jj_consent', JSON.stringify(m)); } catch(e){}
+}
+function devId(){
+  let id = null;
+  try { id = localStorage.getItem('jj_dev'); } catch(e){}
+  if (!id || !/^[0-9a-f]{32}$/.test(id)){
+    const a = new Uint8Array(16); crypto.getRandomValues(a);
+    id = Array.from(a, b => b.toString(16).padStart(2, '0')).join('');
+    try { localStorage.setItem('jj_dev', id); } catch(e){}
+  }
+  return id;
+}
+function track(type, name){
+  if (!TRACK_URL || !hasConsent(name)) return;
+  try {
+    // text/plain 이라 사전 확인(preflight) 없이 바로 간다. 실패해도 앱은 그대로 쓴다
+    fetch(TRACK_URL.replace(/\/+$/, '') + '/track', {method: 'POST', mode: 'cors', keepalive: true,
+      headers: {'content-type': 'text/plain'}, body: JSON.stringify({type, dev: devId(), name})}).catch(() => {});
+  } catch(e){}
+}
+/* 기록을 보낼 때만: 동의 칸을 보이고, "서버로 가지 않는다"는 안내를 사실대로 바꾼다 */
+if (TRACK_URL){
+  $('consentRow').hidden = false;
+  $('authNote').innerHTML = '<b>계정과 비밀번호는 이 기기 안에만 저장됩니다.</b> 다른 기기에서는 보이지 않고, 브라우저 데이터를 지우면 함께 사라집니다. '
+    + '비밀번호는 원문이 아니라 해시로만 저장되지만, 기기를 공유한다면 다른 서비스와 같은 비밀번호는 쓰지 마세요. 운영자에게는 위에서 동의한 이용 기록만 전송됩니다.';
+  // 철회: 운영자 쪽 기록을 지우라고 알리고, 이 기기에서도 동의를 거둔 뒤 로그아웃한다(로그인하려면 동의가 필요하므로)
+  $('forgetBtn').addEventListener('click', () => {
+    const name = S.user;
+    if (!name || !confirm('이용 기록 보내기를 그만둘까요?\n운영자 쪽에 있는 내 기록도 지우고 로그아웃합니다. 작업 기록은 이 기기에 그대로 남습니다.')) return;
+    track('forget', name);
+    setConsent(name, false);
+    $('logoutBtn').click();
+  });
+  $('helpPrivAnd').innerHTML = '계정과 비밀번호는 <span class="hl">이 폰 안에만</span> 저장됩니다. 로그인하면 동의한 이용 기록(이름 · 기기 번호 · 시각 · 기기 종류 · 영상 수)만 운영자에게 가고, 내 이름 메뉴에서 언제든 철회할 수 있습니다.';
+  $('helpPrivIos').innerHTML = '계정과 비밀번호는 <span class="hl">이 아이폰 안에만</span> 저장됩니다. 로그인하면 동의한 이용 기록(이름 · 기기 번호 · 시각 · 기기 종류 · 영상 수)만 운영자에게 가고, 내 이름 메뉴에서 언제든 철회할 수 있습니다.';
+  $('footNote').textContent = '영상과 음악 처리는 모두 이 기기 브라우저 안에서 일어나고, 영상은 서버로 올라가지 않습니다. 로그인한 경우에만 동의한 이용 기록이 운영자에게 전송됩니다.';
+}
 
 /* 선 아이콘 — 이모지 대신 쓴다 (글자색을 따라감) */
 const icon = (d) => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
@@ -1878,6 +1952,11 @@ function pickCamId(facing){
 }
 
 async function openCamera(forceId){
+  if (S.camOpening) return;
+  S.camOpening = true;
+  try { await openCameraNow(forceId); } finally { S.camOpening = false; }
+}
+async function openCameraNow(forceId){
   showErr('');
   try {
     if (S.camStream) S.camStream.getTracks().forEach(t => t.stop());
@@ -1933,6 +2012,18 @@ async function openCamera(forceId){
   }
 }
 
+function releaseCamera(){
+  if (!S.camStream) return;
+  S.camStream.getTracks().forEach(t => t.stop());
+  S.camStream = null; S.camAuto = true;
+  cancelAnimationFrame(S.rafId); S.drawing = false;
+  try { videoEl.pause(); } catch(e){}
+  videoEl.srcObject = null;
+  $('stagePh').hidden = false; $('flipBtn').hidden = true;
+  $('camBtn').textContent = '카메라 켜기';
+  refreshRecBtn();
+}
+
 function renderCamPicker(){
   const box = $('camList');
   if (!box) return;
@@ -1983,6 +2074,9 @@ function pickMime(){
     'video/mp4;codecs=avc1.640028,mp4a.40.2',
     'video/mp4;codecs=avc1,mp4a.40.2',
     'video/mp4;codecs=h264,aac',
+    // AAC 인코더가 없는 기기: 그냥 'video/mp4'를 주면 크롬이 VP9 로 만드는데, 갤러리·아이폰은 H.264 만 확실히 연다
+    'video/mp4;codecs=avc1,opus',
+    'video/mp4;codecs=avc1',
     'video/mp4',
     'video/webm;codecs=vp9,opus',
     'video/webm;codecs=vp8,opus',
@@ -2299,8 +2393,19 @@ async function onRecStop(){
   // 캔버스 캡처 트랙은 녹화마다 새로 생기므로 끝나면 닫는다 (쌓이면 점점 느려짐). 오디오 트랙은 계속 쓴다.
   try { S.recorder.stream.getVideoTracks().forEach(t => t.stop()); } catch(e){}
   let blob = new Blob(S.chunks, {type: S.outMime.split(';')[0]});
-  blob = await repairDuration(blob);     // 헤더에 전체 길이를 써 넣는다 (카톡 3초 잘림 방지)
+  const fixed = await repairDuration(blob);     // 일반 MP4 로 다시 묶는다 (갤러리·아이폰·카톡에서 열리게)
+  blob = fixed.blob;
   const isExport = S.lastWasTrim;      // 자막·자르기 내보내기 결과인가
+  if (isExport){
+    // 깨진 내보내기 파일을 결과로 내놓지 않는다 — 원본은 그대로 두고 알린다
+    const bad = S.trimFail || exportProblem(fixed.info);
+    S.trimFail = '';
+    if (bad){
+      trimErr('내보내기를 마치지 못해 파일을 만들지 않았습니다 — ' + bad + '. 화면을 켠 채로 다시 눌러 주세요. 원본 영상은 그대로 저장할 수 있습니다.');
+      updateExportBtn(); updateNav();
+      return;
+    }
+  }
   S.outBlob = blob;
   if (!isExport) S.baseBlob = blob;    // 새 촬영본만 편집 원본이 된다
   S.editMode = !isExport;              // 완성본을 보는 동안에는 자막 오버레이를 끈다
@@ -2326,7 +2431,6 @@ async function onRecStop(){
   addHistory(rep);
   const dur = rep.duration || (isFinite($('resVideo').duration) ? $('resVideo').duration : 0);
   if (!isExport) setupTrim(dur);       // 완성본을 볼 때는 편집 구간을 그대로 둔다
-  if (!isExport) setTimeout(() => botOffer('jj_bot_seen4', '결과 화면이에요. 자막과 앞뒤 3초 카드 넣는 법을 알려 드릴까요?'), 1200);
   renderStyleControls(); renderTimeline(); syncStyleInputs(); updateStyleFor();
   startSubPreview(); ensureFont(S.subStyle.font);
   applyEditMode();
@@ -2802,11 +2906,15 @@ document.addEventListener('click', async (ev) => {
     if (isAdminName(name)){ await showAdminAuth(); return; }
     if (pw.length < 4) return err('비밀번호는 4자 이상으로 해 주세요.');
     if (su && pw !== $('authPw2').value) return err('두 비밀번호가 다릅니다.');
+    if (trackOn() && !$('consentChk').checked)
+      return err('이용 기록 전송에 동의해야 로그인·가입할 수 있어요. 동의하지 않으면 「로그인 없이 사용」을 눌러 주세요.');
     t.disabled = true; t.textContent = '처리 중…';
     try {
       if (su) await doSignup(name, pw); else await doLogin(name, pw);
       S.user = name;
       try { localStorage.setItem('rs_user', name); } catch(e){}
+      if (trackOn()) setConsent(name, true);
+      track(su ? 'signup' : 'login', name);
       $('authPw').value = ''; $('authPw2').value = '';
       await showApp();
     } catch (e){ err(e.message || '처리에 실패했습니다.'); }
@@ -2842,7 +2950,7 @@ document.addEventListener('click', async (ev) => {
     $('helpSheet').querySelector('.inner').scrollTop = 0;
     return;
   }
-  if (t.id === 'userChip'){ $('userSheet').hidden = false; await renderHistory(); return; }
+  if (t.id === 'userChip'){ $('forgetBtn').hidden = !(trackOn() && hasConsent(S.user)); $('userSheet').hidden = false; await renderHistory(); return; }
   if (t.id === 'sheetClose'){ $('userSheet').hidden = true; return; }
   if (t.id === 'logoutBtn'){
     S.user = null; try { localStorage.removeItem('rs_user'); } catch(e){}
@@ -3149,6 +3257,7 @@ async function addHistory(r){
     size: r.size, thumb: r.frame ? r.frame.thumb : null, prefs: collectPrefs()
   };
   try { await tx('history','readwrite', st => st.put(rec)); } catch(e){}
+  track('work', S.user);
 }
 function listHistory(){
   return openDB().then(d => new Promise((res, rej) => {
@@ -3217,6 +3326,10 @@ function renderStep(){
     el.hidden = !(+el.dataset.step === S.step && (!md || md === S.mode));
   });
   $('modeSeg').hidden = S.step !== 1;
+  // 결과 화면에서는 카메라를 놓는다 — 인트로를 굽는 동안 휴대폰이 카메라·영상 재생·인코딩을 한꺼번에 돌리지 않게.
+  // 촬영 단계로 돌아오면 다시 켠다.
+  if (S.step === 4) releaseCamera();
+  else if (S.step === 3 && S.mode === 'shoot' && S.camAuto && !S.camStream){ S.camAuto = false; openCamera(); }
   updateStep(S.step);
   updateNav();
 }
@@ -3253,7 +3366,7 @@ window.addEventListener('popstate', (e) => {
    버퍼 BGM 과 달리 재생·정지 개념이 없고, 캡처가 살아있는 동안 계속 흐른다.
    ============================================================ */
 function hasBgm(){ return !!(S.bgmBuffer || S.bgmLive); }
-function isBusy(){ return S.recording || S.dubbing || S.trimming; }
+function isBusy(){ return !!(S.recording || S.dubbing || S.trimming || S.trimPrep); }
 
 function capErr(msg){ const b = $('capErr'); b.hidden = !msg; b.textContent = msg || ''; }
 
@@ -3388,31 +3501,41 @@ function updateTrimLabels(){
 async function startTrim(){
   trimErr('');
   const src = S.baseBlob || S.outBlob;          // 항상 촬영 원본에서 다시 굽는다
-  if (!src || S.trimming) return;
+  if (!src || S.trimming || S.trimPrep) return;
   const a = +$('trimStart').value, b = +$('trimEnd').value;
   if (b - a < 0.5){ trimErr('구간이 너무 짧습니다.'); return; }
-  if (S.subs.length) await ensureFont(S.subStyle.font);
-
-  const ID = S.intro.on ? IO_DUR : 0;           // 앞에 붙는 인트로 길이
-  const OD = S.outro.on ? IO_DUR : 0;           // 뒤에 붙는 아웃트로 길이
-  if (S.intro.on) await ensureFont(ioDesign('intro').font);
-  if (S.outro.on) await ensureFont(ioDesign('outro').font);
-
-  const c = ac();
-  if (c.state !== 'running') await c.resume();
-
+  // 굽기 시작 전 준비(글꼴·영상 열기)에 몇 초 걸린다. 그동안 다시 누르거나 단계를 옮기지 못하게 막는다
+  S.trimPrep = true; $('trimBtn').disabled = true; updateNav();
+  try { await prepareTrim(src, a, b); }
+  finally { S.trimPrep = false; updateExportBtn(); updateNav(); }
+}
+async function prepareTrim(src, a, b){
   // 원본(이미 BGM 이 합쳐진 결과물)의 소리를 그래프로 가져온다
+  const c = ac();
   if (!S.trimNode){
     try { S.trimNode = c.createMediaElementSource(trimVideo); } catch (e){ trimErr('이 브라우저에서는 자르기를 지원하지 않습니다.'); return; }
     S.trimGain = c.createGain(); S.trimGain.gain.value = 1;
     S.trimNode.connect(S.trimGain); S.trimGain.connect(S.mixBus); S.trimGain.connect(S.monBus);
   }
-  if (trimVideo._blob !== src){
-    trimVideo.src = URL.createObjectURL(src);
-    trimVideo._blob = src;
+  if (trimVideo._blob !== src){ trimVideo.src = URL.createObjectURL(src); trimVideo._blob = src; }
+  // 아이폰 사파리는 소리 있는 영상을 '누른 그 순간'에만 틀게 해 준다. 인트로가 끝난 몇 초 뒤에 본편을 틀어야 하므로,
+  // 기다리는 일을 하기 전에(버튼을 누른 지금) 한 번 재생해 허락을 받아 둔다. 소리는 그래프에서 막아 들리지 않는다.
+  gainNow(S.trimGain, 0);
+  let unlocking = true, unlock = Promise.resolve();
+  try { const pp = trimVideo.play(); if (pp) unlock = pp.then(() => { if (unlocking) trimVideo.pause(); }, () => {}); } catch(e){}
+
+  if (S.subs.length) await ensureFont(S.subStyle.font);
+  const ID = S.intro.on ? IO_DUR : 0;           // 앞에 붙는 인트로 길이
+  const OD = S.outro.on ? IO_DUR : 0;           // 뒤에 붙는 아웃트로 길이
+  if (S.intro.on) await ensureFont(ioDesign('intro').font);
+  if (S.outro.on) await ensureFont(ioDesign('outro').font);
+  if (c.state !== 'running') await c.resume();
+  if (trimVideo.readyState < 2)
     await new Promise((res) => { trimVideo.onloadeddata = res; trimVideo.onerror = res; setTimeout(res, 4000); });
-  }
-  if (!trimVideo.videoWidth){ trimErr('영상을 열 수 없어 자를 수 없습니다.'); return; }
+  await Promise.race([unlock, new Promise((res) => setTimeout(res, 1500))]);
+  unlocking = false;
+  try { trimVideo.pause(); } catch(e){}
+  if (!trimVideo.videoWidth){ gainNow(S.trimGain, 1); trimErr('영상을 열 수 없어 자를 수 없습니다.'); return; }
 
   // 다른 입력은 잠시 끊는다 (마이크·원본소리가 섞이면 안 된다). 예약된 음량 변화까지 지워야 도중에 되살아나지 않는다.
   gainNow(S.micGain, 0); gainNow(S.srcGain, 0);
@@ -3429,14 +3552,14 @@ async function startTrim(){
     const dur = S.bgmBuffer.duration;
     let off = (S.offset || 0) + a - ID;
     off = ((off % dur) + dur) % dur;            // 앞으로 감기면 끝에서 이어받는다
-    S.bgmGain.gain.value = ID > 0 ? S.bgmVolume : 0;
+    gainNow(S.bgmGain, ID > 0 ? S.bgmVolume : 0);
     startBgm(c.currentTime + 0.03, off);
   } else if (useIo && S.bgmLive){
-    S.bgmGain.gain.value = ID > 0 ? S.bgmVolume : 0;
+    gainNow(S.bgmGain, ID > 0 ? S.bgmVolume : 0);
   } else {
-    S.bgmGain.gain.value = 0;
+    gainNow(S.bgmGain, 0);
   }
-  S.trimGain.gain.value = ID > 0 ? 0 : 1;
+  gainNow(S.trimGain, ID > 0 ? 0 : 1);
 
   const cv = document.createElement('canvas');
   cv.width = trimVideo.videoWidth; cv.height = trimVideo.videoHeight;
@@ -3461,6 +3584,9 @@ async function startTrim(){
   S.outMime = S.recorder.mimeType || mime || 'video/webm';
   S.recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) S.chunks.push(ev.data); };
   S.recorder.onstop = () => { restoreAudio(); onRecStop(); };
+  // 휴대폰 인코더가 도중에 멈추면 깨진 파일을 결과로 내놓지 않고 알린다(onRecStop 에서 확인)
+  S.recorder.onerror = (e) => { S.trimFail = '녹화기 오류(' + ((e && e.error && e.error.name) || '알 수 없음') + ')'; finishTrim(); };
+  S.trimFail = ''; S.expectSec = ID + (b - a) + OD;
 
   S.trimming = true; S.recording = true; S.silentTicks = 0; S.silenceFlag = false; S.lastWasTrim = true;
   $('trimBtn').textContent = useIo ? '인트로까지 굽는 중…' : (S.subs.length ? '자막 입히는 중…' : '자르는 중…');
@@ -3481,6 +3607,7 @@ async function startTrim(){
   const total = ID + (b - a) + OD;
   let phase = ID > 0 ? 'intro' : 'main';
   let outroT0 = 0;
+  let lastCt = -1, stallAt = performance.now(), retryAt = 0, tries = 0;   // 본편이 멈춰 있는지 지켜본다
   if (phase === 'main'){ try { await trimVideo.play(); } catch(e){} }
 
   const prog = (done) => { $('trimProg').style.width = (ioClamp(done / total, 0, 1) * 100) + '%'; };
@@ -3496,6 +3623,7 @@ async function startTrim(){
         phase = 'main';
         ioRamp(S.bgmGain, 0, 0.1);
         ioRamp(S.trimGain, 1, 0.1);
+        stallAt = performance.now(); tries = 0;
         try { await trimVideo.play(); } catch(e){}
       }
       requestAnimationFrame(loop); return;
@@ -3505,6 +3633,12 @@ async function startTrim(){
       g.drawImage(trimVideo, 0, 0, cv.width, cv.height);
       drawSubs(g, cv.width, cv.height, trimVideo.currentTime);
       prog(ID + (trimVideo.currentTime - a));
+      // 본편이 재생되지 않으면(재생이 막힘 등) 다시 틀어 보고, 6초 넘게 그대로면 멈추고 알린다 — 끝없이 굽지 않게
+      const now = performance.now();
+      if (document.hidden) stallAt = now;                                       // 화면이 꺼졌던 동안은 세지 않는다
+      else if (trimVideo.currentTime !== lastCt){ lastCt = trimVideo.currentTime; stallAt = now; tries = 0; }
+      else if (trimVideo.paused && tries < 3 && now - stallAt > 1500 && now - retryAt > 1000){ retryAt = now; tries++; trimVideo.play().catch(() => {}); }
+      else if (now - stallAt > 6000 && (tries >= 3 || !trimVideo.paused)){ S.trimFail = '원본 영상이 재생되지 않았습니다'; finishTrim(); return; }
       if (trimVideo.currentTime >= b - 0.04 || trimVideo.ended){
         try { trimVideo.pause(); } catch(e){}
         if (OD <= 0){ finishTrim(); return; }
@@ -3856,7 +3990,7 @@ function openHelp(){
   if (saved){
     try {
       const u = await tx('users','readonly', st => st.get(saved));
-      if (u && !u.blocked && u.role !== 'admin'){ S.user = saved; await showApp(); return; }
+      if (u && !u.blocked && u.role !== 'admin'){ S.user = saved; track('visit', saved); await showApp(); return; }
     } catch(e){}
   }
   showAuth();
@@ -4271,7 +4405,7 @@ function updateExportBtn(){
   const hasSub = S.subs.length > 0, cut = trimChanged();
   const io = !!(S.intro.on || S.outro.on);
   const len = +$('trimEnd').value - +$('trimStart').value;
-  $('trimBtn').disabled = S.trimming || !S.editMode || !S.baseBlob || len < 0.5 || (!hasSub && !cut && !io);
+  $('trimBtn').disabled = S.trimming || S.trimPrep || !S.editMode || !S.baseBlob || len < 0.5 || (!hasSub && !cut && !io);
   const parts = [];
   if (S.intro.on && S.outro.on) parts.push('인트로+아웃트로');
   else if (S.intro.on) parts.push('인트로');
@@ -4392,14 +4526,253 @@ function fixMp4Duration(buf){
   return {seconds: secs, movieTimescale: movieTs, movieDuration: movieDur};
 }
 
+/* 조각 MP4 → 일반 MP4 다시 묶기 (재인코딩 없음)
+   헤더 길이만 고친 조각 MP4도 크롬·갤러리 일부는 열지만, 삼성 갤러리(안드로이드 12 등)·아이폰 사진·에어드롭으로 받은 기기처럼
+   헤더의 샘플 표를 믿는 곳에서는 썸네일·재생이 깨진다. 짧은 녹화는 크롬이 조각 하나로 끝내며 헤더를 채워 주지만,
+   인트로·아웃트로처럼 길어지면 조각이 여러 개가 되어 빈 헤더가 남는다.
+   그래서 조각마다 흩어진 샘플 표(trun)를 모아 moov 에 완전한 표(stts·stsz·stco·stss)를 쓰고, 데이터는 mdat 하나로 잇는다.
+   조각 사이의 시간 틈(tfdt)은 앞 샘플 길이로 메워 소리·화면 시점을 그대로 지킨다.
+   모르는 구조면 null 을 돌려주고, 부른 쪽은 예전처럼 길이만 고친다. */
+function remuxMp4(buf){
+  const d = new DataView(buf), u8 = new Uint8Array(buf), N = u8.length;
+  const cc = (o) => String.fromCharCode(u8[o], u8[o+1], u8[o+2], u8[o+3]);
+  function boxes(start, end){
+    const r = []; let i = start;
+    while (i + 8 <= end){
+      let sz = d.getUint32(i), hdr = 8;
+      if (sz === 1){ if (i + 16 > end) return null; sz = Number(d.getBigUint64(i + 8)); hdr = 16; }
+      else if (sz === 0) sz = end - i;
+      if (sz < hdr || i + sz > end) return null;
+      r.push({type: cc(i + 4), off: i, body: i + hdr, end: i + sz});
+      i += sz;
+    }
+    return i === end ? r : null;
+  }
+  const one = (list, t) => list.find(b => b.type === t);
+  const top = boxes(0, N);
+  if (!top) return null;
+  const moov = one(top, 'moov');
+  if (!moov || !top.some(b => b.type === 'moof')) return null;      // 이미 일반 MP4
+  const mk = boxes(moov.body, moov.end); if (!mk) return null;
+  const mvhd = one(mk, 'mvhd'); if (!mvhd) return null;
+  const movieTs = u8[mvhd.body] === 1 ? d.getUint32(mvhd.body + 20) : d.getUint32(mvhd.body + 12);
+  if (!movieTs) return null;
+  const trex = {};
+  const mvex = one(mk, 'mvex');
+  if (mvex){
+    const xs = boxes(mvex.body, mvex.end); if (!xs) return null;
+    for (const x of xs) if (x.type === 'trex')
+      trex[d.getUint32(x.body + 4)] = {dur: d.getUint32(x.body + 12), size: d.getUint32(x.body + 16), flags: d.getUint32(x.body + 20)};
+  }
+  const tracks = {}, order = [];
+  for (const tr of mk.filter(b => b.type === 'trak')){
+    const k = boxes(tr.body, tr.end); if (!k) return null;
+    const tkhd = one(k, 'tkhd'), mdia = one(k, 'mdia'); if (!tkhd || !mdia) return null;
+    const ma = boxes(mdia.body, mdia.end); if (!ma) return null;
+    const mdhd = one(ma, 'mdhd'), hdlr = one(ma, 'hdlr'), minf = one(ma, 'minf'); if (!mdhd || !hdlr || !minf) return null;
+    const mi = boxes(minf.body, minf.end); if (!mi) return null;
+    const stbl = one(mi, 'stbl'); if (!stbl) return null;
+    const st = boxes(stbl.body, stbl.end); if (!st) return null;
+    const stsd = one(st, 'stsd'), stsz = one(st, 'stsz');
+    if (!stsd || (stsz && d.getUint32(stsz.body + 8) !== 0)) return null;   // moov 에 샘플이 이미 있는 혼합 구조는 건드리지 않는다
+    const id = u8[tkhd.body] === 1 ? d.getUint32(tkhd.body + 20) : d.getUint32(tkhd.body + 12);
+    const ts = u8[mdhd.body] === 1 ? d.getUint32(mdhd.body + 20) : d.getUint32(mdhd.body + 12);
+    if (!ts || tracks[id]) return null;
+    let elst = null;                                                         // 편집 목록: [빈 구간?] + 일반 구간 하나만 다룬다
+    const edts = one(k, 'edts');
+    if (edts){
+      const ek = boxes(edts.body, edts.end); if (!ek) return null;
+      const el = one(ek, 'elst');
+      if (el){
+        const v = u8[el.body], n = d.getUint32(el.body + 4), es = [];
+        let p = el.body + 8;
+        for (let i = 0; i < n; i++){
+          const seg = v === 1 ? Number(d.getBigUint64(p)) : d.getUint32(p);
+          const mt = v === 1 ? Number(d.getBigInt64(p + 8)) : d.getInt32(p + 4);
+          p += v === 1 ? 16 : 8;
+          if (d.getInt16(p) !== 1 || d.getInt16(p + 2) !== 0) return null; p += 4;
+          es.push({seg, mt});
+        }
+        const empty = es.length === 2 && es[0].mt === -1 ? es.shift() : null;
+        if (es.length !== 1 || es[0].mt < 0) return null;
+        elst = {empty: empty ? empty.seg : 0, mt: es[0].mt};
+      }
+    }
+    tracks[id] = {id, k, ma, mi, st, tkhd, mdhd, ts, kind: cc(hdlr.body + 8), elst,
+      dur: [], size: [], sync: [], cto: [], chunks: [], next: null, first: 0};
+    order.push(id);
+  }
+  // 조각마다 트랙별 샘플 표를 모은다
+  for (const mf of top){
+    if (mf.type !== 'moof') continue;
+    const fk = boxes(mf.body, mf.end); if (!fk) return null;
+    let prevEnd = mf.off;
+    for (const traf of fk.filter(b => b.type === 'traf')){
+      const tk = boxes(traf.body, traf.end); if (!tk) return null;
+      const tfhd = one(tk, 'tfhd'); if (!tfhd) return null;
+      const fl = d.getUint32(tfhd.body) & 0xffffff, t = tracks[d.getUint32(tfhd.body + 4)];
+      if (!t) return null;
+      let p = tfhd.body + 8, base = null;
+      if (fl & 0x01){ base = Number(d.getBigUint64(p)); p += 8; }
+      if (fl & 0x02){ if (d.getUint32(p) > 1) return null; p += 4; }
+      const tx = trex[t.id] || {dur: 0, size: 0, flags: 0};
+      let defDur = tx.dur, defSize = tx.size, defFlags = tx.flags;
+      if (fl & 0x08){ defDur = d.getUint32(p); p += 4; }
+      if (fl & 0x10){ defSize = d.getUint32(p); p += 4; }
+      if (fl & 0x20){ defFlags = d.getUint32(p); p += 4; }
+      if (base === null) base = (fl & 0x20000) ? mf.off : prevEnd;
+      const tfdt = one(tk, 'tfdt');
+      if (tfdt){
+        const dt = u8[tfdt.body] === 1 ? Number(d.getBigUint64(tfdt.body + 4)) : d.getUint32(tfdt.body + 4);
+        if (!t.dur.length){ t.first = dt; t.next = dt; }               // 샘플 없는 앞 조각은 시작점으로 치지 않는다
+        else if (dt !== t.next){
+          const i = t.dur.length - 1, nd = t.dur[i] + (dt - t.next);   // 조각 사이 틈·겹침은 앞 샘플 길이로 맞춘다
+          if (nd <= 0) return null;
+          t.dur[i] = nd; t.next = dt;
+        }
+      }
+      if (t.next === null) t.next = 0;
+      let pos = base;
+      for (const tr of tk.filter(b => b.type === 'trun')){
+        const tv = u8[tr.body], tf = d.getUint32(tr.body) & 0xffffff, cnt = d.getUint32(tr.body + 4);
+        let q = tr.body + 8, firstFlags = null;
+        if (tf & 0x01){ pos = base + d.getInt32(q); q += 4; }
+        if (tf & 0x04){ firstFlags = d.getUint32(q); q += 4; }
+        const per = ((tf & 0x100) ? 4 : 0) + ((tf & 0x200) ? 4 : 0) + ((tf & 0x400) ? 4 : 0) + ((tf & 0x800) ? 4 : 0);
+        if (q + cnt * per > tr.end) return null;
+        const start = pos;
+        let bytes = 0;
+        for (let s = 0; s < cnt; s++){
+          let du = defDur, sz = defSize, sf = (s === 0 && firstFlags !== null) ? firstFlags : defFlags, co = 0;
+          if (tf & 0x100){ du = d.getUint32(q); q += 4; }
+          if (tf & 0x200){ sz = d.getUint32(q); q += 4; }
+          if (tf & 0x400){ sf = d.getUint32(q); q += 4; }
+          if (tf & 0x800){ co = tv === 0 ? d.getUint32(q) : d.getInt32(q); q += 4; if (co < 0) return null; }   // 음수 시점차는 플레이어마다 해석이 달라 건드리지 않는다
+          t.dur.push(du); t.size.push(sz); t.sync.push(!(sf & 0x10000)); t.cto.push(co);
+          t.next += du; bytes += sz;
+        }
+        if (cnt){
+          if (start < 0 || start + bytes > N) return null;
+          t.chunks.push({src: start, bytes, n: cnt, id: t.id});
+        }
+        pos = start + bytes;
+      }
+      prevEnd = pos;
+    }
+  }
+  const ids = order.filter(id => tracks[id].dur.length);
+  if (!ids.length) return null;
+  // 새 mdat 안 배치는 원래 파일 순서 그대로(트랙이 섞인 채)
+  const chunks = [];
+  for (const id of ids) chunks.push(...tracks[id].chunks);
+  chunks.sort((x, y) => x.src - y.src);
+  let payload = 0;
+  for (const c of chunks){ c.rel = payload; payload += c.bytes; }
+  if (payload > 0xFFFF0000) return null;
+
+  // 상자 만들기
+  const cat = (parts) => { let n = 0; for (const p of parts) n += p.length; const o = new Uint8Array(n); let i = 0; for (const p of parts){ o.set(p, i); i += p.length; } return o; };
+  const box = (type, parts) => { const b = cat([new Uint8Array(8)].concat(parts)); new DataView(b.buffer).setUint32(0, b.length); for (let i = 0; i < 4; i++) b[4 + i] = type.charCodeAt(i); return b; };
+  const u32 = (vals) => { const b = new Uint8Array(vals.length * 4), v = new DataView(b.buffer); vals.forEach((x, i) => v.setUint32(i * 4, x >>> 0)); return b; };
+  const full = (type, ver, vals) => box(type, [new Uint8Array([ver, 0, 0, 0]), u32(vals)]);
+  const copy = (b) => u8.slice(b.off, b.end);
+  const withDur = (b, at0, at1, val) => {                // 상자를 복사해 길이 칸만 바꾼다
+    const c = copy(b), v = new DataView(c.buffer), body = b.body - b.off;
+    if (c[body] === 1) v.setBigUint64(body + at1, BigInt(val)); else v.setUint32(body + at0, Math.min(val, 0xFFFFFFFF));
+    return c;
+  };
+  const runs = (vals) => { const r = []; for (const x of vals){ const l = r[r.length - 1]; if (l && l[1] === x) l[0]++; else r.push([1, x]); } return r; };
+  const flat = (rows) => { const o = [rows.length]; for (const row of rows) for (const x of row) o.push(x); return o; };   // [개수, 행...]
+  const toMovie = (x, ts) => Math.round(x * movieTs / ts);
+
+  const info = {tracks: [], seconds: 0, video: null, audio: null};
+  let movieDur = 0;
+  const built = ids.map(id => {
+    const t = tracks[id], n = t.dur.length;
+    if (!t.dur[n - 1]) t.dur[n - 1] = t.dur[n - 2] || 1;                 // 마지막 샘플 길이 0 방지
+    let mediaDur = 0; for (const x of t.dur) mediaDur += x;
+    let edts = null, tkDur = toMovie(mediaDur, t.ts);
+    if (t.elst || t.first > 0){
+      let empty = t.elst ? t.elst.empty : 0, mt = (t.elst ? t.elst.mt : 0) - t.first;
+      if (mt < 0){ empty += toMovie(-mt, t.ts); mt = 0; }
+      const seg = toMovie(Math.max(0, mediaDur - mt), t.ts);
+      const ent = []; if (empty > 0) ent.push(empty, 0xFFFFFFFF, 0x00010000);
+      ent.push(seg, mt, 0x00010000);
+      edts = box('edts', [full('elst', 0, [ent.length / 3].concat(ent))]);
+      tkDur = empty + seg;
+    }
+    movieDur = Math.max(movieDur, tkDur);
+    const sec = mediaDur / t.ts, tinfo = {id, kind: t.kind, samples: n, seconds: sec};
+    info.tracks.push(tinfo);
+    if (t.kind === 'vide' && !info.video) info.video = tinfo;
+    if (t.kind === 'soun' && !info.audio) info.audio = tinfo;
+    // 샘플 표
+    const stts = full('stts', 0, flat(runs(t.dur)));
+    const ctts = t.cto.some(x => x) ? full('ctts', 0, flat(runs(t.cto))) : null;
+    const syncIdx = []; t.sync.forEach((s, i) => { if (s) syncIdx.push(i + 1); });
+    const stss = (t.kind !== 'soun' && syncIdx.length && syncIdx.length < n) ? full('stss', 0, [syncIdx.length].concat(syncIdx)) : null;
+    const sc = []; t.chunks.forEach((c, i) => { const l = sc[sc.length - 1]; if (!l || l[1] !== c.n) sc.push([i + 1, c.n, 1]); });
+    const stsc = full('stsc', 0, flat(sc));
+    const same = t.size.every(x => x === t.size[0]);
+    const stsz = full('stsz', 0, same ? [t.size[0], n] : [0, n].concat(t.size));
+    return {t, edts, tkDur, mediaDur, tables: [stts, ctts, stss, stsc, stsz].filter(Boolean), stco: (base) => full('stco', 0, [t.chunks.length].concat(t.chunks.map(c => base + c.rel)))};
+  });
+  info.seconds = movieDur / movieTs;
+
+  const hasAvc = ids.some(id => { const s = copy(one(tracks[id].st, 'stsd')); for (let i = 16; i + 4 <= s.length; i++) if (s[i] === 97 && s[i+1] === 118 && s[i+2] === 99) return true; return false; });
+  const ftyp = box('ftyp', [new TextEncoder().encode('isom'), u32([512]), new TextEncoder().encode('isomiso2' + (hasAvc ? 'avc1' : '') + 'mp41')]);
+  const maxId = Math.max.apply(null, ids);
+  const buildMoov = (base) => {
+    const traks = built.map(b => {
+      const t = b.t;
+      const stbl = box('stbl', [copy(one(t.st, 'stsd'))].concat(b.tables, [b.stco(base)]));
+      const minf = box('minf', t.mi.map(x => x.type === 'stbl' ? stbl : copy(x)));
+      const mdia = box('mdia', t.ma.map(x => x.type === 'mdhd' ? withDur(x, 16, 24, b.mediaDur) : x.type === 'minf' ? minf : copy(x)));
+      const kids = [];
+      for (const x of t.k){
+        if (x.type === 'tkhd'){ kids.push(withDur(x, 20, 28, b.tkDur)); if (b.edts) kids.push(b.edts); }
+        else if (x.type === 'edts') continue;
+        else if (x.type === 'mdia') kids.push(mdia);
+        else kids.push(copy(x));
+      }
+      return box('trak', kids);
+    });
+    const mv = withDur(mvhd, 16, 24, movieDur), mvv = new DataView(mv.buffer);
+    if (!mvv.getUint32(mv.length - 4)) mvv.setUint32(mv.length - 4, maxId + 1);   // next_track_ID 가 0 이면 바로잡는다
+    const rest = mk.filter(x => x.type !== 'mvhd' && x.type !== 'trak' && x.type !== 'mvex').map(copy);
+    return box('moov', [mv].concat(traks, rest));
+  };
+  const size0 = ftyp.length + buildMoov(0).length + 8;
+  const moovOut = buildMoov(size0);
+  if (ftyp.length + moovOut.length + 8 !== size0) return null;
+  const mdatHdr = new Uint8Array(8); new DataView(mdatHdr.buffer).setUint32(0, payload + 8); mdatHdr.set([109, 100, 97, 116], 4);
+  return {parts: [ftyp, moovOut, mdatHdr].concat(chunks.map(c => u8.subarray(c.src, c.src + c.bytes))), info};
+}
+
+/* 내보내기 결과가 온전한지: 화면 샘플이 있고 길이가 예상의 60% 이상인지. 판단할 수 없으면(WebM 등) 통과 */
+function exportProblem(info){
+  if (!info) return '';
+  if (info.video && info.video.samples < 2) return '영상 화면이 파일에 담기지 않았습니다';
+  if (!info.video && info.tracks) return '영상 화면이 파일에 담기지 않았습니다';
+  const sec = info.video ? info.video.seconds : info.seconds;
+  if (S.expectSec && sec < S.expectSec * 0.6)
+    return '영상이 중간에 끊겼습니다(' + sec.toFixed(1) + '초 / ' + S.expectSec.toFixed(1) + '초)';
+  return '';
+}
+/* 저장용으로 다듬는다: 일반 MP4 로 다시 묶고, 안 되면 헤더 길이만 고친다. 파일과 함께 트랙 요약(info)을 돌려준다 */
 async function repairDuration(blob){
-  if (!/mp4/i.test(blob.type) || blob.size > 400 * 1024 * 1024) return blob;
+  if (!/mp4/i.test(blob.type) || blob.size > 400 * 1024 * 1024) return {blob, info: null};
+  let ab;
+  try { ab = await blob.arrayBuffer(); } catch (e){ return {blob, info: null}; }
   try {
-    const ab = await blob.arrayBuffer();
-    const r = fixMp4Duration(ab);
-    if (!r || !r.seconds) return blob;
-    return new Blob([ab], {type: blob.type});
-  } catch (e){ return blob; }
+    const r = remuxMp4(ab);
+    if (r) return {blob: new Blob(r.parts, {type: blob.type}), info: r.info};
+  } catch (e){}
+  try {
+    const f = fixMp4Duration(ab);
+    if (!f || !f.seconds) return {blob, info: null};
+    return {blob: new Blob([ab], {type: blob.type}), info: {seconds: f.seconds}};
+  } catch (e){ return {blob, info: null}; }
 }
 
 /* ============================================================
@@ -5056,10 +5429,14 @@ syncIo('intro'); syncIo('outro'); syncVoiceUI();
 /* ============================================================
    15) 안내 로봇 — s2s 강의의 로봇처럼 화면 부품을 짚어 가며 말풍선으로 설명한다.
    · 대본은 지금 화면(로그인 · 1~4단계 · 촬영/입히기)에 맞춰 그때그때 만든다.
-   · act:true 인 줄은 설명을 다 한 뒤 로봇이 그 부품을 직접 누르고, 결과가 나오면 다음 화면 대본으로 이어 간다.
-     누르는 곳은 되돌리기 쉬운 것뿐이다(내장 트랙 고르기 · 다음 · 로그인 없이 사용 · 탭 전환).
+   · act:true 인 줄은 사람이 짚은 부품을 직접 눌러 따라 하기를 기다린다. 누르면 다음 설명으로 이어 간다.
+     「대신 누르기」를 누르면 로봇이 대신 누른다. 누르는 곳은 되돌리기 쉬운 것뿐이다
+     (내장 트랙 고르기 · 다음 · 로그인 없이 사용 · 탭 전환).
    ============================================================ */
-const BOT = {on:false, mode:'', list:[], i:0, token:0, greeted:false, el:null, typer:0, finish:null, acting:false, key:''};
+/* 안내 방식: demo(데모 따라하기) 는 화면마다 이어서 처음부터 끝까지 안내하고,
+   실전(내가 만들기) 은 새 화면에서 한 줄만 말하고 기다리다가 로봇을 누르면 그 화면만 안내한다 */
+const BOT = {on:false, mode:'', list:[], i:0, token:0, greeted:false, el:null, typer:0, finish:null, acting:false, key:'', top:0, room:null, pad:0, padKey:'',
+  demo:false, seen:'', first:false};
 /* 지금 화면을 나타내는 열쇠 — 바뀌면 그 화면의 대본으로 새로 시작한다 */
 const botKey = () => !$('authScreen').hidden ? 'auth'
   : ('app' + S.step + (S.step > 1 ? S.mode : '') + (S.step === 4 && S.editMode ? 'e' : ''));
@@ -5071,12 +5448,14 @@ function botVisible(el){
 function botScript(){
   const L = [];
   const add = (sel, text, o) => L.push(Object.assign({sel, text}, o || {}));
-  if (!BOT.greeted){
-    add(null, '안녕하세요, 주접 도우미예요. 영상 한 편 만드는 순서를 화면을 짚어 가며 알려 드릴게요.', {wave:true});
+  if (BOT.demo && !BOT.greeted){
+    add(null, '안녕하세요, 주접 도우미예요. 영상 한 편 만드는 순서를 화면을 짚어 가며 처음부터 끝까지 알려 드릴게요.', {wave:true});
   }
   if (!$('authScreen').hidden){
-    add('#authSeg', '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
-    add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 누르면 돼요. 제가 눌러 볼게요.',
+    add('#authSeg', trackOn() ? '프로필을 만들면 설정과 작업 기록이 이 기기에 남아요. 운영자에게는 동의한 이용 기록만 보내요.'
+      : '프로필을 만들면 설정과 작업 기록이 이 기기에만 남아요. 서버로는 아무것도 보내지 않아요.');
+    if (trackOn()) add('#consentRow', '로그인하려면 이 동의 칸을 체크해야 해요. 동의하지 않으면 아래 「로그인 없이 사용」으로 쓰면 돼요.');
+    add('#guestBtn', '그냥 한번 써 보려면 「로그인 없이 사용」을 눌러 보세요.',
       {act:true, until: () => !$('appScreen').hidden});
     return L;
   }
@@ -5084,91 +5463,93 @@ function botScript(){
     add('#modeSeg', '먼저 방식을 골라요. 카메라로 새로 찍거나, 이미 있는 영상에 음악만 입힐 수 있어요.');
     add('#srcSeg', '배경음악은 내장 트랙, 내 음악 파일, 탭 소리, 무료 음원 검색 가운데서 골라요.');
     if (!hasBgm()){
-      add('#trackGrid', '가장 쉬운 건 내장 트랙이에요. 저작권 걱정이 없어요. 제가 하나 골라 볼게요.',
+      add('#trackGrid', '가장 쉬운 건 내장 트랙이에요. 저작권 걱정이 없어요. 마음에 드는 카드를 하나 눌러 보세요.',
         {act:true, prep: () => { if ($('paneBuiltin').hidden) document.querySelector('[data-src="builtin"]').click(); },
          press: () => document.querySelector('[data-track="lofi"]'), until: () => hasBgm()});
     }
     add('#bgmStatus', '초록 불이 켜지면 준비 끝이에요. 음악은 파일 안에 직접 섞여서, 어디로 보내도 지워지지 않아요.');
-    add('#nextBtn', '다음 단계로 넘어갈게요.', {act:true, until: () => S.step === 2});
+    add('#nextBtn', '아래 「다음」을 눌러 다음 단계로 넘어가요.', {act:true, until: () => S.step === 2});
     return L;
   }
   if (S.step === 2 && S.mode === 'shoot'){
     add('#durChips', '영상 길이를 고르면 그 시간에 맞춰 자동으로 멈춰요.');
     add('#camChips', '셀카는 전면, 앞에 있는 걸 찍을 때는 후면 카메라예요.');
     add(null, '배경음악 크기와 시작 지점도 여기서 맞춰요. 후렴부터 시작하고 싶을 때 좋아요.', {pick: () => $('bgmVol').closest('.row')});
-    add('#nextBtn', '이제 촬영하러 가요.', {act:true, until: () => S.step === 3});
+    add('#nextBtn', '이제 아래 「다음」을 눌러 촬영하러 가요.', {act:true, until: () => S.step === 3});
     return L;
   }
   if (S.step === 2){
     add(null, '음악을 입힐 영상을 골라 주세요. 파일은 이 기기 밖으로 나가지 않아요.', {pick: () => document.querySelector('label[for="vidInput"]')});
     add(null, '영상에 원래 목소리가 남아 있으면 이 스위치를 켜서 같이 넣을 수 있어요.', {pick: () => $('srcSw').closest('.row')});
-    if (S.dubReady) add('#nextBtn', '다음으로 가요.', {act:true, until: () => S.step === 3});
+    if (S.dubReady) add('#nextBtn', '아래 「다음」을 눌러 넘어가요.', {act:true, until: () => S.step === 3});
     else add('#nextBtn', '영상을 고르면 이 버튼이 켜지고 다음으로 넘어갈 수 있어요.');
     return L;
   }
   if (S.step === 3 && S.mode === 'shoot'){
-    if (!S.camStream) add('#camBtn', '「카메라 켜기」를 누르고 권한을 허용해 주세요. 화면이 9:16 세로로 잘려 녹화돼요.');
+    if (!S.camStream) add('#camBtn', '「카메라 켜기」를 누르고 권한을 허용해 주세요. 화면이 9:16 세로로 잘려 녹화돼요.',
+      {act:true, until: () => !!S.camStream});
     else add('.stage', '미리보기 화면이에요. 버튼과 글씨는 화면에만 있고 파일에는 들어가지 않아요.');
     add('#voiceBox', '내 목소리를 넣을지 뺄지 골라요. 넣으면 잡음 억제가 켜지고, 녹화 중에도 「빼기」를 누르면 바로 조용해져요.');
     add('.meters', '녹화하는 동안 배경음악과 목소리 크기가 여기서 움직여요. 배경음악이 끊기면 바로 알려 드려요.');
     add('#recBtn', '준비되면 녹화 시작! 3, 2, 1 뒤에 찍히고, 정한 길이가 되면 알아서 멈춰요.');
-    add(null, '다 찍으면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
+    add(null, BOT.demo ? '녹화를 마치면 결과 화면에서 이어서 알려 드릴게요.'
+      : '다 찍으면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
     return L;
   }
   if (S.step === 3){
     add('#dubBtn', '「음악 입혀서 내보내기」를 누르면 영상 길이만큼 걸려요. 그동안 화면을 켜 두세요.');
-    add(null, '끝나면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
+    add(null, BOT.demo ? '내보내기가 끝나면 결과 화면에서 이어서 알려 드릴게요.'
+      : '끝나면 결과 화면에서 자막과 앞뒤 3초 카드를 넣을 수 있어요. 그때 저를 다시 눌러 주세요.', {wave:true});
     return L;
   }
   add('#repBox', '저장된 파일을 직접 열어서, 배경음악이 정말 들어갔는지 확인한 결과예요.');
   if (S.editMode){
     add('#editTabs', '구간 자르기, 자막, 꾸미기, 인트로를 여기서 골라요.');
-    add('[data-tab="intro"]', '영상 앞뒤에 붙는 3초 카드를 볼게요.', {act:true, until: () => S.activeTab === 'intro'});
+    add('[data-tab="intro"]', '「인트로」 탭을 눌러 영상 앞뒤에 붙는 3초 카드를 볼게요.', {act:true, until: () => S.activeTab === 'intro'});
     add('#introBlock', '스위치를 켜고 다섯 가지 그림 가운데 하나를 고르면, 끝 장면에 글자가 남아요. 문구는 자동으로 고르거나 직접 쓸 수 있어요.');
     add('#trimBtn', '다 고쳤으면 「편집 적용해서 내보내기」. 자막·구간·인트로가 한 번에 구워져요.');
   }
   add(botVisible($('shareBtn')) ? '#shareBtn' : '#dlBtn', '마지막으로 보내거나 내려받으면 끝이에요. 배경음악은 파일 안에 들어 있어요.');
-  add(null, '궁금하면 언제든 오른쪽 아래의 저를 눌러 주세요.', {wave:true});
+  if (BOT.demo) add(null, '데모는 여기까지예요. 이제부터는 실전이에요. 궁금하면 언제든 오른쪽 아래의 저를 눌러 주세요.', {wave:true, fin:true});
+  else add(null, '궁금하면 언제든 오른쪽 아래의 저를 눌러 주세요.', {wave:true});
   return L;
 }
 
-/* 자리 잡기: 짚을 부품 위나 아래의 빈 곳에 로봇과 말풍선을 두고, 팔과 눈을 부품 쪽으로 돌린다.
-   snap 이면 날아가는 움직임 없이 바로 옮긴다(레이아웃이 밀려 부품이 움직였을 때) */
+/* 자리 잡기: 로봇은 오른쪽 아래 제자리, 말하는 동안은 그 왼쪽에 말풍선 안내판(.dock)을 펼친다.
+   페이지 아래에 로봇·안내판 높이만큼 여백(--botpad)을 두어 맨 끝 내용도 그 위로 올라올 수 있게 하고,
+   짚은 부품에 테두리를 두르고 팔과 눈을 부품 쪽으로 돌린다.
+   snap 이면 테두리를 움직임 없이 바로 옮긴다(레이아웃이 밀려 부품이 움직였을 때) */
 function botPlace(snap){
   const bot = $('bot'), fig = $('botFig'), ring = $('botRing');
+  if (bot.classList.contains('away')){ ring.hidden = true; document.body.style.removeProperty('--botpad'); return; }
   if (snap){
-    bot.classList.add('snap'); ring.classList.add('snap');
-    requestAnimationFrame(() => requestAnimationFrame(() => { bot.classList.remove('snap'); ring.classList.remove('snap'); }));
+    ring.classList.add('snap');
+    requestAnimationFrame(() => requestAnimationFrame(() => ring.classList.remove('snap')));
   }
   const vw = document.documentElement.clientWidth, vh = window.innerHeight;
   const nav = $('navBar'), navH = (nav && !nav.hidden) ? nav.getBoundingClientRect().height : 0;
-  const bottom = vh - navH - 10, top = 10;
+  if (navH) bot.style.setProperty('--navh', navH + 'px'); else bot.style.removeProperty('--navh');
+  bot.classList.toggle('dock', !$('botBubble').hidden && BOT.mode !== 'hint');
+  bot.classList.toggle('hint', BOT.mode === 'hint');
+  BOT.top = bot.getBoundingClientRect().top;                // 안내판 윗변: 짚을 부품은 이보다 위로 스크롤해 온다
+  // 같은 화면에서는 여백을 줄이지 않는다: 안내판이 닫히며 페이지가 짧아지면 스크롤이 당겨져 누르던 곳이 움직인다
+  const key = botKey();
+  if (BOT.padKey !== key){ BOT.padKey = key; BOT.pad = 0; }
+  BOT.pad = Math.max(BOT.pad, Math.ceil(vh - BOT.top + 12));
+  document.body.style.setProperty('--botpad', BOT.pad + 'px');
   const T = BOT.on ? BOT.el : null;
-  const bw = bot.offsetWidth, bh = bot.offsetHeight;
-  let x, y, r = null;
+  let r = null;
   if (T && botVisible(T)){
     r = T.getBoundingClientRect();
     const pad = 6, rl = Math.max(4, r.left - pad), rt = Math.max(4, r.top - pad);
     const rr = Math.min(vw - 4, r.right + pad), rb = Math.min(vh - 4, r.bottom + pad);
     ring.hidden = false;
     Object.assign(ring.style, {left: rl + 'px', top: rt + 'px', width: Math.max(0, rr - rl) + 'px', height: Math.max(0, rb - rt) + 'px'});
-    const below = bottom - r.bottom, above = r.top - top;
-    if (below >= bh + 12) y = r.bottom + 12;
-    else if (above >= bh + 12) y = r.top - 12 - bh;
-    else y = below >= above ? bottom - bh : top;
-    const cx = r.left + r.width / 2;
-    x = Math.min(Math.max(12, cx - bw / 2), vw - 12 - bw);
-    bot.classList.toggle('flip', cx > x + bw / 2);
   } else {
     ring.hidden = true;
-    bot.classList.add('flip');
-    x = vw - 12 - bw; y = bottom - bh;
   }
-  bot.style.setProperty('--bx', Math.round(x) + 'px');
-  bot.style.setProperty('--by', Math.round(y) + 'px');
-  // 팔 · 눈: 도착할 자리를 기준으로 부품 가운데를 향한다
-  const fw = fig.offsetWidth, fh = fig.offsetHeight;
-  const fx = x + (bot.classList.contains('flip') ? bw - fw : 0), fy = y + bh - fh;
+  // 팔 · 눈: 부품 가운데를 향한다
+  const f = fig.getBoundingClientRect(), fw = f.width, fh = f.height, fx = f.left, fy = f.top;
   let la = '10deg', ra = '-10deg', ex = 0, ey = 0;
   if (r){
     const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
@@ -5229,6 +5610,15 @@ async function botWaitFor(fn, ms){
   while (performance.now() - t0 < ms){ try { if (fn()) return true; } catch(e){} await botWait(120); }
   return false;
 }
+const botDone = (e) => { try { return !!(e.until && e.until()); } catch(x){ return false; } };
+/* 짚을 부품을 안내판 위 빈 곳의 가운데로 스크롤한다. 빈 곳보다 크면 윗변을 맞춘다.
+   아래 고정 막대(다음 버튼)는 늘 보이므로 그대로 둔다 */
+function botScrollTo(el){
+  if (el.closest('#navBar')) return;
+  const r = el.getBoundingClientRect(), top = 12, room = BOT.top - 12 - top;
+  const dy = r.height <= room ? (r.top + r.height / 2) - (top + room / 2) : r.top - top;
+  if (Math.abs(dy) > 2) window.scrollBy({top: dy, behavior: botReduced() ? 'auto' : 'smooth'});
+}
 async function botShow(i){
   const tok = ++BOT.token;
   const e = BOT.list[i];
@@ -5236,26 +5626,44 @@ async function botShow(i){
   BOT.i = i;
   if (!BOT.greeted && e.wave) BOT.greeted = true;
   if (e.prep) try { e.prep(); } catch(x){}
+  if (e.act && botDone(e)){ botResume(botKey(), BOT.list[i + 1]); return; }   // 먼저 따라 해 두었으면 넘어간다
   const el = e.pick ? e.pick() : (e.sel ? document.querySelector(e.sel) : null);
   BOT.el = botVisible(el) ? el : null;
   const last = i === BOT.list.length - 1;
-  $('botStep').textContent = '안내 ' + (i + 1) + ' / ' + BOT.list.length;
+  $('botStep').textContent = (i + 1) + ' / ' + BOT.list.length;
   $('botPrev').hidden = false; $('botPrev').disabled = i === 0;
   $('botClose').textContent = '그만';
-  $('botNext').textContent = e.act ? '건너뛰기' : (last ? '끝' : '다음');
+  $('botNext').textContent = e.act ? '대신 누르기' : (last ? '끝' : '계속');
   $('botBubble').hidden = false;
   $('botText').textContent = e.text;           // 크기 재기용
+  botPlace();                                  // 안내판 높이가 정해져야 그 위 빈 곳을 안다
   if (BOT.el){
-    BOT.el.scrollIntoView({block:'center', behavior: botReduced() ? 'auto' : 'smooth'});
+    botScrollTo(BOT.el);
     await botSettle(BOT.el);
     if (tok !== BOT.token) return;
   }
   botPlace();
   if (e.wave) botBounce('bot-wave');
+  if (e.act) botFollow(tok, e);
   await botType(e.text);
-  if (tok !== BOT.token || !e.act) return;
-  await botWait(650);
-  if (tok !== BOT.token) return;
+}
+/* 사람이 짚은 부품을 직접 눌러 따라 하면 다음 설명으로 간다.
+   화면이 바뀌는 경우(로그인 없이 사용 · 다음)는 botSync 가 새 화면의 대본으로 이어 간다 */
+async function botFollow(tok, e){
+  const key0 = botKey(), after = BOT.list[BOT.i + 1];
+  while (tok === BOT.token){
+    if (!BOT.acting && botDone(e)){
+      if (botKey() === key0) botResume(key0, after); else botSync();
+      return;
+    }
+    await botWait(150);
+  }
+}
+/* 「대신 누르기」: 로봇이 짚은 부품을 누르고, 결과가 나오면 이어서 설명한다 */
+async function botDo(){
+  const tok = BOT.token, i = BOT.i, e = BOT.list[i];
+  if (BOT.acting || !e) return;
+  if (BOT.finish) BOT.finish();
   const target = e.press ? e.press() : BOT.el;
   if (!target || target.disabled || !botVisible(target)){ botShow(i + 1); return; }
   const key0 = botKey(), after = BOT.list[i + 1];
@@ -5265,10 +5673,14 @@ async function botShow(i){
   await botWait(250);
   BOT.acting = false;
   if (tok !== BOT.token) return;
-  // 누른 결과로 화면이 바뀌었으면 새 화면의 대본을 처음부터, 같은 화면이면 바로 다음 설명으로
-  BOT.list = botScript(); BOT.key = botKey();
-  const at = (BOT.key === key0 && after) ? BOT.list.findIndex(x => x.text === after.text) : 0;
-  botShow(Math.max(0, at));
+  botResume(key0, after);
+}
+/* 같은 화면이면 같은 대본의 다음 설명으로(대본을 새로 만들면 「3 / 5」가 「3 / 4」로 바뀌는 식으로 번호가 흔들린다).
+   화면이 바뀌었으면 botSync 가 정한다: 데모는 새 화면 안내를 이어 가고, 실전은 그 화면 도우미를 마친다 */
+function botResume(key0, after){
+  const at = BOT.list.indexOf(after);
+  if (botKey() === key0){ if (at >= 0) botShow(at); else botEnd(); return; }
+  botSync();
 }
 /* 안내 중에는 짚은 부품이 레이아웃 변화로 움직였는지 살펴 따라간다(설치 안내 칩이 늦게 나타나는 경우 등) */
 let botWatchId = 0, botLastRect = '';
@@ -5283,40 +5695,73 @@ function botWatch(on){
   }, 300);
 }
 function botStart(){
-  BOT.on = true; BOT.mode = 'tour'; BOT.acting = false;
+  BOT.on = true; BOT.mode = 'tour'; BOT.acting = false; BOT.room = null;
   botWatch(true);
   try { localStorage.setItem('jj_bot_seen', '1'); } catch(e){}
-  BOT.list = botScript(); BOT.key = botKey();
+  BOT.list = botScript(); BOT.key = BOT.seen = botKey();
   botSync();
   botShow(0);
   $('botNext').focus({preventScroll: true});
 }
 function botEnd(){
-  const had = BOT.on || BOT.mode === 'offer';
-  BOT.token++; BOT.on = false; BOT.mode = ''; BOT.el = null; BOT.acting = false;
+  const had = BOT.on || BOT.mode === 'offer', room = BOT.room;
+  BOT.token++; BOT.on = false; BOT.mode = ''; BOT.el = null; BOT.acting = false; BOT.room = null;
   clearInterval(BOT.typer); BOT.finish = null; botWatch(false);
   $('botBubble').hidden = true; $('botRing').hidden = true;
   botPlace();
+  // 제안 때 올려 둔 화면을 되돌린다(그 사이 직접 더 내렸으면 그대로 둔다)
+  if (room && window.scrollY > room.from - 8 && window.scrollY < room.to + 8)
+    window.scrollTo({top: room.from, behavior: botReduced() ? 'auto' : 'smooth'});
   if (had && $('bot').contains(document.activeElement)) $('botFig').focus({preventScroll: true});
 }
-/* 처음 온 사람에게 한 번만 먼저 말을 건다 */
+/* 처음 온 사람에게 한 번만 어떤 방식으로 시작할지 묻는다.
+   안내판 높이만큼 화면을 올려 자리를 만든다: 보이던 버튼과 설명은 안내판 위로 올라오고 맨 위 머리말이 대신 비켜난다 */
 function botOffer(key, text){
   let seen = false;
   try { seen = !!localStorage.getItem(key); } catch(e){}
   if (seen || BOT.on || isBusy() || $('bot').classList.contains('away')) return;
   try { localStorage.setItem(key, '1'); } catch(e){}
+  clearInterval(BOT.typer); BOT.finish = null;
   BOT.token++; BOT.mode = 'offer'; BOT.el = null;
-  $('botStep').textContent = '안내 로봇';
+  $('botStep').textContent = '';
   $('botPrev').hidden = true;
-  $('botClose').textContent = '괜찮아요';
-  $('botNext').textContent = '안내 시작';
+  $('botClose').textContent = '바로 만들기';
+  $('botNext').textContent = '데모 따라하기';
   $('botBubble').hidden = false;
   $('botText').textContent = text;
   botPlace(); botBounce('bot-wave');
+  const from = window.scrollY, need = window.innerHeight - BOT.top;
+  BOT.room = {from, to: Math.min(from + need, document.documentElement.scrollHeight - window.innerHeight)};
+  window.scrollBy({top: need, behavior: botReduced() ? 'auto' : 'smooth'});
   botType(text);
-  // 대답이 없으면 12초 뒤 조용히 들어간다 — 말풍선이 화면 아래쪽 부품을 오래 가리지 않게
+  // 대답이 없으면 12초 뒤 실전으로 들어간다
   const tok = BOT.token;
-  setTimeout(() => { if (BOT.mode === 'offer' && BOT.token === tok) botEnd(); }, 12000);
+  setTimeout(() => { if (BOT.mode === 'offer' && BOT.token === tok) setGuide('real'); }, 12000);
+}
+/* 실전: 새 화면에 들어오면 한 줄만 말하고 기다린다. 로봇이나 말풍선을 누르면 그 화면 도우미가 시작된다 */
+const BOT_HINT = '궁금하면 저를 눌러 주세요.';
+function botHint(){
+  if (BOT.on || BOT.mode || $('bot').classList.contains('away')) return;
+  BOT.token++; BOT.mode = 'hint'; BOT.el = null;
+  $('botBubble').hidden = false;
+  $('botText').textContent = BOT_HINT;
+  botPlace();
+  botType(BOT_HINT);
+  const tok = BOT.token;
+  setTimeout(() => { if (BOT.mode === 'hint' && BOT.token === tok) botEnd(); }, 4500);
+}
+/* 안내 방식 바꾸기: 맨 위 「데모 따라하기 / 실전 내가 만들기」, 첫 방문 제안, 데모 「그만」·마지막 줄에서 부른다.
+   quiet 이면 실전으로 바꾼 뒤 한 줄 말하기를 하지 않는다(사람이 다른 곳을 누르는 중이거나, 방금 같은 말을 했을 때) */
+function setGuide(mode, quiet){
+  BOT.demo = mode === 'demo'; BOT.first = false;
+  try { localStorage.setItem('jj_guide', mode); localStorage.setItem('jj_bot_seen', '1'); } catch(e){}
+  document.querySelectorAll('#guideSeg [data-guide]').forEach(b => {
+    const on = b.dataset.guide === mode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+  });
+  if (BOT.on || BOT.mode) botEnd();
+  if ($('bot').classList.contains('away')) return;
+  if (BOT.demo){ BOT.greeted = false; botStart(); }
+  else if (!quiet) botHint();
 }
 /* 보일지 말지: 로그인·앱 화면에서만, 도움말 시트가 열렸거나 녹화·인코딩 중이면 비킨다 */
 function botSync(){
@@ -5324,28 +5769,55 @@ function botSync(){
   const screen = !$('authScreen').hidden || !$('appScreen').hidden;
   const sheet = !$('helpSheet').hidden || !$('userSheet').hidden;
   const away = !screen || sheet || isBusy();
-  if (away && (BOT.on || BOT.mode === 'offer')) botEnd();
+  if (away && (BOT.on || BOT.mode)) botEnd();
   bot.classList.toggle('away', away);
-  // 사람이 직접 단계를 옮겼으면 새 화면의 대본으로 다시 시작한다(로봇이 누른 경우는 botShow 가 이어 간다)
-  if (!away && BOT.on && !BOT.acting && botKey() !== BOT.key){ BOT.key = botKey(); BOT.list = botScript(); botShow(0); return; }
-  if (!away) botPlace();
-}
-$('botFig').addEventListener('click', () => { BOT.on ? botEnd() : botStart(); });
-$('botNext').addEventListener('click', () => {
-  if (BOT.mode === 'offer'){ botStart(); return; }
-  const cur = BOT.list[BOT.i] || {};
-  if (cur.act && !BOT.acting){                        // 「건너뛰기」: 로봇이 누르지 않고 넘어간다
-    if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
+  // 새 화면에 들어오면: 데모는 그 화면 안내를 이어서 시작하고, 실전은 도우미를 마치고 한 줄만 말한다
+  // (로봇이 눌러 화면이 바뀐 경우는 누르기가 끝난 뒤 botResume 이 다시 부른다)
+  if (!away && !BOT.acting && botKey() !== BOT.seen){
+    BOT.seen = botKey();
+    if (BOT.mode === 'offer'){ botPlace(); return; }
+    if (BOT.demo){ botStart(); return; }
+    if (BOT.on) botEnd();
+    if (!BOT.first) botHint();
     return;
   }
-  if (BOT.finish){ BOT.finish(); return; }            // 쓰는 중이면 먼저 다 보여 준다
-  if (BOT.i >= BOT.list.length - 1) botEnd(); else botShow(BOT.i + 1);
+  botPlace();
+}
+$('botFig').addEventListener('click', () => {
+  if (BOT.mode === 'offer'){ setGuide('demo'); return; }
+  if (BOT.on){ if (BOT.demo) setGuide('real'); else botEnd(); return; }
+  botStart();
 });
-$('botPrev').addEventListener('click', () => { if (BOT.i > 0) botShow(BOT.i - 1); });
-$('botClose').addEventListener('click', botEnd);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (BOT.on || BOT.mode === 'offer')) botEnd(); });
-// 제안 말풍선이 떠 있을 때 다른 곳을 누르면 말풍선을 거둔다(누른 곳은 그대로 동작)
-document.addEventListener('pointerdown', (e) => { if (BOT.mode === 'offer' && !$('bot').contains(e.target)) botEnd(); }, true);
+// 한 줄 말풍선을 누르면 시작한다(말풍선 안 버튼의 클릭이 올라온 것은 아니다: 「그만」 뒤 한 줄 말하기로 바뀐 직후일 수 있다)
+$('botBubble').addEventListener('click', (e) => { if (BOT.mode === 'hint' && !e.target.closest('.bot-btns')) botStart(); });
+$('botNext').addEventListener('click', () => {
+  if (BOT.mode === 'offer'){ setGuide('demo'); return; }
+  if (BOT.acting) return;
+  const cur = BOT.list[BOT.i] || {};
+  if (cur.act){ botDo(); return; }                    // 「대신 누르기」
+  if (BOT.finish){ BOT.finish(); return; }            // 쓰는 중이면 먼저 다 보여 준다
+  if (BOT.i < BOT.list.length - 1){ botShow(BOT.i + 1); return; }
+  if (cur.fin) setGuide('real', true); else botEnd(); // 데모 마지막 줄을 마치면 실전으로
+});
+$('botPrev').addEventListener('click', () => {
+  if (BOT.acting) return;
+  // 이미 따라 한 줄은 뒤로 갈 때도 건너뛴다(그 줄을 보이면 botShow 가 다시 앞으로 보낸다)
+  let j = BOT.i - 1;
+  while (j > 0 && BOT.list[j].act && botDone(BOT.list[j])) j--;
+  if (j >= 0) botShow(j);
+});
+// 「바로 만들기」(첫 방문 제안) · 데모 중 「그만」은 실전으로 바꾸고, 실전 도우미의 「그만」은 그 화면 안내만 마친다
+const botStop = () => { if (BOT.mode === 'offer' || (BOT.on && BOT.demo)) setGuide('real'); else botEnd(); };
+$('botClose').addEventListener('click', botStop);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (BOT.on || BOT.mode === 'offer')) botStop(); });
+// 제안·한 줄 말풍선이 떠 있을 때 다른 곳을 누르면 거둔다(제안이면 실전으로).
+// 누른 곳은 그대로 동작하도록 화면은 움직이지 않는다(여백은 같은 화면에서 줄지 않는다)
+document.addEventListener('pointerdown', (e) => {
+  if ($('bot').contains(e.target)) return;
+  if (BOT.mode === 'offer'){ BOT.room = null; setGuide('real', true); }
+  else if (BOT.mode === 'hint') botEnd();
+}, true);
+document.querySelectorAll('#guideSeg [data-guide]').forEach(b => b.addEventListener('click', () => setGuide(b.dataset.guide)));
 let botRaf = 0;
 const botReflow = () => { cancelAnimationFrame(botRaf); botRaf = requestAnimationFrame(() => { if (!$('bot').classList.contains('away')) botPlace(); }); };
 window.addEventListener('resize', botReflow);
@@ -5355,14 +5827,24 @@ window.addEventListener('scroll', botReflow, {passive: true});
 // 화면·시트가 열리고 닫힐 때만 본다(로봇 자신의 말풍선·테두리 변화는 보지 않아야 되풀이가 생기지 않는다)
 const botMo = new MutationObserver(botSync);
 ['authScreen', 'appScreen', 'helpSheet', 'userSheet'].forEach(id => botMo.observe($(id), {attributes: true, attributeFilter: ['hidden']}));
+// 고른 방식을 불러온다. 한 번도 고르지 않은 첫 방문이면 잠시 뒤 어떤 방식으로 시작할지 묻는다
+{
+  let g = null, seen = false;
+  try { g = localStorage.getItem('jj_guide'); seen = !!localStorage.getItem('jj_bot_seen'); } catch(e){}
+  BOT.demo = g === 'demo'; BOT.first = !g && !seen;
+  document.querySelectorAll('#guideSeg [data-guide]').forEach(b => {
+    const on = b.dataset.guide === (BOT.demo ? 'demo' : 'real'); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
+  });
+}
 botSync();
-setTimeout(() => botOffer('jj_bot_seen', '처음 오셨네요. 제가 화면을 짚어 가며 순서대로 안내해 드릴까요?'), 900);
+// 제안을 띄웠든(먼저 로봇을 눌렀거나 시트가 열려 있어) 건너뛰었든, 그 뒤로는 실전 한 줄 말하기를 막지 않는다
+if (BOT.first) setTimeout(() => { botOffer('jj_bot_seen', '처음 오셨네요. 데모로 따라 해 볼까요, 바로 만들어 볼까요?'); BOT.first = false; }, 900);
 
 /* 테스트 훅 (헤드리스 검증용) */
 window.__reel = {S, selectTrack, openCamera, startRecording, stopRecording, startDub, stopDub, startTrim, pickMime, dubVideo, trimVideo,
   applySubs, parseSubs, drawSubs, renderTimeline, autoPlace, SUB_FONTS, SUB_ANIMS, ensureFont,
-  fixMp4Duration, repairDuration, IO_DESIGNS, IO_LINES, IO_DUR, ioText, ioDesign, ioPick, ioDrawAt, syncIo, syncVoiceUI, PWA, isStandalone, isIosDevice, inAppBrowser, setInstallUI, doInstall,
-  BOT, botStart, botEnd, botScript, enableMic};
+  fixMp4Duration, repairDuration, remuxMp4, IO_DESIGNS, IO_LINES, IO_DUR, ioText, ioDesign, ioPick, ioDrawAt, syncIo, syncVoiceUI, PWA, isStandalone, isIosDevice, inAppBrowser, setInstallUI, doInstall,
+  BOT, botStart, botEnd, botScript, setGuide, enableMic};
 </script>
 </body>
 </html>
