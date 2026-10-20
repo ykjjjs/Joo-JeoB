@@ -1,0 +1,21 @@
+# 명령줄(wrangler deploy)이나 Cloudflare의 GitHub 연결(Workers Builds)로 배포할 때만 쓰는 설정입니다.
+# 대시보드에 index.js 를 붙여 넣어 배포한다면 이 파일은 필요 없습니다(README.md 참고).
+name = "joo-jeob-admin"
+main = "index.js"
+compatibility_date = "2026-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "joo-jeob"
+# Cloudflare 대시보드 → Storage & Databases → D1 → joo-jeob 의 Database ID 로 바꾸세요
+database_id = "00000000-0000-0000-0000-000000000000"
+
+# 매일 한 번(한국 시각 낮 12시 17분) 1년 지난 기록을 지운다
+[triggers]
+crons = ["17 3 * * *"]
+
+# (선택) 기록 받기 속도 제한: IP 하나당 1분에 60번까지. 쓰려면 아래 네 줄의 # 를 지운다
+# [[ratelimits]]
+# name = "TRACK_LIMIT"
+# namespace_id = "1001"
+# simple = { limit = 60, period = 60 }
