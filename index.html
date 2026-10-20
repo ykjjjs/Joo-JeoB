@@ -142,8 +142,17 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 .stage{position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#050608;
   border:1px solid var(--line)}
 .stage canvas#view{width:100%;height:100%;display:block;object-fit:cover}
+/* 촬영 미리보기는 스크롤 없이 한눈에: 아래 막대(이전·다음)와 여백을 뺀 높이에 맞추고 9:16 으로 폭을 정한다.
+   카메라 앱처럼 카메라·녹화 버튼은 미리보기 안에 있어, 화면을 내리지 않아도 보면서 찍을 수 있다 */
+.step[data-step="3"] .stage{width:auto;margin:0 auto;height:calc(100vh - 100px);
+  height:calc(100dvh - 100px - env(safe-area-inset-bottom,0px));max-height:calc((min(100vw,520px) - 66px) * 16 / 9)}
+.stage-ctl{position:absolute;left:0;right:0;bottom:4px;z-index:3;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:28px 44px 14px 12px;background:linear-gradient(to top,rgba(5,6,8,.72),rgba(5,6,8,0));pointer-events:none}   /* 오른쪽은 안내 로봇 자리 */
+.stage-ctl .btn{width:auto;margin:0;pointer-events:auto;white-space:nowrap}
+.stage-ctl #recBtn{min-width:124px;padding:13px 18px;font-size:15px;box-shadow:0 8px 20px -8px rgba(0,0,0,.6)}
+.stage-ctl #camBtn{padding:11px 12px;font-size:13px;background:rgba(11,13,18,.62);backdrop-filter:blur(8px);border-color:rgba(255,255,255,.18)}
 .stage .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--tx3);font-size:13px;padding:22px}
-.flipbtn{position:absolute;right:12px;bottom:14px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+.flipbtn{position:absolute;right:12px;top:50px;width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
   background:rgba(11,13,18,.62);backdrop-filter:blur(8px);color:#fff;cursor:pointer;
   display:grid;place-items:center;z-index:3}
 .flipbtn .ic{width:22px;height:22px}
@@ -419,7 +428,9 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
   display:flex;flex-direction:row-reverse;align-items:flex-end;gap:6px;pointer-events:none}
 #bot.dock{width:min(496px,calc(100vw - 24px))}
 /* 실전 모드: 화면에 들어올 때 한 줄만 말하고 기다린다(버튼 없는 작은 말풍선, 누르면 그 화면 도우미 시작) */
-#bot.hint .bot-bubble{flex:none;width:max-content;max-width:calc(100vw - 100px);padding:8px 12px;margin-bottom:22px;cursor:pointer}
+#bot.hint{flex-direction:column-reverse;align-items:flex-end;gap:4px}
+#bot.hint .bot-bubble{flex:none;width:max-content;max-width:calc(100vw - 40px);padding:8px 12px;margin-bottom:6px;cursor:pointer}
+#bot.hint .bot-bubble::after{left:auto;right:22px;bottom:-7px;border:7px solid transparent;border-bottom:0;border-top-color:#FFFFFF}
 #bot.hint .bot-text{font-size:13px}
 #bot.hint .bot-btns{display:none}
 #bot.away{opacity:0;visibility:hidden}
@@ -776,6 +787,10 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
       </div>
       <button type="button" class="flipbtn" id="flipBtn" hidden aria-label="카메라 전환"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 20.5V16h-4.5"/></svg></button>
       <div class="count" id="count"></div>
+      <div class="stage-ctl">
+        <button type="button" class="btn ghost" id="camBtn">카메라 켜기</button>
+        <button type="button" class="btn primary" id="recBtn" disabled>녹화 시작</button>
+      </div>
       <div class="prog"><i id="progBar"></i></div>
     </div>
 
@@ -814,10 +829,6 @@ input[type=color]{width:46px;height:34px;border:1px solid var(--line);border-rad
     </div>
     <div class="row stack" id="camList" hidden style="border-bottom:0;padding-top:0"></div>
 
-    <div class="btnrow">
-      <button type="button" class="btn ghost" id="camBtn" style="flex:1">카메라 켜기</button>
-      <button type="button" class="btn primary" id="recBtn" style="flex:1.4" disabled>녹화 시작</button>
-    </div>
     <div class="err" id="errBox" hidden></div>
   </section>
 
@@ -1999,7 +2010,8 @@ async function openCameraNow(forceId){
     $('stagePh').hidden = true;
     $('flipBtn').hidden = false;
     startDraw();
-    $('camBtn').textContent = '카메라 다시 열기';
+    scrollToStage();
+    $('camBtn').textContent = '다시 열기';
     syncMirrorUI();
     refreshRecBtn();
     updateStep();
@@ -2012,6 +2024,13 @@ async function openCameraNow(forceId){
   }
 }
 
+/* 촬영 미리보기가 화면에 다 들어오도록 그 윗변을 화면 맨 위에 맞춘다(머리말은 위로 밀려난다) */
+function scrollToStage(){
+  const st = document.querySelector('.step[data-step="3"][data-mode="shoot"] .stage');
+  if (!st || st.closest('[hidden]')) return;
+  const top = st.getBoundingClientRect().top + window.scrollY - 10;
+  window.scrollTo({top: Math.max(0, top), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+}
 function releaseCamera(){
   if (!S.camStream) return;
   S.camStream.getTracks().forEach(t => t.stop());
@@ -2161,11 +2180,15 @@ async function startRecording(){
   if (!hasBgm()){ showErr('배경음악을 먼저 선택해 주세요.'); return; }
   if (!S.camStream){ showErr('카메라를 먼저 켜 주세요.'); return; }
 
+  if (S.counting) return;
   const c = ac();
   if (c.state !== 'running') await c.resume();
 
-  // 카운트다운
+  // 카운트다운 — 미리보기를 화면에 맞추고, 그동안 버튼은 잠근다
+  S.counting = true; $('recBtn').disabled = true;
+  scrollToStage();
   await countdown(3);
+  S.counting = false; $('recBtn').disabled = false;
 
   const cv = $('view');
   const canvasStream = cv.captureStream(30);
@@ -3350,7 +3373,7 @@ function goStep(n, viaPop){
   if (n < 4){ S.outBlob = null; S.baseBlob = null; S.editMode = true; S.saved = false; }
   S.step = n;
   renderStep();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  if (n === 3 && S.mode === 'shoot') scrollToStage(); else window.scrollTo({top: 0, behavior: 'smooth'});
   if (!viaPop) history.pushState({rs: n}, '');
 }
 window.addEventListener('popstate', (e) => {
